@@ -1869,19 +1869,8 @@ body::before {
         <button class="x-btn" id="xAuth1">×</button>
       </div>
       <p class="auth-sub">Para agendar, entre ou crie sua conta — é rápido e gratuito.</p>
-      
-      <div class="auth-opts">
-        <button class="auth-opt" id="goLogin">
-          <span class="auth-opt-ico">👤</span>
-          <div><div class="auth-opt-title">Já tenho conta</div><div class="auth-opt-sub">Entrar com e-mail e senha</div></div>
-          <span class="auth-opt-arr">›</span>
-        </button>
-        <button class="auth-opt" id="goCad">
-          <span class="auth-opt-ico">✨</span>
-          <div><div class="auth-opt-title">Criar conta</div><div class="auth-opt-sub">Cadastro rápido e gratuito</div></div>
-          <span class="auth-opt-arr">›</span>
-        </button>
-      </div>
+      <button class="auth-opt" id="goLogin">👤 Já tenho conta</button>
+      <button class="auth-opt" id="goCad">✨ Criar conta</button>
     </div>
     
     <div id="authELogin" style="display:none">
@@ -2143,13 +2132,7 @@ function renderSvc() {
         <div class="cat-head">
           <div class="cat-head-left">
             <div class="cat-head-icon">${data.icon}</div>
-            <div>
-              <div class="cat-head-name">${cat}</div>
-            </div>
-          </div>
-          <div class="cat-head-right">
-            <span class="cat-count">${data.items.length} serviços</span>
-            <div class="cat-arrow">▼</div>
+            <div class="cat-head-name">${cat}</div>
           </div>
         </div>
         <div class="cat-body">${rows}</div>
@@ -2414,61 +2397,59 @@ function initAuth() {
   document.getElementById('goLogin2').onclick = () => authStep('login');
   
   document.getElementById('btnLogin').onclick = async () => {
-    const e = document.getElementById('loginEmail').value;
+    const e = document.getElementById('loginEmail').value.trim();
     const p = document.getElementById('loginSenha').value;
     const btn = document.getElementById('btnLogin');
     
-    if (!e || !p) return;
+    if (!e || !p) return toast('Preencha e-mail e senha!');
     
     btn.innerText = 'Entrando...'; 
+    btn.disabled = true;
+    
     const { error } = await db.auth.signInWithPassword({ email: e, password: p }); 
     
+    btn.innerText = 'Entrar';
+    btn.disabled = false;
+    
     if (error) { 
-      btn.innerText = 'Entrar';
       document.getElementById('loginErr').style.display='block'; 
       document.getElementById('loginErr').innerText='E-mail ou senha incorretos.'; 
       return; 
     }
     
-    btn.innerText = 'Entrar';
     ov.style.display = 'none';
     if(svcSel) setTimeout(openAgt, 300);
   };
   
   document.getElementById('btnCad').onclick = async () => {
-    const n = document.getElementById('cadNome').value;
-    const e = document.getElementById('cadEmail').value;
-    const t = document.getElementById('cadTel').value;
+    const n = document.getElementById('cadNome').value.trim();
+    const e = document.getElementById('cadEmail').value.trim();
+    const t = document.getElementById('cadTel').value.trim();
     const p = document.getElementById('cadSenha').value;
     const btn = document.getElementById('btnCad');
     
     if(!n || !e || !p) return toast('Preencha os dados'); 
     
     btn.innerText = 'Criando...';
+    btn.disabled = true;
     
-    // Tenta criar a conta
     const { data, error } = await db.auth.signUp({ email: e, password: p });
     
+    btn.innerText = 'Criar';
+    btn.disabled = false;
+    
     if (error) { 
-      btn.innerText = 'Criar Conta';
       document.getElementById('cadErr').style.display='block'; 
       document.getElementById('cadErr').innerText=error.message; 
       return; 
     }
     
-    // Evita o travamento usando try/catch
-    try {
-      if (data.user) { 
-        await db.from('profiles').upsert({ id: data.user.id, nome_completo: n, telefone: t, email: e, tipo_usuario: 'cliente' }); 
-      }
-    } catch (err) {
-      console.warn("Aviso ao salvar perfil (talvez o e-mail não tenha sido confirmado):", err);
+    if (data.user) { 
+      await db.from('profiles').upsert({ id: data.user.id, nome_completo: n, telefone: t, email: e, tipo_usuario: 'cliente' }); 
     }
     
-    btn.innerText = 'Criar Conta';
     ov.style.display = 'none'; 
-    toast('Sua conta foi criada!');
-    
+    toast('Conta criada!');
     if(svcSel) setTimeout(openAgt, 300);
   };
 
@@ -2478,13 +2459,13 @@ function initAuth() {
     
     if (!email) return toast('Digite seu e-mail!');
     
-    btn.disabled = true; 
     btn.innerText = 'Enviando...';
+    btn.disabled = true;
     
     const { error } = await db.auth.resetPasswordForEmail(email);
     
-    btn.disabled = false; 
     btn.innerText = 'Enviar Link';
+    btn.disabled = false;
     
     if (error) { 
       document.getElementById('resetErr').style.display='block'; 
@@ -2529,7 +2510,10 @@ function initAgt() {
     
     if (!dEl || !hEl) return toast('Selecione data e hora!'); 
     
-    document.getElementById('btnFinalizar').innerText = 'Salvando...';
+    const btn = document.getElementById('btnFinalizar');
+    btn.innerText = 'Salvando...';
+    btn.disabled = true;
+    
     const dtISO = `${dEl.dataset.y}-${String(dEl.dataset.m).padStart(2,'0')}-${String(dEl.dataset.d).padStart(2,'0')}T${hEl.innerText}:00`;
     
     await db.from('appointments').insert([{ 
@@ -2542,7 +2526,9 @@ function initAgt() {
       observacoes: document.getElementById('userObs').value 
     }]);
     
-    document.getElementById('btnFinalizar').innerText = 'Confirmar Agendamento'; 
+    btn.innerText = 'Confirmar'; 
+    btn.disabled = false;
+    
     ov.style.display = 'none'; 
     toast('Agendado com sucesso!');
   };
@@ -2648,4 +2634,63 @@ async function renderTimes() {
 }
 
 function initApts() { 
-  document.getElementById('fecharTela').onclick = () => document.getElementById('telaApts
+  document.getElementById('fecharTela').onclick = () => document.getElementById('telaApts').style.display = 'none'; 
+  document.getElementById('refreshApts').onclick = loadApts; 
+  
+  document.getElementById('tabNext').onclick = () => { 
+    filtro = 'next'; 
+    document.getElementById('tabNext').classList.add('on'); 
+    document.getElementById('tabHist').classList.remove('on'); 
+    loadApts(); 
+  }; 
+  
+  document.getElementById('tabHist').onclick = () => { 
+    filtro = 'hist'; 
+    document.getElementById('tabHist').classList.add('on'); 
+    document.getElementById('tabNext').classList.remove('on'); 
+    loadApts(); 
+  }; 
+}
+
+async function loadApts() {
+  const lista = document.getElementById('aptsList'); 
+  lista.innerHTML = '<div class="apts-loading">Carregando...</div>';
+  
+  const now = new Date().toISOString(); 
+  let q = db.from('appointments').select('*').eq('cliente_id', user.id).order('data_hora', { ascending: filtro === 'next' });
+  
+  if (filtro === 'next') {
+    q = q.gte('data_hora', now).neq('status', 'cancelado'); 
+  } else {
+    q = q.or(`data_hora.lt.${now},status.eq.cancelado`);
+  }
+  
+  const { data } = await q; 
+  lista.innerHTML = data?.length ? '' : '<div class="apts-empty"><div class="e-ico">💅</div><p>Nenhum agendamento.</p></div>';
+  
+  data?.forEach(a => {
+    const dt = new Date(a.data_hora);
+    lista.innerHTML += `
+      <div class="apt-card">
+        <div class="apt-top">
+          <div>
+            ${dt.toLocaleDateString()} às ${dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+          </div>
+          <span class="apt-status ${a.status}">${a.status}</span>
+        </div>
+        <div>${a.servico_nome}</div>
+        ${(filtro==='next' && a.status!=='cancelado' && a.status!=='concluido') ? `<div class="apt-actions"><button class="btn-cancel-apt" onclick="cancelApt('${a.id}')">Cancelar Agendamento</button></div>` : ''}
+      </div>`;
+  });
+}
+
+async function cancelApt(id) { 
+  if (!confirm('Cancelar agendamento?')) return; 
+  
+  await db.from('appointments').update({ status: 'cancelado' }).eq('id', id); 
+  loadApts(); 
+  toast('Cancelado.'); 
+}
+</script>
+</body>
+</html>
