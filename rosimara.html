@@ -1646,7 +1646,6 @@ body::before {
   font-family: 'DM Sans', sans-serif; 
   transition: all 0.2s; 
 }
-
 .pix-btn-small:hover { 
   border-color: var(--rosegold); 
   color: var(--rosegold); 
@@ -1888,7 +1887,7 @@ body::before {
         <input type="password" id="loginSenha">
       </div>
       <div style="text-align:right; margin-top:-8px; margin-bottom:14px;">
-        <span style="font-size:0.7rem; color:var(--rose); cursor:pointer; text-decoration:underline;" onclick="authStep('reset')">Esqueci minha senha</span>
+        <span style="font-size:0.7rem; color:var(--rose); cursor:pointer; text-decoration:underline;" id="goReset">Esqueci minha senha</span>
       </div>
       <div id="loginErr" class="auth-err"></div>
       <button class="btn-confirm" id="btnLogin">Entrar</button>
@@ -1933,7 +1932,7 @@ body::before {
       </div>
       <div id="resetErr" class="auth-err"></div>
       <button class="btn-confirm" id="btnReset">Enviar Link</button>
-      <p class="auth-switch">Lembrou a senha? <span onclick="authStep('login')">Voltar</span></p>
+      <p class="auth-switch">Lembrou a senha? <span id="goBackLogin">Voltar</span></p>
     </div>
 
   </div>
@@ -2047,19 +2046,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       await updateUserBar(); 
     } else { 
       user = null; 
-      document.getElementById('sidebarUser').classList.remove('show'); 
-      document.getElementById('topAuthBar').style.display = 'block';
+      if(document.getElementById('sidebarUser')) document.getElementById('sidebarUser').classList.remove('show'); 
+      if(document.getElementById('topAuthBar')) document.getElementById('topAuthBar').style.display = 'block';
       if (event === 'SIGNED_OUT') {
         location.reload(); 
       }
     }
   });
 
-  document.getElementById('btnAgendar').onclick = () => {
-    if (!svcSel) return toast('💅 Selecione um serviço primeiro!');
-    if (!user) openAuth(); 
-    else openAgt();
-  };
+  if(document.getElementById('btnAgendar')) {
+    document.getElementById('btnAgendar').onclick = () => {
+      if (!svcSel) return toast('💅 Selecione um serviço primeiro!');
+      if (!user) openAuth(); 
+      else openAgt();
+    };
+  }
   
   initAuth(); 
   initAgt(); 
@@ -2068,6 +2069,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function toast(msg) { 
   const t = document.getElementById('toast'); 
+  if(!t) return;
   t.innerText = msg; 
   t.style.opacity = '1'; 
   t.style.transform = 'translateX(-50%) translateY(0)'; 
@@ -2108,6 +2110,7 @@ async function fetchServices() {
 
 function renderSvc() {
   const el = document.getElementById('lista-servicos'); 
+  if(!el) return;
   
   if(Object.keys(myCats).length === 0) { 
     el.innerHTML = '<div style="padding:0 20px;">Nenhum serviço cadastrado ainda.</div>'; 
@@ -2135,10 +2138,6 @@ function renderSvc() {
             <div class="cat-head-icon">${data.icon}</div>
             <div class="cat-head-name">${cat}</div>
           </div>
-          <div class="cat-head-right">
-            <span class="cat-count">${data.items.length} serviços</span>
-            <div class="cat-arrow">▼</div>
-          </div>
         </div>
         <div class="cat-body">${rows}</div>
       </div>`;
@@ -2159,9 +2158,8 @@ function renderSvc() {
     };
   });
   
-  document.getElementById('btnLogout').onclick = () => db.auth.signOut();
-  
-  document.getElementById('btnMeusApts').onclick = () => { 
+  if(document.getElementById('btnLogout')) document.getElementById('btnLogout').onclick = () => db.auth.signOut();
+  if(document.getElementById('btnMeusApts')) document.getElementById('btnMeusApts').onclick = () => { 
     document.getElementById('telaApts').style.display = 'flex'; 
     loadApts(); 
   };
@@ -2171,19 +2169,19 @@ async function updateUserBar() {
   try {
     const { data: p } = await db.from('profiles').select('*').eq('id', user.id).single();
     
-    document.getElementById('topAuthBar').style.display = 'none';
+    if(document.getElementById('topAuthBar')) document.getElementById('topAuthBar').style.display = 'none';
     
-    document.getElementById('suserName').innerText = (p?.nome_completo || user.email).split(' ')[0];
-    document.getElementById('suserAvatar').innerText = (p?.nome_completo || 'C').charAt(0).toUpperCase();
-    document.getElementById('sidebarUser').classList.add('show');
+    if(document.getElementById('suserName')) document.getElementById('suserName').innerText = (p?.nome_completo || user.email).split(' ')[0];
+    if(document.getElementById('suserAvatar')) document.getElementById('suserAvatar').innerText = (p?.nome_completo || 'C').charAt(0).toUpperCase();
+    if(document.getElementById('sidebarUser')) document.getElementById('sidebarUser').classList.add('show');
     
     if (p?.tipo_usuario === 'admin' || p?.tipo_usuario === 'barbeiro') {
       isAdmin = true; 
-      document.getElementById('suserRole').innerText = 'Admin';
-      document.getElementById('clientPainel').style.display = 'none'; 
-      document.getElementById('adminPainel').style.display = 'block';
-      document.getElementById('clientFooterCta').style.display = 'none'; 
-      document.getElementById('btnMeusApts').style.display = 'none';
+      if(document.getElementById('suserRole')) document.getElementById('suserRole').innerText = 'Admin';
+      if(document.getElementById('clientPainel')) document.getElementById('clientPainel').style.display = 'none'; 
+      if(document.getElementById('adminPainel')) document.getElementById('adminPainel').style.display = 'block';
+      if(document.getElementById('clientFooterCta')) document.getElementById('clientFooterCta').style.display = 'none'; 
+      if(document.getElementById('btnMeusApts')) document.getElementById('btnMeusApts').style.display = 'none';
       
       carregarDashboardAdmin(); 
       renderAdminSvc();
@@ -2194,12 +2192,14 @@ async function updateUserBar() {
 }
 
 function setAdminTab(tab) {
-  ['tabAdnA','tabAdnS','tabAdnB'].forEach(id => document.getElementById(id).classList.remove('on'));
-  document.getElementById('tabAdn' + tab.charAt(0).toUpperCase()).classList.add('on');
+  ['tabAdnA','tabAdnS','tabAdnB'].forEach(id => {
+    if(document.getElementById(id)) document.getElementById(id).classList.remove('on');
+  });
+  if(document.getElementById('tabAdn' + tab.charAt(0).toUpperCase())) document.getElementById('tabAdn' + tab.charAt(0).toUpperCase()).classList.add('on');
   
-  document.getElementById('adminAgendaArea').style.display = tab === 'agenda' ? 'block' : 'none';
-  document.getElementById('adminSvcArea').style.display = tab === 'servicos' ? 'block' : 'none';
-  document.getElementById('adminBloqArea').style.display = tab === 'bloq' ? 'block' : 'none';
+  if(document.getElementById('adminAgendaArea')) document.getElementById('adminAgendaArea').style.display = tab === 'agenda' ? 'block' : 'none';
+  if(document.getElementById('adminSvcArea')) document.getElementById('adminSvcArea').style.display = tab === 'servicos' ? 'block' : 'none';
+  if(document.getElementById('adminBloqArea')) document.getElementById('adminBloqArea').style.display = tab === 'bloq' ? 'block' : 'none';
   
   if (tab === 'agenda') {
     carregarDashboardAdmin(); 
@@ -2210,13 +2210,14 @@ function setAdminTab(tab) {
 
 function setFiltroAgenda(f) {
   adminFiltro = f;
-  document.getElementById('btnFiltroHoje').style = f==='hoje' ? 'border-color:var(--rose); color:var(--rose)' : '';
-  document.getElementById('btnFiltroTodos').style = f==='todos' ? 'border-color:var(--rose); color:var(--rose)' : '';
+  if(document.getElementById('btnFiltroHoje')) document.getElementById('btnFiltroHoje').style = f==='hoje' ? 'border-color:var(--rose); color:var(--rose)' : '';
+  if(document.getElementById('btnFiltroTodos')) document.getElementById('btnFiltroTodos').style = f==='todos' ? 'border-color:var(--rose); color:var(--rose)' : '';
   carregarDashboardAdmin();
 }
 
 function renderAdminSvc() {
   const el = document.getElementById('adminSvcList'); 
+  if(!el) return;
   let html = '';
   
   Object.entries(myCats).forEach(([cat, data]) => {
@@ -2248,18 +2249,18 @@ function renderAdminSvc() {
 }
 
 function abrirModalSvc(id='', cat='', nome='', desc='', preco='') {
-  document.getElementById('mSvcTitle').innerText = id ? 'Editar Serviço' : 'Novo Serviço';
-  document.getElementById('svcId').value = id; 
-  document.getElementById('svcCat').value = cat; 
-  document.getElementById('svcNome').value = nome; 
-  document.getElementById('svcDesc').value = desc; 
-  document.getElementById('svcPreco').value = preco;
-  document.getElementById('btnDelSvc').style.display = id ? 'block' : 'none';
-  document.getElementById('modalSvcAdmin').style.display = 'flex';
+  if(document.getElementById('mSvcTitle')) document.getElementById('mSvcTitle').innerText = id ? 'Editar Serviço' : 'Novo Serviço';
+  if(document.getElementById('svcId')) document.getElementById('svcId').value = id; 
+  if(document.getElementById('svcCat')) document.getElementById('svcCat').value = cat; 
+  if(document.getElementById('svcNome')) document.getElementById('svcNome').value = nome; 
+  if(document.getElementById('svcDesc')) document.getElementById('svcDesc').value = desc; 
+  if(document.getElementById('svcPreco')) document.getElementById('svcPreco').value = preco;
+  if(document.getElementById('btnDelSvc')) document.getElementById('btnDelSvc').style.display = id ? 'block' : 'none';
+  if(document.getElementById('modalSvcAdmin')) document.getElementById('modalSvcAdmin').style.display = 'flex';
 }
 
 function fecharModalSvc() { 
-  document.getElementById('modalSvcAdmin').style.display = 'none'; 
+  if(document.getElementById('modalSvcAdmin')) document.getElementById('modalSvcAdmin').style.display = 'none'; 
 }
 
 async function salvarSvcAdmin() {
@@ -2301,6 +2302,7 @@ async function deletarSvcAdmin() {
 
 async function carregarDashboardAdmin() {
   const lista = document.getElementById('adminAptsList'); 
+  if(!lista) return;
   lista.innerHTML = '<div class="apts-loading">Carregando painel...</div>';
   
   try {
@@ -2315,7 +2317,7 @@ async function carregarDashboardAdmin() {
       contagemSvc[a.servico_nome] = (contagemSvc[a.servico_nome] || 0) + 1; 
     });
     
-    document.getElementById('adminFatMes').innerText = `R$ ${totalFat.toFixed(2).replace('.', ',')}`;
+    if(document.getElementById('adminFatMes')) document.getElementById('adminFatMes').innerText = `R$ ${totalFat.toFixed(2).replace('.', ',')}`;
     
     let topSvc = "Nenhum";
     let maxCount = 0; 
@@ -2326,7 +2328,7 @@ async function carregarDashboardAdmin() {
         topSvc = svc; 
       } 
     }
-    document.getElementById('adminTopSvc').innerText = topSvc;
+    if(document.getElementById('adminTopSvc')) document.getElementById('adminTopSvc').innerText = topSvc;
 
     let query = db.from('appointments').select('*, profiles(nome_completo, telefone)').order('data_hora', {ascending: true});
     
@@ -2382,180 +2384,206 @@ async function salvarBloqueio() {
   }]); 
   
   toast('Bloqueado!'); 
-  document.getElementById('bloqData').value=''; 
-  document.getElementById('bloqHora').value=''; 
+  if(document.getElementById('bloqData')) document.getElementById('bloqData').value=''; 
+  if(document.getElementById('bloqHora')) document.getElementById('bloqHora').value=''; 
 }
 
 function initAuth() {
   const ov = document.getElementById('modalAuth'); 
   
   ['xAuth1','xAuth2','xAuth3','xAuth4'].forEach(id => {
-    if(document.getElementById(id)) document.getElementById(id).onclick = () => ov.style.display = 'none';
+    if(document.getElementById(id)) document.getElementById(id).onclick = () => { if(ov) ov.style.display = 'none'; };
   });
   
-  document.getElementById('goLogin').onclick = () => authStep('login'); 
-  document.getElementById('goCad').onclick = () => authStep('cad');
-  document.getElementById('backLogin').onclick = () => authStep('pick'); 
-  document.getElementById('backCad').onclick = () => authStep('pick');
-  document.getElementById('backReset').onclick = () => authStep('login');
-  document.getElementById('goReg2').onclick = () => authStep('cad'); 
-  document.getElementById('goLogin2').onclick = () => authStep('login');
-  
-  document.getElementById('btnLogin').onclick = async () => {
-    const e = document.getElementById('loginEmail').value.trim();
-    const p = document.getElementById('loginSenha').value;
-    const btn = document.getElementById('btnLogin');
-    
-    if (!e || !p) return toast('Preencha e-mail e senha!');
-    
-    btn.innerText = 'Entrando...'; 
-    btn.disabled = true;
-    
-    const { error } = await db.auth.signInWithPassword({ email: e, password: p }); 
-    
-    btn.innerText = 'Entrar';
-    btn.disabled = false;
-    
-    if (error) { 
-      document.getElementById('loginErr').style.display='block'; 
-      document.getElementById('loginErr').innerText='E-mail ou senha incorretos.'; 
-      return; 
-    }
-    
-    ov.style.display = 'none';
-    if(svcSel) setTimeout(openAgt, 300);
-  };
-  
-  document.getElementById('btnCad').onclick = async () => {
-    const n = document.getElementById('cadNome').value.trim();
-    const e = document.getElementById('cadEmail').value.trim();
-    const t = document.getElementById('cadTel').value.trim();
-    const p = document.getElementById('cadSenha').value;
-    const btn = document.getElementById('btnCad');
-    
-    if(!n || !e || !p) return toast('Preencha os dados'); 
-    
-    btn.innerText = 'Criando...';
-    btn.disabled = true;
-    
-    const { data, error } = await db.auth.signUp({ email: e, password: p });
-    
-    btn.innerText = 'Criar';
-    btn.disabled = false;
-    
-    if (error) { 
-      document.getElementById('cadErr').style.display='block'; 
-      document.getElementById('cadErr').innerText=error.message; 
-      return; 
-    }
-    
-    if (data.user) { 
-      await db.from('profiles').upsert({ id: data.user.id, nome_completo: n, telefone: t, email: e, tipo_usuario: 'cliente' }); 
-    }
-    
-    ov.style.display = 'none'; 
-    toast('Conta criada!');
-    if(svcSel) setTimeout(openAgt, 300);
-  };
+  // ESCUDOS ATIVADOS: Só adiciona a função de clique se o botão existir no HTML
+  if(document.getElementById('goLogin')) document.getElementById('goLogin').onclick = () => authStep('login'); 
+  if(document.getElementById('goCad')) document.getElementById('goCad').onclick = () => authStep('cad');
+  if(document.getElementById('goReg2')) document.getElementById('goReg2').onclick = () => authStep('cad'); 
+  if(document.getElementById('goLogin2')) document.getElementById('goLogin2').onclick = () => authStep('login');
+  if(document.getElementById('goReset')) document.getElementById('goReset').onclick = () => authStep('reset');
+  if(document.getElementById('goBackLogin')) document.getElementById('goBackLogin').onclick = () => authStep('login');
 
-  document.getElementById('btnReset').onclick = async () => {
-    const email = document.getElementById('resetEmail').value.trim();
-    const btn = document.getElementById('btnReset');
-    
-    if (!email) return toast('Digite seu e-mail!');
-    
-    btn.innerText = 'Enviando...';
-    btn.disabled = true;
-    
-    const { error } = await db.auth.resetPasswordForEmail(email);
-    
-    btn.innerText = 'Enviar Link';
-    btn.disabled = false;
-    
-    if (error) { 
-      document.getElementById('resetErr').style.display='block'; 
-      document.getElementById('resetErr').innerText = error.message; 
-    } else {
-      toast('E-mail enviado!');
-      authStep('login');
-    }
-  };
+  if(document.getElementById('btnLogin')) {
+    document.getElementById('btnLogin').onclick = async () => {
+      const e = document.getElementById('loginEmail').value.trim();
+      const p = document.getElementById('loginSenha').value;
+      const btn = document.getElementById('btnLogin');
+      
+      if (!e || !p) return toast('Preencha e-mail e senha!');
+      
+      btn.innerText = 'Entrando...'; 
+      btn.disabled = true;
+      
+      const { error } = await db.auth.signInWithPassword({ email: e, password: p }); 
+      
+      btn.innerText = 'Entrar';
+      btn.disabled = false;
+      
+      if (error) { 
+        if(document.getElementById('loginErr')) {
+          document.getElementById('loginErr').style.display='block'; 
+          document.getElementById('loginErr').innerText='E-mail ou senha incorretos.'; 
+        }
+        return; 
+      }
+      
+      if(ov) ov.style.display = 'none';
+      if(svcSel) setTimeout(openAgt, 300);
+    };
+  }
+  
+  if(document.getElementById('btnCad')) {
+    document.getElementById('btnCad').onclick = async () => {
+      const n = document.getElementById('cadNome').value.trim();
+      const e = document.getElementById('cadEmail').value.trim();
+      const t = document.getElementById('cadTel').value.trim();
+      const p = document.getElementById('cadSenha').value;
+      const btn = document.getElementById('btnCad');
+      
+      if(!n || !e || !p) return toast('Preencha os dados'); 
+      
+      btn.innerText = 'Criando...';
+      btn.disabled = true;
+      
+      const { data, error } = await db.auth.signUp({ email: e, password: p });
+      
+      btn.innerText = 'Criar';
+      btn.disabled = false;
+      
+      if (error) { 
+        if(document.getElementById('cadErr')) {
+          document.getElementById('cadErr').style.display='block'; 
+          document.getElementById('cadErr').innerText=error.message; 
+        }
+        return; 
+      }
+      
+      if (data.user) { 
+        await db.from('profiles').upsert({ id: data.user.id, nome_completo: n, telefone: t, email: e, tipo_usuario: 'cliente' }); 
+      }
+      
+      if(ov) ov.style.display = 'none'; 
+      toast('Conta criada!');
+      if(svcSel) setTimeout(openAgt, 300);
+    };
+  }
+
+  if(document.getElementById('btnReset')) {
+    document.getElementById('btnReset').onclick = async () => {
+      const email = document.getElementById('resetEmail').value.trim();
+      const btn = document.getElementById('btnReset');
+      
+      if (!email) return toast('Digite seu e-mail!');
+      
+      btn.innerText = 'Enviando...';
+      btn.disabled = true;
+      
+      const { error } = await db.auth.resetPasswordForEmail(email);
+      
+      btn.innerText = 'Enviar Link';
+      btn.disabled = false;
+      
+      if (error) { 
+        if(document.getElementById('resetErr')) {
+          document.getElementById('resetErr').style.display='block'; 
+          document.getElementById('resetErr').innerText = error.message; 
+        }
+      } else {
+        toast('E-mail enviado!');
+        authStep('login');
+      }
+    };
+  }
 }
 
 function openAuth() { 
   authStep('pick'); 
-  document.getElementById('modalAuth').style.display = 'flex'; 
+  if(document.getElementById('modalAuth')) document.getElementById('modalAuth').style.display = 'flex'; 
 }
 
 function authStep(s) { 
-  ['authE1','authELogin','authECad','authEReset'].forEach(id => document.getElementById(id).style.display='none'); 
-  document.getElementById(s==='pick'?'authE1':s==='login'?'authELogin':s==='cad'?'authECad':'authEReset').style.display='block'; 
-  ['loginErr','cadErr','resetErr'].forEach(id => document.getElementById(id).style.display='none');
+  ['authE1','authELogin','authECad','authEReset'].forEach(id => {
+    if(document.getElementById(id)) document.getElementById(id).style.display='none';
+  }); 
+  
+  let targetId = s==='pick'?'authE1':s==='login'?'authELogin':s==='cad'?'authECad':'authEReset';
+  if(document.getElementById(targetId)) document.getElementById(targetId).style.display='block'; 
+  
+  ['loginErr','cadErr','resetErr'].forEach(id => {
+    if(document.getElementById(id)) document.getElementById(id).style.display='none';
+  });
 }
 
 function initAgt() {
   const ov = document.getElementById('modalAgt'); 
-  document.getElementById('xAgt').onclick = () => ov.style.display = 'none';
+  if(document.getElementById('xAgt')) document.getElementById('xAgt').onclick = () => { if(ov) ov.style.display = 'none'; };
   
-  document.getElementById('calPrev').onclick = () => { 
-    calM--; 
-    if(calM<0){calM=11; calY--;} 
-    renderCal(); 
-  }; 
+  if(document.getElementById('calPrev')) {
+    document.getElementById('calPrev').onclick = () => { 
+      calM--; 
+      if(calM<0){calM=11; calY--;} 
+      renderCal(); 
+    }; 
+  }
   
-  document.getElementById('calNext').onclick = () => { 
-    calM++; 
-    if(calM>11){calM=0; calY++;} 
-    renderCal(); 
-  };
+  if(document.getElementById('calNext')) {
+    document.getElementById('calNext').onclick = () => { 
+      calM++; 
+      if(calM>11){calM=0; calY++;} 
+      renderCal(); 
+    };
+  }
   
-  document.getElementById('btnFinalizar').onclick = async () => {
-    const dEl = document.querySelector('.cal-d.sel');
-    const hEl = document.querySelector('.t-slot.sel');
-    
-    if (!dEl || !hEl) return toast('Selecione data e hora!'); 
-    
-    const btn = document.getElementById('btnFinalizar');
-    btn.innerText = 'Salvando...';
-    btn.disabled = true;
-    
-    const dtISO = `${dEl.dataset.y}-${String(dEl.dataset.m).padStart(2,'0')}-${String(dEl.dataset.d).padStart(2,'0')}T${hEl.innerText}:00`;
-    
-    await db.from('appointments').insert([{ 
-      cliente_id: user.id, 
-      barbeiro_nome: PROF, 
-      servico_nome: document.getElementById('rNome').innerText, 
-      data_hora: dtISO, 
-      status: 'pendente', 
-      preco: parseFloat(document.getElementById('rPreco').innerText.replace('R$ ','').replace(',','.')), 
-      observacoes: document.getElementById('userObs').value 
-    }]);
-    
-    btn.innerText = 'Confirmar'; 
-    btn.disabled = false;
-    
-    ov.style.display = 'none'; 
-    toast('Agendado com sucesso!');
-  };
+  if(document.getElementById('btnFinalizar')) {
+    document.getElementById('btnFinalizar').onclick = async () => {
+      const dEl = document.querySelector('.cal-d.sel');
+      const hEl = document.querySelector('.t-slot.sel');
+      
+      if (!dEl || !hEl) return toast('Selecione data e hora!'); 
+      
+      const btn = document.getElementById('btnFinalizar');
+      btn.innerText = 'Salvando...';
+      btn.disabled = true;
+      
+      const dtISO = `${dEl.dataset.y}-${String(dEl.dataset.m).padStart(2,'0')}-${String(dEl.dataset.d).padStart(2,'0')}T${hEl.innerText}:00`;
+      
+      await db.from('appointments').insert([{ 
+        cliente_id: user.id, 
+        barbeiro_nome: PROF, 
+        servico_nome: document.getElementById('rNome').innerText, 
+        data_hora: dtISO, 
+        status: 'pendente', 
+        preco: parseFloat(document.getElementById('rPreco').innerText.replace('R$ ','').replace(',','.')), 
+        observacoes: document.getElementById('userObs').value 
+      }]);
+      
+      btn.innerText = 'Confirmar'; 
+      btn.disabled = false;
+      
+      if(ov) ov.style.display = 'none'; 
+      toast('Agendado com sucesso!');
+    };
+  }
 }
 
 function openAgt() { 
-  document.getElementById('rNome').innerText = svcSel.dataset.nome; 
-  document.getElementById('rPreco').innerText = 'R$ ' + svcSel.dataset.preco; 
+  if(document.getElementById('rNome')) document.getElementById('rNome').innerText = svcSel.dataset.nome; 
+  if(document.getElementById('rPreco')) document.getElementById('rPreco').innerText = 'R$ ' + svcSel.dataset.preco; 
   
   const hj = new Date(); 
   calY = hj.getFullYear(); 
   calM = hj.getMonth(); 
   
   renderCal(); 
-  document.getElementById('modalAgt').style.display = 'flex'; 
+  if(document.getElementById('modalAgt')) document.getElementById('modalAgt').style.display = 'flex'; 
 }
 
 function renderCal() {
   const grid = document.getElementById('calGrid'); 
+  if(!grid) return;
   grid.innerHTML = ''; 
   
-  document.getElementById('calLabel').innerText = `${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][calM]} ${calY}`;
+  if(document.getElementById('calLabel')) document.getElementById('calLabel').innerText = `${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][calM]} ${calY}`;
   
   ['D','S','T','Q','Q','S','S'].forEach(d => { 
     const el = document.createElement('div'); 
@@ -2585,7 +2613,7 @@ function renderCal() {
       el.onclick = () => { 
         document.querySelectorAll('.cal-d').forEach(d => d.classList.remove('sel')); 
         el.classList.add('sel'); 
-        document.getElementById('timesSec').style.display = 'block'; 
+        if(document.getElementById('timesSec')) document.getElementById('timesSec').style.display = 'block'; 
         renderTimes(); 
       };
     }
@@ -2596,6 +2624,8 @@ function renderCal() {
 async function renderTimes() {
   const grid = document.getElementById('timesGrid');
   const dEl = document.querySelector('.cal-d.sel');
+  
+  if(!grid || !dEl) return;
   
   const d = String(dEl.dataset.d).padStart(2,'0');
   const m = String(dEl.dataset.m).padStart(2,'0');
@@ -2631,7 +2661,7 @@ async function renderTimes() {
       el.onclick = () => { 
         document.querySelectorAll('.t-slot').forEach(s => s.classList.remove('sel')); 
         el.classList.add('sel'); 
-        document.getElementById('confirmArea').style.display = 'block'; 
+        if(document.getElementById('confirmArea')) document.getElementById('confirmArea').style.display = 'block'; 
       };
     }
     grid.appendChild(el);
@@ -2639,22 +2669,54 @@ async function renderTimes() {
 }
 
 function initApts() { 
-  document.getElementById('fecharTela').onclick = () => document.getElementById('telaApts').style.display = 'none'; 
-  document.getElementById('refreshApts').onclick = loadApts; 
+  if(document.getElementById('fecharTela')) document.getElementById('fecharTela').onclick = () => { if(document.getElementById('telaApts')) document.getElementById('telaApts').style.display = 'none'; }; 
+  if(document.getElementById('refreshApts')) document.getElementById('refreshApts').onclick = loadApts; 
   
-  document.getElementById('tabNext').onclick = () => { 
-    filtro = 'next'; 
-    document.getElementById('tabNext').classList.add('on'); 
-    document.getElementById('tabHist').classList.remove('on'); 
-    loadApts(); 
-  }; 
+  if(document.getElementById('tabNext')) {
+    document.getElementById('tabNext').onclick = () => { 
+      filtro = 'next'; 
+      document.getElementById('tabNext').classList.add('on'); 
+      if(document.getElementById('tabHist')) document.getElementById('tabHist').classList.remove('on'); 
+      loadApts(); 
+    }; 
+  }
   
-  document.getElementById('tabHist').onclick = () => { 
-    filtro = 'hist'; 
-    document.getElementById('tabHist').classList.add('on'); 
-    document.getElementById('tabNext').classList.remove('on'); 
-    loadApts(); 
-  }; 
+  if(document.getElementById('tabHist')) {
+    document.getElementById('tabHist').onclick = () => { 
+      filtro = 'hist'; 
+      document.getElementById('tabHist').classList.add('on'); 
+      if(document.getElementById('tabNext')) document.getElementById('tabNext').classList.remove('on'); 
+      loadApts(); 
+    }; 
+  }
 }
 
 async function loadApts() {
+  const lista = document.getElementById('aptsList'); 
+  if(!lista) return;
+  lista.innerHTML = '<div class="apts-loading">Carregando...</div>';
+  
+  const now = new Date().toISOString(); 
+  let q = db.from('appointments').select('*').eq('cliente_id', user.id).order('data_hora', { ascending: filtro === 'next' });
+  
+  if (filtro === 'next') {
+    q = q.gte('data_hora', now).neq('status', 'cancelado'); 
+  } else {
+    q = q.or(`data_hora.lt.${now},status.eq.cancelado`);
+  }
+  
+  const { data } = await q; 
+  lista.innerHTML = data?.length ? '' : '<div class="apts-empty"><div class="e-ico">💅</div><p>Nenhum agendamento.</p></div>';
+  
+  data?.forEach(a => {
+    const dt = new Date(a.data_hora);
+    lista.innerHTML += `
+      <div class="apt-card">
+        <div class="apt-top">
+          <div>
+            ${dt.toLocaleDateString()} às ${dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+          </div>
+          <span class="apt-status ${a.status}">${a.status}</span>
+        </div>
+        <div>${a.servico_nome}</div>
+        ${(fil
