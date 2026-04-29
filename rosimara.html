@@ -446,10 +446,10 @@ body::before {
     </div>
     <div class="gallery-wrap">
       <div class="gallery-scroll">
-        <div class="g-item"><img src="https://via.placeholder.com/200x250/3d2b36/fdf7f2?text=Nail+1" alt="Unhas 1"></div>
-        <div class="g-item"><img src="https://via.placeholder.com/200x250/3d2b36/fdf7f2?text=Nail+2" alt="Unhas 2"></div>
-        <div class="g-item"><img src="https://via.placeholder.com/200x250/3d2b36/fdf7f2?text=Nail+3" alt="Unhas 3"></div>
-        <div class="g-item"><img src="https://via.placeholder.com/200x250/3d2b36/fdf7f2?text=Nail+4" alt="Unhas 4"></div>
+        <div class="g-item"><img src="unha1.jpg" alt="Unhas 1"></div>
+        <div class="g-item"><img src="unha2.jpg" alt="Unhas 2"></div>
+        <div class="g-item"><img src="unha3.jpg" alt="Unhas 3"></div>
+        <div class="g-item"><img src="unha4.jpg" alt="Unhas 4"></div>
       </div>
     </div>
 
@@ -534,10 +534,19 @@ body::before {
       <div class="sheet-head"><h2 class="sheet-title">Entrar</h2><button class="x-btn" id="xAuth1">×</button></div>
       <p class="auth-sub">Para agendar, entre ou crie sua conta — é rápido e gratuito.</p>
       <div class="auth-opts">
-        <button class="auth-opt" id="goLogin"><span class="auth-opt-ico">👤</span><div><div class="auth-opt-title">Já tenho conta</div><div class="auth-opt-sub">Entrar com e-mail e senha</div></div><span class="auth-opt-arr">›</span></button>
-        <button class="auth-opt" id="goCad"><span class="auth-opt-ico">✨</span><div><div class="auth-opt-title">Criar conta</div><div class="auth-opt-sub">Cadastro rápido e gratuito</div></div><span class="auth-opt-arr">›</span></button>
+        <button class="auth-opt" id="goLogin">
+          <span class="auth-opt-ico">👤</span>
+          <div><div class="auth-opt-title">Já tenho conta</div><div class="auth-opt-sub">Entrar com e-mail e senha</div></div>
+          <span class="auth-opt-arr">›</span>
+        </button>
+        <button class="auth-opt" id="goCad">
+          <span class="auth-opt-ico">✨</span>
+          <div><div class="auth-opt-title">Criar conta</div><div class="auth-opt-sub">Cadastro rápido e gratuito</div></div>
+          <span class="auth-opt-arr">›</span>
+        </button>
       </div>
     </div>
+
     <div id="authELogin" style="display:none">
       <div class="sheet-head"><button class="back-btn" id="backLogin">‹</button><h2 class="sheet-title">Entrar</h2><button class="x-btn" id="xAuth2">×</button></div>
       <p class="auth-sub">Entre com sua conta para continuar.</p>
@@ -547,6 +556,7 @@ body::before {
       <button class="btn-confirm" id="btnLogin">Entrar</button>
       <p class="auth-switch">Não tem conta? <span id="goReg2">Criar agora</span></p>
     </div>
+
     <div id="authECad" style="display:none">
       <div class="sheet-head"><button class="back-btn" id="backCad">‹</button><h2 class="sheet-title">Criar Conta</h2><button class="x-btn" id="xAuth3">×</button></div>
       <p class="auth-sub">Rápido, fácil e gratuito.</p>
@@ -565,14 +575,27 @@ body::before {
   <div class="sheet">
     <div class="sheet-head"><h2 class="sheet-title">Agendar</h2><button class="x-btn" id="xAgt">×</button></div>
     <div class="summary-pill"><span class="summary-pill-icon">💅</span><div><div class="summary-name" id="rNome">—</div><div class="summary-price" id="rPreco">—</div></div></div>
+    
     <div class="cal-box">
-      <div class="cal-nav"><button class="cal-nav-btn" id="calPrev">‹</button><div class="cal-month" id="calLabel"></div><button class="cal-nav-btn" id="calNext">›</button></div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" id="calPrev">‹</button>
+        <div class="cal-month" id="calLabel"></div>
+        <button class="cal-nav-btn" id="calNext">›</button>
+      </div>
       <div class="cal-grid" id="calGrid"></div>
     </div>
+
     <label class="sheet-label">Observações (opcional)</label>
     <input type="text" class="sheet-input" id="userObs" placeholder="Ex: cor preferida, algo a informar...">
-    <div class="times-sec" id="timesSec"><label class="sheet-label" style="margin-bottom:10px">Horários Disponíveis</label><div class="times-grid" id="timesGrid"></div></div>
-    <div class="confirm-area" id="confirmArea"><button class="btn-confirm" id="btnFinalizar">Confirmar Agendamento</button></div>
+
+    <div class="times-sec" id="timesSec">
+      <label class="sheet-label" style="margin-bottom:10px">Horários Disponíveis</label>
+      <div class="times-grid" id="timesGrid"></div>
+    </div>
+
+    <div class="confirm-area" id="confirmArea">
+      <button class="btn-confirm" id="btnFinalizar">Confirmar Agendamento</button>
+    </div>
   </div>
 </div>
 
@@ -601,15 +624,15 @@ body::before {
 <div id="toast"></div>
 
 <script>
-// --- CHAVES DO BANCO DE DADOS DA ROSE ---
-const SUPABASE_URL = "https://dtfzbfsnypzbvjmswyfs.supabase.co";
-const SUPABASE_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0ZnpiZnNueXF6YnZtanN3eWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0MzkyNjMsImV4cCI6MjA5MzAxNTI2M30.-GOzI4ZPjSuE0d-qCIlqJSBhFCy1YxVKmPdVMae_EeM";
+// --- CHAVES ATUALIZADAS DO BANCO DA ROSE ---
+const SUPABASE_URL = "https://dtfzbfsnyqzbvmjswyfs.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0ZnpiZnNueXF6YnZtanN3eWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0MzkyNjMsImV4cCI6MjA5MzAxNTI2M30.-GOzI4ZPjSuE0d-qCIlqJSBhFCy1YxVKmPdVMae_EeM";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const HORARIOS = ['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
 const PROF = 'Rosimara';
 
-// Serviços Default
+// Serviços Default (alimentam o LocalStorage na primeira vez)
 const DEFAULT_CATS = {
   "Alongamento": {
     icon: "💅", desc: "Unhas alongadas de alta durabilidade",
@@ -643,11 +666,20 @@ let adminFiltro = 'hoje';
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await db.auth.getSession();
-  if (session) { user = session.user; await updateUserBar(); }
+  if (session) { 
+    user = session.user; 
+    await updateUserBar(); 
+  }
   
   db.auth.onAuthStateChange(async (e, s) => {
-    if (s) { user = s.user; await updateUserBar(); } 
-    else { user = null; document.getElementById('sidebarUser').classList.remove('show'); if (e === 'SIGNED_OUT') location.reload(); }
+    if (s) { 
+      user = s.user; 
+      await updateUserBar(); 
+    } else { 
+      user = null; 
+      document.getElementById('sidebarUser').classList.remove('show'); 
+      if (e === 'SIGNED_OUT') location.reload(); 
+    }
   });
 
   renderSvc(); 
@@ -658,8 +690,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function toast(msg, d=2800) {
   const t = document.getElementById('toast');
-  t.innerText = msg; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
-  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(30px)'; }, d);
+  t.innerText = msg; 
+  t.style.opacity = '1'; 
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => { 
+    t.style.opacity='0'; 
+    t.style.transform='translateX(-50%) translateY(30px)'; 
+  }, d);
 }
 
 // ── RENDER SERVIÇOS (Visão Cliente) ──
@@ -685,11 +722,16 @@ function renderSvc() {
   
   el.innerHTML = html;
   
-  document.querySelectorAll('.cat-head').forEach(h => h.onclick = () => h.parentElement.classList.toggle('open'));
+  document.querySelectorAll('.cat-head').forEach(h => {
+    h.onclick = () => h.parentElement.classList.toggle('open');
+  });
+
   document.querySelectorAll('.svc-row').forEach(r => {
     r.onclick = () => {
       document.querySelectorAll('.svc-row').forEach(x => x.classList.remove('active'));
-      r.classList.add('active'); svcSel = r; toast('💅 ' + r.dataset.nome + ' selecionado!');
+      r.classList.add('active'); 
+      svcSel = r; 
+      toast('💅 ' + r.dataset.nome + ' selecionado!');
     }
   });
 
@@ -697,11 +739,17 @@ function renderSvc() {
   document.getElementById('btnLogout').onclick = async () => { await db.auth.signOut(); toast('Até logo! 👋'); };
   document.getElementById('btnMeusApts').onclick = () => {
     document.getElementById('telaApts').style.display = 'flex';
-    filtro = 'next'; document.getElementById('tabNext').classList.add('on'); document.getElementById('tabHist').classList.remove('on'); loadApts();
+    filtro = 'next'; 
+    document.getElementById('tabNext').classList.add('on'); 
+    document.getElementById('tabHist').classList.remove('on'); 
+    loadApts();
   };
 }
 
-function openOrAuth() { if (!svcSel) { toast('💅 Selecione um serviço!'); return; } if (!user) openAuth(); else openAgt(); }
+function openOrAuth() { 
+  if (!svcSel) { toast('💅 Selecione um serviço!'); return; } 
+  if (!user) openAuth(); else openAgt(); 
+}
 
 // ── RENDER SERVIÇOS (Visão Admin) ──
 function renderAdminSvc() {
@@ -759,24 +807,35 @@ function salvarSvcAdmin() {
   if(!myCats[cat]) myCats[cat] = { icon: "💅", desc: "Serviços de " + cat, items: [] };
   myCats[cat].items.push({ nome, preco, desc });
 
-  salvarCatsLocal(); fecharModalSvc(); renderAdminSvc(); renderSvc(); toast('Serviço salvo!');
+  salvarCatsLocal(); 
+  fecharModalSvc(); 
+  renderAdminSvc(); 
+  renderSvc(); 
+  toast('Serviço salvo!');
 }
 
 function deletarSvcAdmin() {
   if(!confirm('Tem certeza que deseja excluir este serviço?')) return;
   const oldCat = document.getElementById('svcOldCat').value;
   const oldNome = document.getElementById('svcOldNome').value;
+  
   if(oldNome && oldCat && myCats[oldCat]) {
     myCats[oldCat].items = myCats[oldCat].items.filter(i => i.nome !== oldNome);
     if(myCats[oldCat].items.length === 0) delete myCats[oldCat];
   }
-  salvarCatsLocal(); fecharModalSvc(); renderAdminSvc(); renderSvc(); toast('Serviço excluído!');
+  salvarCatsLocal(); 
+  fecharModalSvc(); 
+  renderAdminSvc(); 
+  renderSvc(); 
+  toast('Serviço excluído!');
 }
 
 // ── USER BAR & ADMIN LOGIC ──
 async function updateUserBar() {
   try {
-    const { data: p } = await db.from('profiles').select('*').eq('id', user.id).single();
+    const { data: p, error } = await db.from('profiles').select('*').eq('id', user.id).single();
+    if (error) console.warn("DB:", error.message);
+
     const nome = p?.nome_completo || user.email;
     document.getElementById('suserName').innerText = nome.split(' ')[0];
     document.getElementById('suserAvatar').innerText = nome.charAt(0).toUpperCase();
@@ -891,20 +950,27 @@ async function salvarBloqueio() {
   toast('Horário bloqueado!'); document.getElementById('bloqData').value = ''; document.getElementById('bloqHora').value = '';
 }
 
-// ── AUTH & AGENDAMENTO ──
+// ── AUTH ──
 function initAuth() {
   const ov = document.getElementById('modalAuth');
   ['xAuth1','xAuth2','xAuth3'].forEach(id => document.getElementById(id).onclick = closeAuth);
   ov.onclick = e => { if (e.target === ov) closeAuth(); };
-  document.getElementById('goLogin').onclick = () => authStep('login'); document.getElementById('goCad').onclick = () => authStep('cad');
-  document.getElementById('backLogin').onclick = () => authStep('pick'); document.getElementById('backCad').onclick = () => authStep('pick');
-  document.getElementById('goReg2').onclick = () => authStep('cad'); document.getElementById('goLogin2').onclick = () => authStep('login');
+  
+  document.getElementById('goLogin').onclick = () => authStep('login'); 
+  document.getElementById('goCad').onclick = () => authStep('cad');
+  document.getElementById('backLogin').onclick = () => authStep('pick'); 
+  document.getElementById('backCad').onclick = () => authStep('pick');
+  document.getElementById('goReg2').onclick = () => authStep('cad'); 
+  document.getElementById('goLogin2').onclick = () => authStep('login');
   
   document.getElementById('btnLogin').onclick = async () => {
     const email = document.getElementById('loginEmail').value.trim(), pw = document.getElementById('loginSenha').value, btn = document.getElementById('btnLogin');
-    if (!email || !pw) return; btn.disabled = true; btn.innerText = 'Entrando...';
+    if (!email || !pw) return; 
+    btn.disabled = true; btn.innerText = 'Entrando...';
+    
     const { data: ld, error } = await db.auth.signInWithPassword({ email, password: pw });
     btn.disabled = false; btn.innerText = 'Entrar';
+    
     if (error) { document.getElementById('loginErr').style.display='block'; document.getElementById('loginErr').innerText='Erro: '+error.message; return; }
     if (ld.user) await db.from('profiles').upsert({ id:ld.user.id }, { onConflict:'id', ignoreDuplicates:true });
     closeAuth(); setTimeout(openAgt, 300);
@@ -912,7 +978,9 @@ function initAuth() {
   
   document.getElementById('btnCad').onclick = async () => {
     const nome = document.getElementById('cadNome').value.trim(), email = document.getElementById('cadEmail').value.trim(), fone = document.getElementById('cadTel').value.trim(), pw = document.getElementById('cadSenha').value, btn = document.getElementById('btnCad');
-    if (!nome || !email || !fone || !pw) return; btn.disabled = true; btn.innerText = 'Criando...';
+    if (!nome || !email || !fone || !pw) return; 
+    btn.disabled = true; btn.innerText = 'Criando...';
+    
     const { data, error } = await db.auth.signUp({ email, password: pw });
     if (error) { btn.disabled = false; btn.innerText = 'Criar Conta'; document.getElementById('cadErr').style.display='block'; document.getElementById('cadErr').innerText='Erro: '+error.message; return; }
     if (data.user) await db.from('profiles').upsert({ id:data.user.id, nome_completo:nome, telefone:fone });
@@ -922,19 +990,34 @@ function initAuth() {
 
 function openAuth() { authStep('pick'); document.getElementById('modalAuth').style.display = 'flex'; }
 function closeAuth() { document.getElementById('modalAuth').style.display = 'none'; }
-function authStep(s) { ['authE1','authELogin','authECad'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById(s==='pick'?'authE1':s==='login'?'authELogin':'authECad').style.display='block'; ['loginErr','cadErr'].forEach(id => document.getElementById(id).style.display='none'); }
+function authStep(s) { 
+  ['authE1','authELogin','authECad'].forEach(id => document.getElementById(id).style.display='none'); 
+  document.getElementById(s==='pick'?'authE1':s==='login'?'authELogin':'authECad').style.display='block'; 
+  ['loginErr','cadErr'].forEach(id => document.getElementById(id).style.display='none'); 
+}
 
+// ── AGENDAMENTO CLIENTE ──
 function initAgt() {
   const ov = document.getElementById('modalAgt');
-  document.getElementById('xAgt').onclick = () => ov.style.display = 'none'; ov.onclick = e => { if (e.target === ov) ov.style.display = 'none'; };
+  document.getElementById('xAgt').onclick = () => ov.style.display = 'none';
+  ov.onclick = e => { if (e.target === ov) ov.style.display = 'none'; };
+  
   document.getElementById('calPrev').onclick = () => { calM--; if (calM < 0) { calM = 11; calY--; } renderCal(); };
   document.getElementById('calNext').onclick = () => { calM++; if (calM > 11) { calM = 0; calY++; } renderCal(); };
+  
   document.getElementById('btnFinalizar').onclick = async () => {
     const dEl = document.querySelector('.cal-d.sel'), hEl = document.querySelector('.t-slot.sel');
     if (!dEl || !hEl) { toast('Selecione dia e horário!'); return; }
+    
     const btn = document.getElementById('btnFinalizar'); btn.disabled = true; btn.innerText = 'Salvando...';
     const dtISO = `${dEl.dataset.y}-${String(dEl.dataset.m).padStart(2,'0')}-${String(dEl.dataset.d).padStart(2,'0')}T${hEl.innerText}:00`;
-    const { error } = await db.from('appointments').insert([{ cliente_id: user.id, barbeiro_nome: PROF, servico_nome: document.getElementById('rNome').innerText, data_hora: dtISO, status: 'pendente', preco: parseFloat((svcSel?.dataset.preco||'0').replace(',','.')), observacoes: document.getElementById('userObs').value || null }]);
+    
+    const { error } = await db.from('appointments').insert([{ 
+      cliente_id: user.id, barbeiro_nome: PROF, servico_nome: document.getElementById('rNome').innerText, 
+      data_hora: dtISO, status: 'pendente', preco: parseFloat((svcSel?.dataset.preco||'0').replace(',','.')), 
+      observacoes: document.getElementById('userObs').value || null 
+    }]);
+    
     btn.disabled = false; btn.innerText = 'Confirmar Agendamento';
     if (error) { toast('❌ Erro: '+error.message); return; }
     ov.style.display = 'none'; toast('✅ Agendamento feito! A Rosimara confirma em breve 💅');
@@ -942,21 +1025,38 @@ function initAgt() {
 }
 
 function openAgt() {
-  document.getElementById('rNome').innerText = svcSel.dataset.nome; document.getElementById('rPreco').innerText = 'R$ ' + svcSel.dataset.preco;
-  document.getElementById('timesGrid').innerHTML = ''; document.getElementById('confirmArea').style.display = 'none'; document.getElementById('timesSec').style.display = 'none'; document.getElementById('userObs').value = '';
-  const hoje = new Date(); calY = hoje.getFullYear(); calM = hoje.getMonth(); renderCal(); document.getElementById('modalAgt').style.display = 'flex';
+  document.getElementById('rNome').innerText = svcSel.dataset.nome; 
+  document.getElementById('rPreco').innerText = 'R$ ' + svcSel.dataset.preco;
+  document.getElementById('timesGrid').innerHTML = ''; 
+  document.getElementById('confirmArea').style.display = 'none'; 
+  document.getElementById('timesSec').style.display = 'none'; 
+  document.getElementById('userObs').value = '';
+  
+  const hoje = new Date(); calY = hoje.getFullYear(); calM = hoje.getMonth(); 
+  renderCal(); 
+  document.getElementById('modalAgt').style.display = 'flex';
 }
 
 function renderCal() {
   const grid = document.getElementById('calGrid'); grid.innerHTML = '';
   document.getElementById('calLabel').innerText = `${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][calM]} ${calY}`;
   ['D','S','T','Q','Q','S','S'].forEach(d => { const el = document.createElement('div'); el.className = 'cal-dh'; el.innerText = d; grid.appendChild(el); });
-  const start = new Date(calY, calM, 1).getDay(); for (let s = 0; s < start; s++) grid.appendChild(document.createElement('div'));
+  
+  const start = new Date(calY, calM, 1).getDay(); 
+  for (let s = 0; s < start; s++) grid.appendChild(document.createElement('div'));
+  
   const days = new Date(calY, calM+1, 0).getDate(), hoje = new Date(); let first = null;
   for (let i = 1; i <= days; i++) {
     const past = new Date(calY, calM, i) < new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
     const el = document.createElement('div'); el.className = `cal-d ${past ? 'dis' : ''}`; el.innerText = i < 10 ? '0' + i : i; el.dataset.d = i; el.dataset.m = calM + 1; el.dataset.y = calY;
-    if (!past) { if (!first) first = el; el.onclick = () => { document.querySelectorAll('.cal-d').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); document.getElementById('confirmArea').style.display = 'none'; document.getElementById('timesSec').style.display = 'block'; renderTimes(); }; }
+    if (!past) { 
+      if (!first) first = el; 
+      el.onclick = () => { 
+        document.querySelectorAll('.cal-d').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); 
+        document.getElementById('confirmArea').style.display = 'none'; document.getElementById('timesSec').style.display = 'block'; 
+        renderTimes(); 
+      }; 
+    }
     grid.appendChild(el);
   }
   if (first) { first.classList.add('sel'); document.getElementById('timesSec').style.display = 'block'; renderTimes(); }
@@ -966,14 +1066,19 @@ async function renderTimes() {
   const grid = document.getElementById('timesGrid'), dEl = document.querySelector('.cal-d.sel'); if (!dEl) return;
   grid.innerHTML = '<div style="grid-column:span 4;text-align:center;font-size:0.75rem;color:var(--ink3);padding:10px">Verificando...</div>';
   const d = String(dEl.dataset.d).padStart(2,'0'), m = String(dEl.dataset.m).padStart(2,'0'), y = dEl.dataset.y;
+  
   const { data: apts } = await db.from('appointments').select('data_hora').gte('data_hora',`${y}-${m}-${d}T00:00:00`).lte('data_hora',`${y}-${m}-${d}T23:59:59`).neq('status','cancelado');
   const ocp = new Set((apts || []).map(a => a.data_hora.slice(11,16)));
+  
   const { data: blocks } = await db.from('blocked_times').select('*').gte('data_hora',`${y}-${m}-${d}T00:00:00`).lte('data_hora',`${y}-${m}-${d}T23:59:59`);
   let isBlockedAllDay = false;
   (blocks || []).forEach(b => { if (b.dia_inteiro) isBlockedAllDay = true; else ocp.add(b.data_hora.slice(11,16)); });
+  
   if (isBlockedAllDay) { grid.innerHTML = '<div style="grid-column:span 4;text-align:center;color:var(--red);padding:10px">Data indisponível.</div>'; return; }
+  
   const now = new Date(), isToday = parseInt(d) === now.getDate() && parseInt(m) === now.getMonth() + 1 && parseInt(y) === now.getFullYear(), minNow = now.getHours() * 60 + now.getMinutes();
   grid.innerHTML = '';
+  
   HORARIOS.forEach(h => {
     const [hh, mm] = h.split(':').map(Number), bloq = (isToday && hh * 60 + mm <= minNow) || ocp.has(h);
     const el = document.createElement('div'); el.className = `t-slot ${bloq ? 'ocp' : ''}`; el.innerText = h;
@@ -982,8 +1087,10 @@ async function renderTimes() {
   });
 }
 
+// ── AGENDAMENTOS HISTÓRICO (CLIENTE) ──
 function initApts() {
-  document.getElementById('fecharTela').onclick = () => document.getElementById('telaApts').style.display = 'none'; document.getElementById('refreshApts').onclick = loadApts;
+  document.getElementById('fecharTela').onclick = () => document.getElementById('telaApts').style.display = 'none';
+  document.getElementById('refreshApts').onclick = loadApts;
   document.getElementById('tabNext').onclick = () => { filtro = 'next'; document.getElementById('tabNext').classList.add('on'); document.getElementById('tabHist').classList.remove('on'); loadApts(); };
   document.getElementById('tabHist').onclick = () => { filtro = 'hist'; document.getElementById('tabHist').classList.add('on'); document.getElementById('tabNext').classList.remove('on'); loadApts(); };
   document.getElementById('modalDet').onclick = e => { if (e.target === document.getElementById('modalDet')) closeDet(); };
@@ -995,22 +1102,40 @@ async function loadApts() {
   const now = new Date().toISOString();
   let q = db.from('appointments').select('*').eq('cliente_id', user.id).order('data_hora', { ascending: filtro === 'next' });
   if (filtro === 'next') q = q.gte('data_hora', now).neq('status', 'cancelado'); else q = q.or(`data_hora.lt.${now},status.eq.cancelado`);
+  
   const { data } = await q;
   if (!data || !data.length) { lista.innerHTML = `<div class="apts-empty"><div class="e-ico">💅</div><p>${filtro === 'next' ? 'Nenhum agendamento próximo.' : 'Nenhum histórico encontrado.'}</p></div>`; return; }
+  
   lista.innerHTML = '';
   data.forEach(a => {
     const [ay, am, ad] = a.data_hora.slice(0,10).split('-'); const canCel = filtro === 'next' && a.status !== 'cancelado' && a.status !== 'concluido';
     const card = document.createElement('div'); card.className = 'apt-card';
-    card.innerHTML = `<div class="apt-top"><div><div class="apt-date">${parseInt(ad)} ${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][parseInt(am)-1]} ${ay}</div><div class="apt-time">às ${a.data_hora.slice(11,16)}</div></div><span class="apt-status ${a.status}">${a.status}</span></div><div class="apt-div"></div><div class="apt-svc">${a.servico_nome}</div><div class="apt-info">💅 Rosimara ${a.preco ? '• R$ ' + parseFloat(a.preco).toFixed(2).replace('.',',') : ''}</div>${canCel ? `<div class="apt-actions"><button class="btn-cancel-apt" data-id="${a.id}">Cancelar</button><span class="apt-more">Ver detalhes ›</span></div>` : ''}`;
-    card.querySelector('.btn-cancel-apt')?.addEventListener('click', e => { e.stopPropagation(); cancelApt(a.id); }); card.onclick = e => { if (!e.target.classList.contains('btn-cancel-apt')) openDet(a); }; lista.appendChild(card);
+    card.innerHTML = `
+      <div class="apt-top">
+        <div><div class="apt-date">${parseInt(ad)} ${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][parseInt(am)-1]} ${ay}</div><div class="apt-time">às ${a.data_hora.slice(11,16)}</div></div>
+        <span class="apt-status ${a.status}">${a.status}</span>
+      </div>
+      <div class="apt-div"></div>
+      <div class="apt-svc">${a.servico_nome}</div>
+      <div class="apt-info">💅 Rosimara ${a.preco ? '• R$ ' + parseFloat(a.preco).toFixed(2).replace('.',',') : ''}</div>
+      ${canCel ? `<div class="apt-actions"><button class="btn-cancel-apt" data-id="${a.id}">Cancelar</button><span class="apt-more">Ver detalhes ›</span></div>` : ''}`;
+    
+    card.querySelector('.btn-cancel-apt')?.addEventListener('click', e => { e.stopPropagation(); cancelApt(a.id); });
+    card.onclick = e => { if (!e.target.classList.contains('btn-cancel-apt')) openDet(a); }; 
+    lista.appendChild(card);
   });
 }
 
 function openDet(a) {
   const [ay, am, ad] = a.data_hora.slice(0, 10).split('-');
-  document.getElementById('modalDetContent').innerHTML = `<div class="det-top"><div><div class="det-date">${parseInt(ad)} ${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][parseInt(am)-1]}<br>${ay}</div></div><span class="apt-status ${a.status}">${a.status}</span></div><div class="det-row"><span class="det-ico">💅</span><div><div class="det-t">Rosimara</div><div class="det-s">às ${a.data_hora.slice(11,16)}</div></div></div><div class="det-row"><span class="det-ico">✨</span><div><div class="det-t">${a.servico_nome}</div>${a.preco ? `<div class="det-s">R$ ${parseFloat(a.preco).toFixed(2).replace('.',',')}</div>` : ''}${a.status === 'pendente' ? `<button class="btn-cancel-det" onclick="cancelApt('${a.id}')">Cancelar</button>` : ''}</div></div><button class="btn-confirm" style="margin-top:20px" onclick="closeDet()">Fechar</button>`;
+  document.getElementById('modalDetContent').innerHTML = `
+    <div class="det-top"><div><div class="det-date">${parseInt(ad)} ${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][parseInt(am)-1]}<br>${ay}</div></div><span class="apt-status ${a.status}">${a.status}</span></div>
+    <div class="det-row"><span class="det-ico">💅</span><div><div class="det-t">Rosimara</div><div class="det-s">às ${a.data_hora.slice(11,16)}</div></div></div>
+    <div class="det-row"><span class="det-ico">✨</span><div><div class="det-t">${a.servico_nome}</div>${a.preco ? `<div class="det-s">R$ ${parseFloat(a.preco).toFixed(2).replace('.',',')}</div>` : ''}${a.status === 'pendente' ? `<button class="btn-cancel-det" onclick="cancelApt('${a.id}')">Cancelar</button>` : ''}</div></div>
+    <button class="btn-confirm" style="margin-top:20px" onclick="closeDet()">Fechar</button>`;
   document.getElementById('modalDet').style.display = 'flex';
 }
+
 function closeDet() { document.getElementById('modalDet').style.display = 'none'; }
 async function cancelApt(id) { if (!confirm('Cancelar agendamento?')) return; await db.from('appointments').update({ status: 'cancelado' }).eq('id', id); closeDet(); loadApts(); toast('Cancelado.'); }
 </script>
