@@ -664,7 +664,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else { 
       user = null; 
       document.getElementById('sidebarUser').classList.remove('show'); 
-      location.reload(); 
+      // Somente recarrega se o evento foi especificamente o usuário deslogando, evitando o loop!
+      if (e === 'SIGNED_OUT') {
+        location.reload(); 
+      }
     }
   });
 
@@ -753,7 +756,6 @@ function openOrAuth() {
 // ── USER BAR & ADMIN LOGIC (Protegido contra DB incompleto) ──
 async function updateUserBar() {
   try {
-    // Usar select('*') evita quebrar o código se a coluna 'tipo_usuario' ainda não existir
     const { data: p, error } = await db.from('profiles').select('*').eq('id', user.id).single();
     
     if (error) {
@@ -803,7 +805,6 @@ async function carregarDashboardAdmin() {
     const hj = new Date();
     const inicioMes = `${hj.getFullYear()}-${String(hj.getMonth()+1).padStart(2,'0')}-01T00:00:00`;
     
-    // Select * por segurança
     const { data: todosMes, error: errFat } = await db.from('appointments')
       .select('*')
       .gte('data_hora', inicioMes)
@@ -977,7 +978,6 @@ function initAuth() {
     }
     
     if (data.user) {
-      // Deixamos tipo_usuario de fora neste insert inicial pro caso da coluna ainda não ter sido criada
       await db.from('profiles').upsert({ id:data.user.id, nome_completo:nome, telefone:fone });
     }
     
