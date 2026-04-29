@@ -1646,6 +1646,7 @@ body::before {
   font-family: 'DM Sans', sans-serif; 
   transition: all 0.2s; 
 }
+
 .pix-btn-small:hover { 
   border-color: var(--rosegold); 
   color: var(--rosegold); 
@@ -2134,6 +2135,10 @@ function renderSvc() {
             <div class="cat-head-icon">${data.icon}</div>
             <div class="cat-head-name">${cat}</div>
           </div>
+          <div class="cat-head-right">
+            <span class="cat-count">${data.items.length} serviços</span>
+            <div class="cat-arrow">▼</div>
+          </div>
         </div>
         <div class="cat-body">${rows}</div>
       </div>`;
@@ -2381,7 +2386,6 @@ async function salvarBloqueio() {
   document.getElementById('bloqHora').value=''; 
 }
 
-// ── LÓGICA DE LOGIN / CADASTRO CORRIGIDA ──
 function initAuth() {
   const ov = document.getElementById('modalAuth'); 
   
@@ -2654,44 +2658,3 @@ function initApts() {
 }
 
 async function loadApts() {
-  const lista = document.getElementById('aptsList'); 
-  lista.innerHTML = '<div class="apts-loading">Carregando...</div>';
-  
-  const now = new Date().toISOString(); 
-  let q = db.from('appointments').select('*').eq('cliente_id', user.id).order('data_hora', { ascending: filtro === 'next' });
-  
-  if (filtro === 'next') {
-    q = q.gte('data_hora', now).neq('status', 'cancelado'); 
-  } else {
-    q = q.or(`data_hora.lt.${now},status.eq.cancelado`);
-  }
-  
-  const { data } = await q; 
-  lista.innerHTML = data?.length ? '' : '<div class="apts-empty"><div class="e-ico">💅</div><p>Nenhum agendamento.</p></div>';
-  
-  data?.forEach(a => {
-    const dt = new Date(a.data_hora);
-    lista.innerHTML += `
-      <div class="apt-card">
-        <div class="apt-top">
-          <div>
-            ${dt.toLocaleDateString()} às ${dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
-          </div>
-          <span class="apt-status ${a.status}">${a.status}</span>
-        </div>
-        <div>${a.servico_nome}</div>
-        ${(filtro==='next' && a.status!=='cancelado' && a.status!=='concluido') ? `<div class="apt-actions"><button class="btn-cancel-apt" onclick="cancelApt('${a.id}')">Cancelar Agendamento</button></div>` : ''}
-      </div>`;
-  });
-}
-
-async function cancelApt(id) { 
-  if (!confirm('Cancelar agendamento?')) return; 
-  
-  await db.from('appointments').update({ status: 'cancelado' }).eq('id', id); 
-  loadApts(); 
-  toast('Cancelado.'); 
-}
-</script>
-</body>
-</html>
