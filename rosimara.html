@@ -65,9 +65,9 @@ body::before {
 ══════════════════════════════════════════ */
 .sidebar {
   background: var(--ink); color: #fff; display: flex; flex-direction: column;
-  align-items: center; padding: 56px 32px 48px; position: relative; overflow: hidden;
+  align-items: center; padding: 48px 24px; position: relative; overflow: hidden;
 }
-@media (min-width: 900px) { .sidebar { position: sticky; top: 0; height: 100vh; grid-row: 1 / span 2; } }
+@media (min-width: 900px) { .sidebar { position: sticky; top: 0; height: 100vh; padding: 56px 32px 48px; grid-row: 1 / span 2; } }
 .sidebar::before {
   content: ''; position: absolute; inset: 0;
   background: radial-gradient(ellipse 120% 60% at 50% -10%, rgba(192,82,74,0.22) 0%, transparent 55%),
@@ -131,12 +131,16 @@ body::before {
 .suser-btn.logout:hover { border-color: rgba(192,80,80,0.4); color: #f08080; }
 
 /* ══════════════════════════════════════════
-   MAIN CONTENT
+   MAIN CONTENT & LAYOUT CORRECTIONS
 ══════════════════════════════════════════ */
-.main { padding: 0 0 160px; min-height: 100vh; }
+.main { 
+  padding: 0 0 120px; /* Reduzido para evitar rolagem extra no mobile */
+  width: 100%; 
+  min-width: 0; /* CORREÇÃO: Impede que itens internos vazem do grid no celular */
+}
 @media (min-width: 900px) { .main { padding: 0 0 60px; } }
 
-.sec-head { padding: 40px 28px 24px; display: flex; align-items: flex-end; justify-content: space-between; }
+.sec-head { padding: 40px 24px 24px; display: flex; align-items: flex-end; justify-content: space-between; }
 .sec-head-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 400; letter-spacing: 0.5px; line-height: 1; }
 .sec-head-title em { font-style: italic; color: var(--rose); }
 .sec-head-line { display: flex; align-items: center; gap: 6px; font-size: 0.6rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ink3); }
@@ -478,7 +482,7 @@ body::before {
       <div class="sec-head-title">O que <em>Dizem</em></div>
       <div class="sec-head-line">Avaliações</div>
     </div>
-    <div class="reviews-grid" style="margin-bottom: 80px;">
+    <div class="reviews-grid">
       <div class="review-card">
         <div class="r-stars">★★★★★</div>
         <p class="r-text">"Trabalho impecável! A durabilidade da fibra de vidro que a Rosi faz é surreal. Não troco por nada."</p>
@@ -664,7 +668,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else { 
       user = null; 
       document.getElementById('sidebarUser').classList.remove('show'); 
-      // Somente recarrega se o evento foi especificamente o usuário deslogando, evitando o loop!
       if (e === 'SIGNED_OUT') {
         location.reload(); 
       }
@@ -753,7 +756,7 @@ function openOrAuth() {
   if (!user) openAuth(); else openAgt(); 
 }
 
-// ── USER BAR & ADMIN LOGIC (Protegido contra DB incompleto) ──
+// ── USER BAR & ADMIN LOGIC (Lê "admin" e "barbeiro") ──
 async function updateUserBar() {
   try {
     const { data: p, error } = await db.from('profiles').select('*').eq('id', user.id).single();
@@ -768,7 +771,8 @@ async function updateUserBar() {
     document.getElementById('suserAvatar').innerText = nome.charAt(0).toUpperCase();
     document.getElementById('sidebarUser').classList.add('show');
 
-    if (p && p.tipo_usuario === 'admin') {
+    // Aceita 'admin' ou o antigo 'barbeiro' como papel de administração
+    if (p && (p.tipo_usuario === 'admin' || p.tipo_usuario === 'barbeiro')) {
       isAdmin = true;
       document.getElementById('suserRole').innerText = 'Administrador';
       document.getElementById('clientPainel').style.display = 'none';
