@@ -544,8 +544,16 @@ body::before {
       </div>
       <p class="auth-sub">Para agendar, entre ou crie sua conta — é rápido e gratuito.</p>
       <div class="auth-opts">
-        <button class="auth-opt" id="goLogin"><span class="auth-opt-ico">👤</span><div><div class="auth-opt-title">Já tenho conta</div><div class="auth-opt-sub">Entrar com e-mail e senha</div></div><span class="auth-opt-arr">›</span></button>
-        <button class="auth-opt" id="goCad"><span class="auth-opt-ico">✨</span><div><div class="auth-opt-title">Criar conta</div><div class="auth-opt-sub">Cadastro rápido e gratuito</div></div><span class="auth-opt-arr">›</span></button>
+        <button class="auth-opt" id="goLogin">
+          <span class="auth-opt-ico">👤</span>
+          <div><div class="auth-opt-title">Já tenho conta</div><div class="auth-opt-sub">Entrar com e-mail e senha</div></div>
+          <span class="auth-opt-arr">›</span>
+        </button>
+        <button class="auth-opt" id="goCad">
+          <span class="auth-opt-ico">✨</span>
+          <div><div class="auth-opt-title">Criar conta</div><div class="auth-opt-sub">Cadastro rápido e gratuito</div></div>
+          <span class="auth-opt-arr">›</span>
+        </button>
       </div>
     </div>
 
@@ -644,21 +652,42 @@ let adminFiltro = 'hoje';
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await db.auth.getSession();
-  if (session) { user = session.user; await updateUserBar(); }
+  if (session) { 
+    user = session.user; 
+    await updateUserBar(); 
+  }
+  
   db.auth.onAuthStateChange(async (e, s) => {
-    if (s) { user = s.user; await updateUserBar(); }
-    else { user = null; document.getElementById('sidebarUser').classList.remove('show'); location.reload(); }
+    if (s) { 
+      user = s.user; 
+      await updateUserBar(); 
+    } else { 
+      user = null; 
+      document.getElementById('sidebarUser').classList.remove('show'); 
+      location.reload(); 
+    }
   });
-  renderSvc(); initAuth(); initAgt(); initApts();
+
+  renderSvc(); 
+  initAuth(); 
+  initAgt(); 
+  initApts();
 });
 
 function toast(msg, d=2800) {
   const t = document.getElementById('toast');
-  t.innerText = msg; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
-  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(30px)'; }, d);
+  t.innerText = msg; 
+  t.style.opacity = '1'; 
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => { 
+    t.style.opacity='0'; 
+    t.style.transform='translateX(-50%) translateY(30px)'; 
+  }, d);
 }
 
-function copiarPix() { navigator.clipboard.writeText('32999858047').then(() => toast('✅ Chave Pix copiada!')); }
+function copiarPix() { 
+  navigator.clipboard.writeText('32999858047').then(() => toast('✅ Chave Pix copiada!')); 
+}
 
 // ── SERVIÇOS ──
 function renderSvc() {
@@ -670,43 +699,84 @@ function renderSvc() {
         <div class="svc-info"><div class="svc-name">${s.nome}</div><div class="svc-desc">${s.desc}</div></div>
         <div class="svc-right"><div class="svc-price">R$&nbsp;${s.preco}</div><div class="svc-check">✓</div></div>
       </div>`).join('');
-    html += `<div class="cat-group ${ci===0?'open':''}" style="animation-delay:${ci*0.08}s">
-        <div class="cat-head"><div class="cat-head-left"><div class="cat-head-icon">${data.icon}</div><div><div class="cat-head-name">${cat}</div><div class="cat-head-meta">${data.desc}</div></div></div><div class="cat-head-right"><span class="cat-count">${data.items.length} serviços</span><div class="cat-arrow">▼</div></div></div>
-        <div class="cat-body">${rows}</div></div>`;
+    
+    html += `
+      <div class="cat-group ${ci===0 ? 'open' : ''}" style="animation-delay:${ci*0.08}s">
+        <div class="cat-head">
+          <div class="cat-head-left">
+            <div class="cat-head-icon">${data.icon}</div>
+            <div>
+              <div class="cat-head-name">${cat}</div>
+              <div class="cat-head-meta">${data.desc}</div>
+            </div>
+          </div>
+          <div class="cat-head-right">
+            <span class="cat-count">${data.items.length} serviços</span>
+            <div class="cat-arrow">▼</div>
+          </div>
+        </div>
+        <div class="cat-body">${rows}</div>
+      </div>`;
   });
+  
   el.innerHTML = html;
-  document.querySelectorAll('.cat-head').forEach(h => h.onclick = () => h.parentElement.classList.toggle('open'));
-  document.querySelectorAll('.svc-row').forEach(r => r.onclick = () => {
-    document.querySelectorAll('.svc-row').forEach(x => x.classList.remove('active'));
-    r.classList.add('active'); svcSel = r; toast('💅 ' + r.dataset.nome + ' selecionado!');
+  
+  document.querySelectorAll('.cat-head').forEach(h => {
+    h.onclick = () => h.parentElement.classList.toggle('open');
   });
+
+  document.querySelectorAll('.svc-row').forEach(r => {
+    r.onclick = () => {
+      document.querySelectorAll('.svc-row').forEach(x => x.classList.remove('active'));
+      r.classList.add('active'); 
+      svcSel = r; 
+      toast('💅 ' + r.dataset.nome + ' selecionado!');
+    }
+  });
+
   document.getElementById('btnAgendar').onclick = openOrAuth;
   document.getElementById('btnLogout').onclick = async () => { await db.auth.signOut(); toast('Até logo! 👋'); };
   document.getElementById('btnMeusApts').onclick = () => {
     document.getElementById('telaApts').style.display = 'flex';
-    filtro = 'next'; document.getElementById('tabNext').classList.add('on'); document.getElementById('tabHist').classList.remove('on'); loadApts();
+    filtro = 'next'; 
+    document.getElementById('tabNext').classList.add('on'); 
+    document.getElementById('tabHist').classList.remove('on'); 
+    loadApts();
   };
 }
 
-function openOrAuth() { if (!svcSel) { toast('💅 Selecione um serviço!'); return; } if (!user) openAuth(); else openAgt(); }
+function openOrAuth() { 
+  if (!svcSel) { toast('💅 Selecione um serviço!'); return; } 
+  if (!user) openAuth(); else openAgt(); 
+}
 
-// ── USER BAR & ADMIN LOGIC ──
+// ── USER BAR & ADMIN LOGIC (Protegido contra DB incompleto) ──
 async function updateUserBar() {
-  const { data: p } = await db.from('profiles').select('nome_completo, tipo_usuario').eq('id', user.id).single();
-  const nome = p?.nome_completo || user.email;
-  
-  document.getElementById('suserName').innerText = nome.split(' ')[0];
-  document.getElementById('suserAvatar').innerText = nome.charAt(0).toUpperCase();
-  document.getElementById('sidebarUser').classList.add('show');
+  try {
+    // Usar select('*') evita quebrar o código se a coluna 'tipo_usuario' ainda não existir
+    const { data: p, error } = await db.from('profiles').select('*').eq('id', user.id).single();
+    
+    if (error) {
+      console.warn("Aviso DB (Profile):", error.message);
+    }
 
-  if (p?.tipo_usuario === 'admin') {
-    isAdmin = true;
-    document.getElementById('suserRole').innerText = 'Administrador';
-    document.getElementById('clientPainel').style.display = 'none';
-    document.getElementById('adminPainel').style.display = 'block';
-    document.getElementById('clientFooterCta').style.display = 'none';
-    document.getElementById('btnMeusApts').style.display = 'none';
-    carregarDashboardAdmin();
+    const nome = p?.nome_completo || user.email;
+    
+    document.getElementById('suserName').innerText = nome.split(' ')[0];
+    document.getElementById('suserAvatar').innerText = nome.charAt(0).toUpperCase();
+    document.getElementById('sidebarUser').classList.add('show');
+
+    if (p && p.tipo_usuario === 'admin') {
+      isAdmin = true;
+      document.getElementById('suserRole').innerText = 'Administrador';
+      document.getElementById('clientPainel').style.display = 'none';
+      document.getElementById('adminPainel').style.display = 'block';
+      document.getElementById('clientFooterCta').style.display = 'none';
+      document.getElementById('btnMeusApts').style.display = 'none';
+      carregarDashboardAdmin();
+    }
+  } catch (err) {
+    console.error("Erro interno ao carregar usuário:", err);
   }
 }
 
@@ -714,12 +784,14 @@ async function updateUserBar() {
 function setAdminTab(tab) {
   adminFiltro = tab;
   ['tabAdnH','tabAdnT','tabAdnB'].forEach(id => document.getElementById(id).classList.remove('on'));
-  if(tab==='hoje') document.getElementById('tabAdnH').classList.add('on');
-  if(tab==='todos') document.getElementById('tabAdnT').classList.add('on');
-  if(tab==='bloq') document.getElementById('tabAdnB').classList.add('on');
+  
+  if(tab === 'hoje') document.getElementById('tabAdnH').classList.add('on');
+  if(tab === 'todos') document.getElementById('tabAdnT').classList.add('on');
+  if(tab === 'bloq') document.getElementById('tabAdnB').classList.add('on');
 
   document.getElementById('adminAptsList').style.display = tab === 'bloq' ? 'none' : 'block';
   document.getElementById('adminBloqArea').style.display = tab === 'bloq' ? 'block' : 'none';
+  
   if(tab !== 'bloq') carregarDashboardAdmin();
 }
 
@@ -727,62 +799,125 @@ async function carregarDashboardAdmin() {
   const lista = document.getElementById('adminAptsList');
   lista.innerHTML = '<div class="apts-loading">Carregando painel...</div>';
 
-  const hj = new Date();
-  const inicioMes = `${hj.getFullYear()}-${String(hj.getMonth()+1).padStart(2,'0')}-01T00:00:00`;
-  const { data: todosMes } = await db.from('appointments').select('preco, servico_nome').gte('data_hora', inicioMes).eq('status', 'concluido');
+  try {
+    const hj = new Date();
+    const inicioMes = `${hj.getFullYear()}-${String(hj.getMonth()+1).padStart(2,'0')}-01T00:00:00`;
+    
+    // Select * por segurança
+    const { data: todosMes, error: errFat } = await db.from('appointments')
+      .select('*')
+      .gte('data_hora', inicioMes)
+      .eq('status', 'concluido');
 
-  let totalFat = 0, contagemSvc = {};
-  (todosMes || []).forEach(a => { totalFat += parseFloat(a.preco || 0); contagemSvc[a.servico_nome] = (contagemSvc[a.servico_nome] || 0) + 1; });
-  document.getElementById('adminFatMes').innerText = `R$ ${totalFat.toFixed(2).replace('.', ',')}`;
-  
-  let topSvc = "Nenhum", maxCount = 0;
-  for (const [svc, count] of Object.entries(contagemSvc)) if (count > maxCount) { maxCount = count; topSvc = svc; }
-  document.getElementById('adminTopSvc').innerText = topSvc;
+    let totalFat = 0, contagemSvc = {};
+    
+    if (todosMes) {
+      todosMes.forEach(a => { 
+        totalFat += parseFloat(a.preco || 0); 
+        contagemSvc[a.servico_nome] = (contagemSvc[a.servico_nome] || 0) + 1; 
+      });
+    }
+    
+    document.getElementById('adminFatMes').innerText = `R$ ${totalFat.toFixed(2).replace('.', ',')}`;
+    
+    let topSvc = "Nenhum", maxCount = 0;
+    for (const [svc, count] of Object.entries(contagemSvc)) {
+      if (count > maxCount) { maxCount = count; topSvc = svc; }
+    }
+    document.getElementById('adminTopSvc').innerText = topSvc;
 
-  let query = db.from('appointments').select(`*, profiles(nome_completo, telefone)`).order('data_hora', {ascending: true});
-  if (adminFiltro === 'hoje') {
-    const hjStr = hj.toISOString().split('T')[0];
-    query = query.gte('data_hora', `${hjStr}T00:00:00`).lte('data_hora', `${hjStr}T23:59:59`);
+    let query = db.from('appointments').select(`*, profiles(nome_completo, telefone)`).order('data_hora', {ascending: true});
+    
+    if (adminFiltro === 'hoje') {
+      const hjStr = hj.toISOString().split('T')[0];
+      query = query.gte('data_hora', `${hjStr}T00:00:00`).lte('data_hora', `${hjStr}T23:59:59`);
+    }
+
+    const { data: apts, error: errApts } = await query;
+    
+    if (errApts) {
+      console.error("Erro ao puxar agendamentos:", errApts.message);
+      lista.innerHTML = '<div class="apts-empty"><p>Erro ao carregar do banco de dados.</p></div>';
+      return;
+    }
+
+    if (!apts || apts.length === 0) { 
+      lista.innerHTML = '<div class="apts-empty"><p>Nenhum agendamento encontrado.</p></div>'; 
+      return; 
+    }
+
+    lista.innerHTML = '';
+    
+    apts.forEach(a => {
+      const dt = new Date(a.data_hora);
+      const tel = a.profiles?.telefone ? String(a.profiles.telefone).replace(/\D/g,'') : '';
+      const wpp = tel ? `<a href="https://wa.me/55${tel}" target="_blank" style="font-size:0.7rem; color:var(--green); text-decoration:none;">📱 WhatsApp</a>` : '';
+      
+      let acoes = '';
+      if (a.status === 'pendente') {
+        acoes = `<button class="pix-copy" style="background:var(--green); border:none; color:#fff" onclick="altStatus('${a.id}', 'confirmado')">Confirmar</button> 
+                 <button class="pix-btn-small" style="color:var(--red); border-color:var(--red)" onclick="altStatus('${a.id}', 'cancelado')">Cancelar</button>`;
+      } else if (a.status === 'confirmado') {
+        acoes = `<button class="btn-confirm" style="padding: 8px; font-size: 0.8rem;" onclick="altStatus('${a.id}', 'concluido')">Marcar como Concluído</button>`;
+      }
+
+      lista.innerHTML += `
+        <div class="apt-card">
+          <div class="apt-top">
+            <div>
+              <div class="apt-date">${a.profiles?.nome_completo || 'Cliente'}</div>
+              <div class="apt-time">${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} ${wpp}</div>
+            </div>
+            <span class="apt-status ${a.status}">${a.status}</span>
+          </div>
+          <div class="apt-div"></div>
+          <div class="apt-svc">${a.servico_nome} <span style="float:right; color:var(--rosegold);">R$ ${parseFloat(a.preco || 0).toFixed(2).replace('.',',')}</span></div>
+          ${a.observacoes ? `<div class="apt-info" style="margin-top:8px;"><strong>Obs:</strong> ${a.observacoes}</div>` : ''}
+          <div class="apt-actions" style="justify-content: flex-end; gap: 8px;">${acoes}</div>
+        </div>`;
+    });
+  } catch (err) {
+    console.error("Erro dashboard admin:", err);
   }
-
-  const { data: apts } = await query;
-  if (!apts?.length) { lista.innerHTML = '<div class="apts-empty"><p>Nenhum agendamento encontrado.</p></div>'; return; }
-
-  lista.innerHTML = '';
-  apts.forEach(a => {
-    const dt = new Date(a.data_hora);
-    const wpp = a.profiles?.telefone ? `<a href="https://wa.me/55${a.profiles.telefone.replace(/\D/g,'')}" target="_blank" style="font-size:0.7rem; color:var(--green); text-decoration:none;">📱 WhatsApp</a>` : '';
-    let acoes = '';
-    if (a.status === 'pendente') acoes = `<button class="pix-copy" style="background:var(--green); border:none; color:#fff" onclick="altStatus('${a.id}', 'confirmado')">Confirmar</button> <button class="pix-btn-small" style="color:var(--red); border-color:var(--red)" onclick="altStatus('${a.id}', 'cancelado')">Cancelar</button>`;
-    else if (a.status === 'confirmado') acoes = `<button class="btn-confirm" style="padding: 8px; font-size: 0.8rem;" onclick="altStatus('${a.id}', 'concluido')">Marcar como Concluído</button>`;
-
-    lista.innerHTML += `<div class="apt-card">
-        <div class="apt-top"><div><div class="apt-date">${a.profiles?.nome_completo || 'Cliente'}</div><div class="apt-time">${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} ${wpp}</div></div><span class="apt-status ${a.status}">${a.status}</span></div>
-        <div class="apt-div"></div>
-        <div class="apt-svc">${a.servico_nome} <span style="float:right; color:var(--rosegold);">R$ ${parseFloat(a.preco).toFixed(2).replace('.',',')}</span></div>
-        ${a.observacoes ? `<div class="apt-info" style="margin-top:8px;"><strong>Obs:</strong> ${a.observacoes}</div>` : ''}
-        <div class="apt-actions" style="justify-content: flex-end; gap: 8px;">${acoes}</div></div>`;
-  });
 }
 
 async function altStatus(id, st) {
   if (!confirm(`Alterar status para ${st}?`)) return;
   await db.from('appointments').update({ status: st }).eq('id', id);
-  toast('Status atualizado!'); carregarDashboardAdmin();
+  toast('Status atualizado!'); 
+  carregarDashboardAdmin();
 }
 
 async function salvarBloqueio() {
-  const dt = document.getElementById('bloqData').value, hr = document.getElementById('bloqHora').value;
-  if(!dt) { toast('Selecione uma data'); return; }
-  await db.from('blocked_times').insert([{ data_hora: hr ? `${dt}T${hr}:00` : `${dt}T00:00:00`, dia_inteiro: hr==='' }]);
-  toast('Horário bloqueado!'); document.getElementById('bloqData').value=''; document.getElementById('bloqHora').value='';
+  const dt = document.getElementById('bloqData').value;
+  const hr = document.getElementById('bloqHora').value;
+  if (!dt) { toast('Selecione uma data'); return; }
+  
+  const { error } = await db.from('blocked_times').insert([{ 
+    data_hora: hr ? `${dt}T${hr}:00` : `${dt}T00:00:00`, 
+    dia_inteiro: hr === '' 
+  }]);
+  
+  if (error) {
+    toast('Erro: crie a tabela blocked_times no Supabase primeiro.');
+    console.error(error);
+    return;
+  }
+  
+  toast('Horário bloqueado!'); 
+  document.getElementById('bloqData').value = ''; 
+  document.getElementById('bloqHora').value = '';
 }
 
 // ── AUTH ──
 function initAuth() {
   const ov = document.getElementById('modalAuth');
-  ['xAuth1','xAuth2','xAuth3'].forEach(id => document.getElementById(id).onclick = closeAuth);
-  ov.onclick = e => { if (e.target===ov) closeAuth(); };
+  ['xAuth1','xAuth2','xAuth3'].forEach(id => {
+    document.getElementById(id).onclick = closeAuth;
+  });
+  
+  ov.onclick = e => { if (e.target === ov) closeAuth(); };
+  
   document.getElementById('goLogin').onclick = () => authStep('login');
   document.getElementById('goCad').onclick = () => authStep('cad');
   document.getElementById('backLogin').onclick = () => authStep('pick');
@@ -791,134 +926,378 @@ function initAuth() {
   document.getElementById('goLogin2').onclick = () => authStep('login');
 
   document.getElementById('btnLogin').onclick = async () => {
-    const email = document.getElementById('loginEmail').value.trim(), pw = document.getElementById('loginSenha').value, btn = document.getElementById('btnLogin');
-    if (!email||!pw) return; btn.disabled=true; btn.innerText='Entrando...';
+    const email = document.getElementById('loginEmail').value.trim();
+    const pw = document.getElementById('loginSenha').value;
+    const btn = document.getElementById('btnLogin');
+    
+    if (!email || !pw) return; 
+    
+    btn.disabled = true; 
+    btn.innerText = 'Entrando...';
+    
     const { data: ld, error } = await db.auth.signInWithPassword({ email, password: pw });
-    btn.disabled=false; btn.innerText='Entrar';
-    if (error) { document.getElementById('loginErr').style.display='block'; document.getElementById('loginErr').innerText='Erro: '+error.message; return; }
-    if (ld.user) await db.from('profiles').upsert({ id:ld.user.id, tipo_usuario:'cliente' }, { onConflict:'id', ignoreDuplicates:true });
-    closeAuth(); setTimeout(openAgt, 300);
+    
+    btn.disabled = false; 
+    btn.innerText = 'Entrar';
+    
+    if (error) { 
+      document.getElementById('loginErr').style.display='block'; 
+      document.getElementById('loginErr').innerText='Erro: '+error.message; 
+      return; 
+    }
+    
+    if (ld.user) {
+      await db.from('profiles').upsert({ id:ld.user.id }, { onConflict:'id', ignoreDuplicates:true });
+    }
+    
+    closeAuth(); 
+    setTimeout(openAgt, 300);
   };
 
   document.getElementById('btnCad').onclick = async () => {
-    const nome = document.getElementById('cadNome').value.trim(), email = document.getElementById('cadEmail').value.trim(), fone = document.getElementById('cadTel').value.trim(), pw = document.getElementById('cadSenha').value, btn = document.getElementById('btnCad');
-    if (!nome||!email||!fone||!pw) return; btn.disabled=true; btn.innerText='Criando...';
+    const nome = document.getElementById('cadNome').value.trim();
+    const email = document.getElementById('cadEmail').value.trim();
+    const fone = document.getElementById('cadTel').value.trim();
+    const pw = document.getElementById('cadSenha').value;
+    const btn = document.getElementById('btnCad');
+    
+    if (!nome || !email || !fone || !pw) return; 
+    
+    btn.disabled = true; 
+    btn.innerText = 'Criando...';
+    
     const { data, error } = await db.auth.signUp({ email, password: pw });
-    if (error) { btn.disabled=false; btn.innerText='Criar Conta'; document.getElementById('cadErr').style.display='block'; document.getElementById('cadErr').innerText='Erro: '+error.message; return; }
-    if (data.user) await db.from('profiles').upsert({ id:data.user.id, nome_completo:nome, telefone:fone, tipo_usuario:'cliente' });
-    btn.disabled=false; btn.innerText='Criar Conta'; closeAuth(); setTimeout(openAgt, 300);
+    
+    if (error) { 
+      btn.disabled = false; 
+      btn.innerText = 'Criar Conta'; 
+      document.getElementById('cadErr').style.display='block'; 
+      document.getElementById('cadErr').innerText='Erro: '+error.message; 
+      return; 
+    }
+    
+    if (data.user) {
+      // Deixamos tipo_usuario de fora neste insert inicial pro caso da coluna ainda não ter sido criada
+      await db.from('profiles').upsert({ id:data.user.id, nome_completo:nome, telefone:fone });
+    }
+    
+    btn.disabled = false; 
+    btn.innerText = 'Criar Conta'; 
+    closeAuth(); 
+    setTimeout(openAgt, 300);
   };
 }
-function openAuth() { authStep('pick'); document.getElementById('modalAuth').style.display='flex'; }
-function closeAuth() { document.getElementById('modalAuth').style.display='none'; }
-function authStep(s) { ['authE1','authELogin','authECad'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById(s==='pick'?'authE1':s==='login'?'authELogin':'authECad').style.display='block'; ['loginErr','cadErr'].forEach(id => document.getElementById(id).style.display='none'); }
+
+function openAuth() { 
+  authStep('pick'); 
+  document.getElementById('modalAuth').style.display = 'flex'; 
+}
+
+function closeAuth() { 
+  document.getElementById('modalAuth').style.display = 'none'; 
+}
+
+function authStep(s) { 
+  ['authE1','authELogin','authECad'].forEach(id => document.getElementById(id).style.display='none'); 
+  document.getElementById(s==='pick'?'authE1':s==='login'?'authELogin':'authECad').style.display='block'; 
+  ['loginErr','cadErr'].forEach(id => document.getElementById(id).style.display='none'); 
+}
 
 // ── AGENDAMENTO CLIENTE ──
 function initAgt() {
   const ov = document.getElementById('modalAgt');
-  document.getElementById('xAgt').onclick = () => ov.style.display='none';
-  ov.onclick = e => { if (e.target===ov) ov.style.display='none'; };
-  document.getElementById('calPrev').onclick = () => { calM--; if(calM<0){calM=11;calY--;} renderCal(); };
-  document.getElementById('calNext').onclick = () => { calM++; if(calM>11){calM=0;calY++;} renderCal(); };
+  document.getElementById('xAgt').onclick = () => ov.style.display = 'none';
+  ov.onclick = e => { if (e.target === ov) ov.style.display = 'none'; };
+  
+  document.getElementById('calPrev').onclick = () => { 
+    calM--; 
+    if (calM < 0) { calM = 11; calY--; } 
+    renderCal(); 
+  };
+  
+  document.getElementById('calNext').onclick = () => { 
+    calM++; 
+    if (calM > 11) { calM = 0; calY++; } 
+    renderCal(); 
+  };
+  
   document.getElementById('btnFinalizar').onclick = async () => {
-    const dEl = document.querySelector('.cal-d.sel'), hEl = document.querySelector('.t-slot.sel');
-    if (!dEl || !hEl) { toast('Selecione dia e horário!'); return; }
-    const btn = document.getElementById('btnFinalizar'); btn.disabled=true; btn.innerText='Salvando...';
+    const dEl = document.querySelector('.cal-d.sel');
+    const hEl = document.querySelector('.t-slot.sel');
+    
+    if (!dEl || !hEl) { 
+      toast('Selecione dia e horário!'); 
+      return; 
+    }
+    
+    const btn = document.getElementById('btnFinalizar'); 
+    btn.disabled = true; 
+    btn.innerText = 'Salvando...';
+    
     const dtISO = `${dEl.dataset.y}-${String(dEl.dataset.m).padStart(2,'0')}-${String(dEl.dataset.d).padStart(2,'0')}T${hEl.innerText}:00`;
-    const { error } = await db.from('appointments').insert([{ cliente_id: user.id, barbeiro_nome: PROF, servico_nome: document.getElementById('rNome').innerText, data_hora: dtISO, status: 'pendente', preco: parseFloat((svcSel?.dataset.preco||'0').replace(',','.')), observacoes: document.getElementById('userObs').value || null }]);
-    btn.disabled=false; btn.innerText='Confirmar Agendamento';
-    if (error) { toast('❌ Erro: '+error.message); return; }
-    ov.style.display='none'; toast('✅ Agendamento feito! A Rosimara confirma em breve 💅');
+    
+    const { error } = await db.from('appointments').insert([{ 
+      cliente_id: user.id, 
+      barbeiro_nome: PROF, 
+      servico_nome: document.getElementById('rNome').innerText, 
+      data_hora: dtISO, 
+      status: 'pendente', 
+      preco: parseFloat((svcSel?.dataset.preco||'0').replace(',','.')), 
+      observacoes: document.getElementById('userObs').value || null 
+    }]);
+    
+    btn.disabled = false; 
+    btn.innerText = 'Confirmar Agendamento';
+    
+    if (error) { 
+      toast('❌ Erro: '+error.message); 
+      return; 
+    }
+    
+    ov.style.display = 'none'; 
+    toast('✅ Agendamento feito! A Rosimara confirma em breve 💅');
   };
 }
 
 function openAgt() {
-  document.getElementById('rNome').innerText=svcSel.dataset.nome; document.getElementById('rPreco').innerText='R$ '+svcSel.dataset.preco;
-  document.getElementById('timesGrid').innerHTML=''; document.getElementById('confirmArea').style.display='none'; document.getElementById('timesSec').style.display='none'; document.getElementById('userObs').value='';
-  const hoje=new Date(); calY=hoje.getFullYear(); calM=hoje.getMonth(); renderCal(); document.getElementById('modalAgt').style.display='flex';
+  document.getElementById('rNome').innerText = svcSel.dataset.nome; 
+  document.getElementById('rPreco').innerText = 'R$ ' + svcSel.dataset.preco;
+  document.getElementById('timesGrid').innerHTML = ''; 
+  document.getElementById('confirmArea').style.display = 'none'; 
+  document.getElementById('timesSec').style.display = 'none'; 
+  document.getElementById('userObs').value = '';
+  
+  const hoje = new Date(); 
+  calY = hoje.getFullYear(); 
+  calM = hoje.getMonth(); 
+  renderCal(); 
+  
+  document.getElementById('modalAgt').style.display = 'flex';
 }
 
 function renderCal() {
-  const grid = document.getElementById('calGrid'); grid.innerHTML = '';
+  const grid = document.getElementById('calGrid'); 
+  grid.innerHTML = '';
   document.getElementById('calLabel').innerText = `${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][calM]} ${calY}`;
-  ['D','S','T','Q','Q','S','S'].forEach(d => { const el=document.createElement('div'); el.className='cal-dh'; el.innerText=d; grid.appendChild(el); });
-  const start = new Date(calY, calM, 1).getDay(); for(let s=0;s<start;s++) grid.appendChild(document.createElement('div'));
-  const days = new Date(calY, calM+1, 0).getDate(), hoje = new Date(); let first = null;
-  for (let i=1; i<=days; i++) {
+  
+  ['D','S','T','Q','Q','S','S'].forEach(d => { 
+    const el = document.createElement('div'); 
+    el.className = 'cal-dh'; 
+    el.innerText = d; 
+    grid.appendChild(el); 
+  });
+  
+  const start = new Date(calY, calM, 1).getDay(); 
+  for (let s = 0; s < start; s++) {
+    grid.appendChild(document.createElement('div'));
+  }
+  
+  const days = new Date(calY, calM+1, 0).getDate();
+  const hoje = new Date(); 
+  let first = null;
+  
+  for (let i = 1; i <= days; i++) {
     const past = new Date(calY, calM, i) < new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-    const el = document.createElement('div'); el.className = `cal-d ${past?'dis':''}`; el.innerText = i<10?'0'+i:i; el.dataset.d=i; el.dataset.m=calM+1; el.dataset.y=calY;
-    if (!past) { if(!first) first=el; el.onclick=() => { document.querySelectorAll('.cal-d').forEach(d=>d.classList.remove('sel')); el.classList.add('sel'); document.getElementById('confirmArea').style.display='none'; document.getElementById('timesSec').style.display='block'; renderTimes(); }; }
+    const el = document.createElement('div'); 
+    el.className = `cal-d ${past ? 'dis' : ''}`; 
+    el.innerText = i < 10 ? '0' + i : i; 
+    el.dataset.d = i; 
+    el.dataset.m = calM + 1; 
+    el.dataset.y = calY;
+    
+    if (!past) { 
+      if (!first) first = el; 
+      el.onclick = () => { 
+        document.querySelectorAll('.cal-d').forEach(d => d.classList.remove('sel')); 
+        el.classList.add('sel'); 
+        document.getElementById('confirmArea').style.display = 'none'; 
+        document.getElementById('timesSec').style.display = 'block'; 
+        renderTimes(); 
+      }; 
+    }
     grid.appendChild(el);
   }
-  if (first) { first.classList.add('sel'); document.getElementById('timesSec').style.display='block'; renderTimes(); }
+  
+  if (first) { 
+    first.classList.add('sel'); 
+    document.getElementById('timesSec').style.display = 'block'; 
+    renderTimes(); 
+  }
 }
 
 async function renderTimes() {
-  const grid = document.getElementById('timesGrid'), dEl = document.querySelector('.cal-d.sel'); if (!dEl) return;
+  const grid = document.getElementById('timesGrid');
+  const dEl = document.querySelector('.cal-d.sel'); 
+  if (!dEl) return;
+  
   grid.innerHTML = '<div style="grid-column:span 4;text-align:center;font-size:0.75rem;color:var(--ink3);padding:10px">Verificando...</div>';
-  const d=String(dEl.dataset.d).padStart(2,'0'), m=String(dEl.dataset.m).padStart(2,'0'), y=dEl.dataset.y;
+  
+  const d = String(dEl.dataset.d).padStart(2,'0');
+  const m = String(dEl.dataset.m).padStart(2,'0');
+  const y = dEl.dataset.y;
   
   // Buscar Agendamentos
   const { data: apts } = await db.from('appointments').select('data_hora').gte('data_hora',`${y}-${m}-${d}T00:00:00`).lte('data_hora',`${y}-${m}-${d}T23:59:59`).neq('status','cancelado');
-  const ocp = new Set((apts||[]).map(a=>a.data_hora.slice(11,16)));
+  const ocp = new Set((apts || []).map(a => a.data_hora.slice(11,16)));
 
-  // Buscar Bloqueios
-  const { data: blocks } = await db.from('blocked_times').select('*').gte('data_hora',`${y}-${m}-${d}T00:00:00`).lte('data_hora',`${y}-${m}-${d}T23:59:59`);
+  // Buscar Bloqueios (com tratamento de erro caso a tabela não exista)
+  const { data: blocks, error: errBlocks } = await db.from('blocked_times').select('*').gte('data_hora',`${y}-${m}-${d}T00:00:00`).lte('data_hora',`${y}-${m}-${d}T23:59:59`);
+  
+  if (errBlocks) {
+    console.warn("Tabela de bloqueios ainda não criada. Ignorando bloqueios manuais.");
+  }
+
   let isBlockedAllDay = false;
-  (blocks||[]).forEach(b => { if(b.dia_inteiro) isBlockedAllDay = true; else ocp.add(b.data_hora.slice(11,16)); });
+  (blocks || []).forEach(b => { 
+    if (b.dia_inteiro) isBlockedAllDay = true; 
+    else ocp.add(b.data_hora.slice(11,16)); 
+  });
 
-  if(isBlockedAllDay) { grid.innerHTML = '<div style="grid-column:span 4;text-align:center;color:var(--red);padding:10px">Data indisponível.</div>'; return; }
+  if (isBlockedAllDay) { 
+    grid.innerHTML = '<div style="grid-column:span 4;text-align:center;color:var(--red);padding:10px">Data indisponível.</div>'; 
+    return; 
+  }
 
-  const now = new Date(), isToday = parseInt(d)===now.getDate() && parseInt(m)===now.getMonth()+1 && parseInt(y)===now.getFullYear(), minNow = now.getHours()*60+now.getMinutes();
+  const now = new Date();
+  const isToday = parseInt(d) === now.getDate() && parseInt(m) === now.getMonth() + 1 && parseInt(y) === now.getFullYear();
+  const minNow = now.getHours() * 60 + now.getMinutes();
+  
   grid.innerHTML = '';
+  
   HORARIOS.forEach(h => {
-    const [hh,mm] = h.split(':').map(Number), bloq = (isToday && hh*60+mm<=minNow) || ocp.has(h);
-    const el = document.createElement('div'); el.className = `t-slot ${bloq?'ocp':''}`; el.innerText = h;
-    if (!bloq) el.onclick = () => { document.querySelectorAll('.t-slot').forEach(s=>s.classList.remove('sel')); el.classList.add('sel'); document.getElementById('confirmArea').style.display='block'; };
+    const [hh, mm] = h.split(':').map(Number);
+    const bloq = (isToday && hh * 60 + mm <= minNow) || ocp.has(h);
+    const el = document.createElement('div'); 
+    
+    el.className = `t-slot ${bloq ? 'ocp' : ''}`; 
+    el.innerText = h;
+    
+    if (!bloq) {
+      el.onclick = () => { 
+        document.querySelectorAll('.t-slot').forEach(s => s.classList.remove('sel')); 
+        el.classList.add('sel'); 
+        document.getElementById('confirmArea').style.display = 'block'; 
+      };
+    }
     grid.appendChild(el);
   });
 }
 
 // ── AGENDAMENTOS HISTÓRICO (CLIENTE) ──
 function initApts() {
-  document.getElementById('fecharTela').onclick = () => document.getElementById('telaApts').style.display='none';
+  document.getElementById('fecharTela').onclick = () => document.getElementById('telaApts').style.display = 'none';
   document.getElementById('refreshApts').onclick = loadApts;
-  document.getElementById('tabNext').onclick = () => { filtro='next'; document.getElementById('tabNext').classList.add('on'); document.getElementById('tabHist').classList.remove('on'); loadApts(); };
-  document.getElementById('tabHist').onclick = () => { filtro='hist'; document.getElementById('tabHist').classList.add('on'); document.getElementById('tabNext').classList.remove('on'); loadApts(); };
-  document.getElementById('modalDet').onclick = e => { if(e.target===document.getElementById('modalDet')) closeDet(); };
+  
+  document.getElementById('tabNext').onclick = () => { 
+    filtro = 'next'; 
+    document.getElementById('tabNext').classList.add('on'); 
+    document.getElementById('tabHist').classList.remove('on'); 
+    loadApts(); 
+  };
+  
+  document.getElementById('tabHist').onclick = () => { 
+    filtro = 'hist'; 
+    document.getElementById('tabHist').classList.add('on'); 
+    document.getElementById('tabNext').classList.remove('on'); 
+    loadApts(); 
+  };
+  
+  document.getElementById('modalDet').onclick = e => { 
+    if (e.target === document.getElementById('modalDet')) closeDet(); 
+  };
 }
 
 async function loadApts() {
   if (!user) return;
-  const lista = document.getElementById('aptsList'); lista.innerHTML = '<div class="apts-loading">Carregando...</div>';
+  const lista = document.getElementById('aptsList'); 
+  lista.innerHTML = '<div class="apts-loading">Carregando...</div>';
+  
   const now = new Date().toISOString();
-  let q = db.from('appointments').select('*').eq('cliente_id',user.id).order('data_hora',{ascending:filtro==='next'});
-  if (filtro==='next') q = q.gte('data_hora',now).neq('status','cancelado'); else q = q.or(`data_hora.lt.${now},status.eq.cancelado`);
+  let q = db.from('appointments').select('*').eq('cliente_id', user.id).order('data_hora', { ascending: filtro === 'next' });
+  
+  if (filtro === 'next') {
+    q = q.gte('data_hora', now).neq('status', 'cancelado'); 
+  } else {
+    q = q.or(`data_hora.lt.${now},status.eq.cancelado`);
+  }
+  
   const { data } = await q;
-  if (!data?.length) { lista.innerHTML = `<div class="apts-empty"><div class="e-ico">💅</div><p>${filtro==='next'?'Nenhum agendamento próximo.':'Nenhum histórico encontrado.'}</p></div>`; return; }
+  
+  if (!data || !data.length) { 
+    lista.innerHTML = `<div class="apts-empty"><div class="e-ico">💅</div><p>${filtro === 'next' ? 'Nenhum agendamento próximo.' : 'Nenhum histórico encontrado.'}</p></div>`; 
+    return; 
+  }
   
   lista.innerHTML = '';
+  
   data.forEach(a => {
-    const [ay,am,ad] = a.data_hora.slice(0,10).split('-');
-    const canCel = filtro==='next' && a.status!=='cancelado' && a.status!=='concluido';
-    const card = document.createElement('div'); card.className='apt-card';
-    card.innerHTML = `<div class="apt-top"><div><div class="apt-date">${parseInt(ad)} ${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][parseInt(am)-1]} ${ay}</div><div class="apt-time">às ${a.data_hora.slice(11,16)}</div></div><span class="apt-status ${a.status}">${a.status}</span></div><div class="apt-div"></div><div class="apt-svc">${a.servico_nome}</div><div class="apt-info">💅 Rosimara ${a.preco?'• R$ '+parseFloat(a.preco).toFixed(2).replace('.',','):''}</div>${canCel?`<div class="apt-actions"><button class="btn-cancel-apt" data-id="${a.id}">Cancelar</button><span class="apt-more">Ver detalhes ›</span></div>`:''}`;
-    card.querySelector('.btn-cancel-apt')?.addEventListener('click', e => { e.stopPropagation(); cancelApt(a.id); });
-    card.onclick = e => { if(!e.target.classList.contains('btn-cancel-apt')) openDet(a); }; lista.appendChild(card);
+    const [ay, am, ad] = a.data_hora.slice(0,10).split('-');
+    const canCel = filtro === 'next' && a.status !== 'cancelado' && a.status !== 'concluido';
+    const card = document.createElement('div'); 
+    card.className = 'apt-card';
+    
+    card.innerHTML = `
+      <div class="apt-top">
+        <div>
+          <div class="apt-date">${parseInt(ad)} ${['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][parseInt(am)-1]} ${ay}</div>
+          <div class="apt-time">às ${a.data_hora.slice(11,16)}</div>
+        </div>
+        <span class="apt-status ${a.status}">${a.status}</span>
+      </div>
+      <div class="apt-div"></div>
+      <div class="apt-svc">${a.servico_nome}</div>
+      <div class="apt-info">💅 Rosimara ${a.preco ? '• R$ ' + parseFloat(a.preco).toFixed(2).replace('.',',') : ''}</div>
+      ${canCel ? `<div class="apt-actions"><button class="btn-cancel-apt" data-id="${a.id}">Cancelar</button><span class="apt-more">Ver detalhes ›</span></div>` : ''}`;
+    
+    card.querySelector('.btn-cancel-apt')?.addEventListener('click', e => { 
+      e.stopPropagation(); 
+      cancelApt(a.id); 
+    });
+    
+    card.onclick = e => { 
+      if (!e.target.classList.contains('btn-cancel-apt')) openDet(a); 
+    }; 
+    
+    lista.appendChild(card);
   });
 }
 
 function openDet(a) {
-  const [ay,am,ad] = a.data_hora.slice(0,10).split('-');
-  document.getElementById('modalDetContent').innerHTML = `<div class="det-top"><div><div class="det-date">${parseInt(ad)} ${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][parseInt(am)-1]}<br>${ay}</div></div><span class="apt-status ${a.status}">${a.status}</span></div><div class="det-row"><span class="det-ico">💅</span><div><div class="det-t">Rosimara</div><div class="det-s">às ${a.data_hora.slice(11,16)}</div></div></div><div class="det-row"><span class="det-ico">✨</span><div><div class="det-t">${a.servico_nome}</div>${a.preco?`<div class="det-s">R$ ${parseFloat(a.preco).toFixed(2).replace('.',',')}</div>`:''}${a.status==='pendente'?`<button class="btn-cancel-det" onclick="cancelApt('${a.id}')">Cancelar</button>`:''}</div></div><button class="btn-confirm" style="margin-top:20px" onclick="closeDet()">Fechar</button>`;
-  document.getElementById('modalDet').style.display='flex';
+  const [ay, am, ad] = a.data_hora.slice(0, 10).split('-');
+  document.getElementById('modalDetContent').innerHTML = `
+    <div class="det-top">
+      <div>
+        <div class="det-date">${parseInt(ad)} ${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][parseInt(am)-1]}<br>${ay}</div>
+      </div>
+      <span class="apt-status ${a.status}">${a.status}</span>
+    </div>
+    <div class="det-row">
+      <span class="det-ico">💅</span>
+      <div><div class="det-t">Rosimara</div><div class="det-s">às ${a.data_hora.slice(11,16)}</div></div>
+    </div>
+    <div class="det-row">
+      <span class="det-ico">✨</span>
+      <div>
+        <div class="det-t">${a.servico_nome}</div>
+        ${a.preco ? `<div class="det-s">R$ ${parseFloat(a.preco).toFixed(2).replace('.',',')}</div>` : ''}
+        ${a.status === 'pendente' ? `<button class="btn-cancel-det" onclick="cancelApt('${a.id}')">Cancelar</button>` : ''}
+      </div>
+    </div>
+    <button class="btn-confirm" style="margin-top:20px" onclick="closeDet()">Fechar</button>`;
+  
+  document.getElementById('modalDet').style.display = 'flex';
 }
-function closeDet() { document.getElementById('modalDet').style.display='none'; }
+
+function closeDet() { 
+  document.getElementById('modalDet').style.display = 'none'; 
+}
 
 async function cancelApt(id) {
   if (!confirm('Cancelar agendamento?')) return;
-  await db.from('appointments').update({status:'cancelado'}).eq('id',id);
-  closeDet(); loadApts(); toast('Cancelado.');
+  await db.from('appointments').update({ status: 'cancelado' }).eq('id', id);
+  closeDet(); 
+  loadApts(); 
+  toast('Cancelado.');
 }
 </script>
 </body>
