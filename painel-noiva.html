@@ -165,7 +165,7 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
       <p class="hdr-sub">Bruna & João · 14 de Junho de 2026</p>
     </div>
     <div class="hdr-right">
-      <a href="Casamento.html" target="_blank" style="font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(250,247,242,.35);text-decoration:none">Ver site →</a>
+      <a href="casamento-bruna-joao.html" target="_blank" style="font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(250,247,242,.35);text-decoration:none">Ver site →</a>
       <button class="hdr-logout" onclick="logout()">Sair</button>
     </div>
   </header>
@@ -534,32 +534,5 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'), 2800);
 }
 </script>
-  <!-- MÚSICA DE FUNDO -->
-<iframe id="yt-audio" src="https://www.youtube.com/embed/fD2UExUhq-s?autoplay=1&loop=1&playlist=fD2UExUhq-s&controls=0&mute=0" allow="autoplay" style="display:none"></iframe>
-
-<button onclick="toggleMusic()" id="musicBtn" style="
-  position:fixed; bottom:2rem; left:2rem; z-index:999;
-  width:48px; height:48px; border-radius:50%;
-  background:rgba(26,20,16,0.85); border:1px solid rgba(184,150,90,0.4);
-  color:#d4b07a; font-size:1.2rem; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  backdrop-filter:blur(8px); transition:all .3s;
-" title="Música">🎵</button>
-
-<script>
-let playing = true;
-function toggleMusic() {
-  const iframe = document.getElementById('yt-audio');
-  const btn = document.getElementById('musicBtn');
-  if (playing) {
-    iframe.src = iframe.src.replace('mute=0','mute=1');
-    btn.textContent = '🔇';
-  } else {
-    iframe.src = iframe.src.replace('mute=1','mute=0');
-    btn.textContent = '🎵';
-  }
-  playing = !playing;
-}
-      </script>
 </body>
 </html>
