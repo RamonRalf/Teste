@@ -527,24 +527,70 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
       <p class="contact"><strong>Bruna:</strong> (31) 99999-0001<br><strong>João:</strong> (31) 99999-0002<br><strong>E-mail:</strong> brunaejoao2026@gmail.com</p>
     </div>
     <div class="reveal d2">
-      <div class="form" id="theForm">
-        <div class="f-row">
-          <div class="f-field"><label class="f-lbl">Nome completo *</label><input class="f-in" id="fName" type="text" placeholder="Seu nome completo"></div>
-          <div class="f-field"><label class="f-lbl">Telefone</label><input class="f-in" id="fPhone" type="tel" placeholder="(00) 00000-0000"></div>
+
+      <!-- PASSO 1: buscar nome -->
+      <div id="step1">
+        <div class="f-field" style="margin-bottom:1rem">
+          <label class="f-lbl">Seu nome completo *</label>
+          <input class="f-in" id="fName" type="text" placeholder="Digite seu nome..." oninput="resetSearch()">
         </div>
-        <div class="f-field"><label class="f-lbl">Você irá ao evento?</label>
+        <button class="btn-sub" onclick="buscarConvidado()"><span id="btnBuscarTxt">Buscar meu nome</span></button>
+        <p id="searchMsg" style="margin-top:.9rem;font-size:.82rem;color:var(--muted);display:none"></p>
+      </div>
+
+      <!-- PASSO 2: formulário completo (aparece após encontrar) -->
+      <div id="step2" style="display:none">
+        <div style="background:white;border:1px solid var(--gold3);padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem">
+          <span style="font-size:1.4rem">👤</span>
+          <div>
+            <p style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:300;color:var(--dark)" id="foundName"></p>
+            <p style="font-size:.72rem;color:var(--muted);margin-top:.2rem" id="foundAcomps"></p>
+          </div>
+        </div>
+
+        <div class="f-field" style="margin-bottom:1.2rem">
+          <label class="f-lbl">Você irá ao evento?</label>
           <div class="tog-row">
             <button class="tog-btn on" id="btnSim" onclick="setPresence('sim')">✓ &nbsp;Sim, com certeza!</button>
             <button class="tog-btn" id="btnNao" onclick="setPresence('nao')">✗ &nbsp;Não poderei ir</button>
           </div>
         </div>
-        <div class="f-row" id="extraFields">
-          <div class="f-field"><label class="f-lbl">Adultos (18+)</label><select class="f-in" id="fAdults"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5+ pessoas</option></select></div>
-          <div class="f-field"><label class="f-lbl">Crianças (0–17)</label><select class="f-in" id="fKids"><option value="0">Nenhuma</option><option value="1">1 criança</option><option value="2">2 crianças</option><option value="3">3+ crianças</option></select></div>
+
+        <div id="extraFields">
+          <!-- Acompanhantes autorizados (checkboxes) -->
+          <div id="acompSection" style="display:none;margin-bottom:1.2rem">
+            <label class="f-lbl" style="margin-bottom:.7rem;display:block">Quem vem com você?</label>
+            <div id="acompCheckboxes" style="display:flex;flex-direction:column;gap:.5rem"></div>
+          </div>
+
+          <div class="f-row" style="margin-bottom:1.2rem">
+            <div class="f-field">
+              <label class="f-lbl">Crianças (0–17)</label>
+              <select class="f-in" id="fKids">
+                <option value="0">Nenhuma</option>
+                <option value="1">1 criança</option>
+                <option value="2">2 crianças</option>
+                <option value="3">3+ crianças</option>
+              </select>
+            </div>
+            <div class="f-field">
+              <label class="f-lbl">Telefone</label>
+              <input class="f-in" id="fPhone" type="tel" placeholder="(00) 00000-0000">
+            </div>
+          </div>
+
+          <div class="f-field" style="margin-bottom:1.2rem">
+            <label class="f-lbl">Restrições alimentares / Observações</label>
+            <input class="f-in" id="fObs" type="text" placeholder="Ex: vegetariano, alergia a glúten…">
+          </div>
         </div>
-        <div class="f-field"><label class="f-lbl">Restrições alimentares / Observações</label><input class="f-in" id="fObs" type="text" placeholder="Ex: vegetariano, alergia a glúten…"></div>
-        <button class="btn-sub" onclick="doRSVP()"><span>Confirmar Presença</span></button>
+
+        <div style="display:flex;gap:.8rem">
+          <button class="btn-sub" style="background:rgba(155,133,114,.15);color:var(--muted);flex:0 0 auto;padding:1.1rem 1.2rem" onclick="voltarStep1()"><span>← Voltar</span></button>
+          <button class="btn-sub" style="flex:1" onclick="doRSVP()"><span id="btnConfTxt">Confirmar Presença</span></button>
+        </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -611,10 +657,128 @@ setInterval(tick,1000);tick();
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12});
 document.querySelectorAll('.reveal,.tl-item').forEach(el=>obs.observe(el));
 
-/* ── RSVP ── */
+/* ── SUPABASE ── */
+const SB_URL='https://elrhqymgjwwhzfnajpwg.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVscmhxeW1nand3aHpmbmFqcHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2NDMyMzQsImV4cCI6MjA5MzIxOTIzNH0.XMOx5E2KL1EvR7V0k2cNTksutwbmVnKh-Qb5cblcPns';
+const sbHeaders={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+
 let presence='sim';
-function setPresence(v){presence=v;document.getElementById('btnSim').classList.toggle('on',v==='sim');document.getElementById('btnNao').classList.toggle('on',v==='nao');document.getElementById('extraFields').style.display=v==='sim'?'grid':'none'}
-function doRSVP(){const n=document.getElementById('fName').value.trim();if(!n){document.getElementById('fName').style.borderColor='#b85a5a';document.getElementById('fName').focus();return}document.getElementById('fName').style.borderColor='';if(presence==='sim'){document.getElementById('rIco').textContent='🥂';document.getElementById('rTit').textContent='Presença Confirmada!';document.getElementById('rBody').innerHTML=`Que alegria, <strong>${n}</strong>! Sua presença foi registrada com sucesso.<br><br>Mal podemos esperar para celebrar ao seu lado. Até 14 de junho de 2026! 💛`}else{document.getElementById('rIco').textContent='💌';document.getElementById('rTit').textContent='Recebemos sua resposta';document.getElementById('rBody').innerHTML=`Obrigados por nos avisar, <strong>${n}</strong>. Sentiremos muito a sua falta, mas sua presença em pensamento já nos aquece o coração. 🌸`}openMod('rMod')}
+let foundGuest=null;
+
+/* busca convidado pelo nome — correspondência EXATA (case-insensitive) */
+async function buscarConvidado(){
+  const name=document.getElementById('fName').value.trim();
+  if(!name){document.getElementById('fName').style.borderColor='#b85a5a';document.getElementById('fName').focus();return;}
+  document.getElementById('fName').style.borderColor='';
+  const btn=document.getElementById('btnBuscarTxt');
+  btn.textContent='Buscando...';
+  const msg=document.getElementById('searchMsg');
+  msg.style.display='none';
+  try{
+    const res=await fetch(
+      `${SB_URL}/rest/v1/convidados?nome=ilike.${encodeURIComponent(name.trim())}&select=*`,
+      {headers:sbHeaders}
+    );
+    const data=await res.json();
+    if(!Array.isArray(data)||data.length===0){
+      msg.style.display='block';
+      msg.style.color='#c0392b';
+      msg.innerHTML='&#10060; Seu nome n&#227;o est&#225; na lista de convidados.<br>Verifique a grafia ou entre em contato:<br><strong>(31) 99999-0001</strong>';
+    } else if(data.length===1){
+      const guest=data[0];
+      if(guest.confirmado && guest.data_confirmacao){
+        msg.style.display='block';
+        msg.style.color='#27ae60';
+        msg.innerHTML='&#9989; <strong>'+guest.nome+'</strong>, voc&#234; j&#225; confirmou sua presen&#231;a anteriormente!<br>Se precisar alterar, entre em contato: <strong>(31) 99999-0001</strong>';
+      } else {
+        foundGuest=guest;
+        mostrarStep2();
+      }
+    } else {
+      msg.style.display='block';
+      msg.style.color='var(--muted)';
+      msg.innerHTML='Encontramos mais de um convidado com esse nome. Clique no seu:<br><br>'+
+        data.map(g=>`<button onclick="selecionarConvidado('${g.id}')" style="display:block;width:100%;text-align:left;padding:.7rem 1rem;margin-bottom:.4rem;background:white;border:1px solid var(--gold3);font-family:Raleway,sans-serif;font-size:.88rem;cursor:pointer;color:var(--dark)">${g.nome}${g.telefone?' &middot; '+g.telefone:''}</button>`).join('');
+      window._guestMap=Object.fromEntries(data.map(g=>[g.id,g]));
+    }
+  }catch(e){
+    msg.style.display='block';msg.style.color='#c0392b';
+    msg.textContent='Erro de conex&#227;o. Verifique sua internet e tente novamente.';
+  }
+  btn.textContent='Buscar meu nome';
+}
+
+function selecionarConvidado(id){foundGuest=window._guestMap[id];mostrarStep2();}
+
+function mostrarStep2(){
+  document.getElementById('step1').style.display='none';
+  document.getElementById('step2').style.display='block';
+  document.getElementById('foundName').textContent=foundGuest.nome;
+  const acomps=foundGuest.acompanhantes||[];
+  if(acomps.length>0){
+    document.getElementById('foundAcomps').textContent='Acompanhantes autorizados: '+acomps.join(', ');
+    document.getElementById('acompSection').style.display='block';
+    document.getElementById('acompCheckboxes').innerHTML=acomps.map(a=>`
+      <label style="display:flex;align-items:center;gap:.7rem;padding:.6rem 1rem;background:white;border:1px solid var(--gold3);cursor:pointer;font-size:.85rem;color:var(--dark)">
+        <input type="checkbox" value="${a}" style="accent-color:var(--gold);width:15px;height:15px"> ${a}
+      </label>`).join('');
+  } else {
+    document.getElementById('foundAcomps').textContent='Sem acompanhantes autorizados';
+    document.getElementById('acompSection').style.display='none';
+  }
+}
+
+function voltarStep1(){
+  document.getElementById('step1').style.display='block';
+  document.getElementById('step2').style.display='none';
+  foundGuest=null;
+}
+
+function resetSearch(){
+  document.getElementById('searchMsg').style.display='none';
+  document.getElementById('fName').style.borderColor='';
+}
+
+function setPresence(v){
+  presence=v;
+  document.getElementById('btnSim').classList.toggle('on',v==='sim');
+  document.getElementById('btnNao').classList.toggle('on',v==='nao');
+  document.getElementById('extraFields').style.display=v==='sim'?'block':'none';
+}
+
+async function doRSVP(){
+  if(!foundGuest) return;
+  const btn=document.getElementById('btnConfTxt');
+  btn.textContent='Enviando...';
+  try{
+    const acompSelecionados=Array.from(document.querySelectorAll('#acompCheckboxes input:checked')).map(c=>c.value);
+    const payload={
+      confirmado: presence==='sim',
+      acompanhantes_confirmados: presence==='sim'?acompSelecionados:null,
+      criancas: presence==='sim'?parseInt(document.getElementById('fKids').value||0):0,
+      telefone: document.getElementById('fPhone').value.trim()||null,
+      observacoes: document.getElementById('fObs').value.trim()||null,
+      data_confirmacao: new Date().toISOString()
+    };
+    await fetch(`${SB_URL}/rest/v1/convidados?id=eq.${foundGuest.id}`,{
+      method:'PATCH',headers:{...sbHeaders,'Prefer':'return=minimal'},
+      body:JSON.stringify(payload)
+    });
+    if(presence==='sim'){
+      document.getElementById('rIco').textContent='🥂';
+      document.getElementById('rTit').textContent='Presença Confirmada!';
+      document.getElementById('rBody').innerHTML=`Que alegria, <strong>${foundGuest.nome}</strong>! Sua presença foi registrada com sucesso.${acompSelecionados.length?' Confirmado com: <strong>'+acompSelecionados.join(', ')+'</strong>.':''}<br><br>Mal podemos esperar para celebrar ao seu lado. Até 14 de junho de 2026! 💛`;
+    } else {
+      document.getElementById('rIco').textContent='💌';
+      document.getElementById('rTit').textContent='Recebemos sua resposta';
+      document.getElementById('rBody').innerHTML=`Obrigados por nos avisar, <strong>${foundGuest.nome}</strong>. Sentiremos muito a sua falta, mas sua presença em pensamento já nos aquece o coração. 🌸`;
+    }
+    openMod('rMod');
+    voltarStep1();
+    document.getElementById('fName').value='';
+  }catch(e){alert('Erro ao confirmar. Tente novamente.');}
+  btn.textContent='Confirmar Presença';
+}
 
 /* ── Gift ── */
 function openGift(name,ico,price){document.getElementById('gIco').textContent=ico;document.getElementById('gTit').textContent=name;document.getElementById('gBody').innerHTML=`Valor sugerido: <strong>${price}</strong><br><br>Presenteie-nos via PIX usando a chave abaixo. Seu gesto de carinho significa o mundo para nós. 💛`;openMod('gMod')}
