@@ -209,6 +209,24 @@ button{font-family:inherit;cursor:none}
 .pres-feat .pres-name{font-size:1.65rem}
 .pres-feat-right{display:flex;align-items:flex-end;justify-content:flex-end;padding:2.2rem}
 
+
+/* PADRINHOS */
+#padrinhos{padding:8rem 2rem;background:var(--ivory2);position:relative;overflow:hidden}
+#padrinhos::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 20% 50%,rgba(138,158,127,.06) 0%,transparent 50%)}
+.pad-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.pad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2px;margin-top:3rem}
+.pad-card{background:white;padding:2.5rem 1.8rem;text-align:center;position:relative;overflow:hidden;transition:transform .3s}
+.pad-card:hover{transform:translateY(-4px)}
+.pad-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .4s}
+.pad-card:hover::after{transform:scaleX(1)}
+.pad-av{width:100px;height:100px;border-radius:50%;margin:0 auto 1.5rem;border:1px solid var(--gold3);overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2.2rem;font-style:italic;color:var(--gold);background:rgba(184,150,90,.06);transition:border-color .3s}
+.pad-card:hover .pad-av{border-color:var(--gold)}
+.pad-av img{width:100%;height:100%;object-fit:cover}
+.pad-cargo{font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.pad-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:300;color:var(--dark);margin-bottom:.7rem}
+.pad-desc{font-size:.8rem;color:var(--muted);line-height:1.7}
+.pad-empty{text-align:center;padding:3rem;color:var(--muted);font-style:italic;font-family:'Playfair Display',serif;font-size:1.1rem}
+
 /* RSVP */
 #rsvp{padding:8rem 2rem;position:relative;overflow:hidden}
 #rsvp::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 100% 0%,rgba(184,150,90,.05) 0%,transparent 50%),radial-gradient(ellipse 40% 40% at 0% 100%,rgba(122,144,112,.04) 0%,transparent 50%)}
@@ -329,6 +347,7 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
   </div>
   <a href="#hero" class="nav-mono">B & J</a>
   <div class="nav-links nav-desk">
+    <a href="#padrinhos">Padrinhos</a>
     <a href="#presentes">Presentes</a>
     <button class="nav-rsvp-btn" onclick="location.href='#rsvp'"><span>Confirmar Presença</span></button>
   </div>
@@ -339,6 +358,7 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
 <div class="nav-mob" id="navMob">
   <a href="#historia" onclick="toggleNav()">Nossa História</a>
   <a href="#cerimonia" onclick="toggleNav()">Cerimônia</a>
+  <a href="#padrinhos" onclick="toggleNav()">Padrinhos</a>
   <a href="#presentes" onclick="toggleNav()">Presentes</a>
   <a href="#rsvp" onclick="toggleNav()">Confirmar Presença</a>
 </div>
@@ -512,6 +532,18 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
       <div class="pres-card reveal"><span class="pres-ico">🎬</span><p class="pres-name">Noite de Cinema</p><p class="pres-desc">5 meses de streaming para o casal curtir filmes juntos nas noites frias de Minas Gerais.</p><p class="pres-price">R$ 199,77</p><button class="btn-pres" onclick="openGift('Noite de Cinema','🎬','R$ 199,77')"><span>Presentear</span> →</button></div>
       <div class="pres-card reveal d1"><span class="pres-ico">🍷</span><p class="pres-name">Jantar Romântico</p><p class="pres-desc">Uma experiência gastronômica especial para o casal celebrar os primeiros meses de vida a dois.</p><p class="pres-price">R$ 320,00</p><button class="btn-pres" onclick="openGift('Jantar Romântico','🍷','R$ 320,00')"><span>Presentear</span> →</button></div>
       <div class="pres-card pres-feat reveal"><div style="padding:2.2rem"><span class="pres-ico" style="font-size:2rem">📸</span><p class="pres-name">Álbum de Memórias</p><p class="pres-desc" style="max-width:360px">O presente mais especial: contribua para o álbum fotográfico profissional do nosso casamento. Cada foto será um tesouro passado às próximas gerações.</p><p class="pres-price">R$ 450,00</p><button class="btn-pres" style="margin-top:1.4rem" onclick="openGift('Álbum de Memórias','📸','R$ 450,00')"><span>Presentear este item especial</span> →</button></div><div class="pres-feat-right"><p style="font-family:'Playfair Display',serif;font-size:5rem;font-weight:300;font-style:italic;color:rgba(184,150,90,.1);line-height:1;text-align:right">Memó<br>rias</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PADRINHOS -->
+<section id="padrinhos">
+  <div class="pad-inner">
+    <p class="s-eye reveal">Família de Coração</p>
+    <h2 class="s-h reveal d1">Nossos <em>Padrinhos</em></h2>
+    <p class="s-p reveal d2">Escolhemos cada um com muito amor e gratidão. São pessoas que fazem parte da nossa história e que tornam este momento ainda mais especial.</p>
+    <div class="pad-grid reveal d2" id="padGrid">
+      <div class="pad-empty">Carregando padrinhos...</div>
     </div>
   </div>
 </section>
@@ -779,6 +811,38 @@ async function doRSVP(){
   }catch(e){alert('Erro ao confirmar. Tente novamente.');}
   btn.textContent='Confirmar Presença';
 }
+
+
+/* ── PADRINHOS (público) ── */
+async function loadPadrinhos(){
+  try{
+    const res = await fetch(
+      `${SB_URL}/rest/v1/padrinhos?order=ordem.asc,nome.asc&select=*`,
+      {headers:sbHeaders}
+    );
+    const data = await res.json();
+    const grid = document.getElementById('padGrid');
+    if(!Array.isArray(data)||data.length===0){
+      grid.innerHTML = '<div class="pad-empty">Em breve...</div>';
+      return;
+    }
+    grid.innerHTML = data.map(p=>`
+      <div class="pad-card reveal">
+        <div class="pad-av">
+          ${p.foto_url
+            ? `<img src="${p.foto_url}" alt="${p.nome}" onerror="this.parentElement.innerHTML='${p.nome.charAt(0)}'">` 
+            : p.nome.charAt(0)}
+        </div>
+        <p class="pad-cargo">${p.cargo||''}</p>
+        <p class="pad-name">${p.nome}</p>
+        <p class="pad-desc">${p.descricao||''}</p>
+      </div>
+    `).join('');
+    // re-observe new elements
+    grid.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  }catch(e){ console.log('Padrinhos error:',e); }
+}
+loadPadrinhos();
 
 /* ── Gift ── */
 function openGift(name,ico,price){document.getElementById('gIco').textContent=ico;document.getElementById('gTit').textContent=name;document.getElementById('gBody').innerHTML=`Valor sugerido: <strong>${price}</strong><br><br>Presenteie-nos via PIX usando a chave abaixo. Seu gesto de carinho significa o mundo para nós. 💛`;openMod('gMod')}
