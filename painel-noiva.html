@@ -129,21 +129,6 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-row{text-align:center;padding:3rem;color:var(--muted)}
 
-
-/* PADRINHOS */
-.pad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-top:1.5rem}
-.pad-card{background:white;border:1px solid var(--gold3);padding:1.5rem;text-align:center;position:relative}
-.pad-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:var(--gold)}
-.pad-avatar{width:80px;height:80px;border-radius:50%;border:2px solid var(--gold3);margin:0 auto 1rem;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.8rem;font-style:italic;color:var(--gold);background:rgba(184,150,90,.07)}
-.pad-avatar img{width:100%;height:100%;object-fit:cover}
-.pad-cargo{font-size:.52rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
-.pad-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:300;color:var(--dark);margin-bottom:.4rem}
-.pad-desc{font-size:.75rem;color:var(--muted);line-height:1.6}
-.pad-actions{display:flex;gap:.4rem;justify-content:center;margin-top:1rem}
-.photo-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--gold3);margin-top:.5rem;display:none}
-.photo-upload-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1rem;border:1px dashed var(--gold3);background:none;font-family:'Raleway',sans-serif;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .3s;margin-top:.3rem}
-.photo-upload-btn:hover{border-color:var(--gold);color:var(--gold)}
-
 /* IMPORT */
 .import-section{background:white;border:1px solid var(--gold3);padding:2rem;margin-bottom:2rem}
 .import-textarea{width:100%;min-height:160px;padding:1rem;border:1px solid var(--gold3);font-family:'Raleway',sans-serif;font-size:.85rem;font-weight:300;color:var(--dark);resize:vertical;outline:none;transition:border-color .3s}
@@ -180,7 +165,7 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
       <p class="hdr-sub">Bruna & João · 14 de Junho de 2026</p>
     </div>
     <div class="hdr-right">
-      <a href="Casamento.html" target="_blank" style="font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(250,247,242,.35);text-decoration:none">Ver site →</a>
+      <a href="casamento-bruna-joao.html" target="_blank" style="font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(250,247,242,.35);text-decoration:none">Ver site →</a>
       <button class="hdr-logout" onclick="logout()">Sair</button>
     </div>
   </header>
@@ -199,7 +184,6 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
       <button class="tab-btn active" onclick="showTab('lista')">Lista de Convidados</button>
       <button class="tab-btn" onclick="showTab('adicionar')">Adicionar Convidado</button>
       <button class="tab-btn" onclick="showTab('importar')">Importar em Massa</button>
-      <button class="tab-btn" onclick="showTab('padrinhos')">💍 Padrinhos</button>
     </div>
 
     <!-- TAB: LISTA -->
@@ -266,42 +250,6 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
         <button class="btn-save" onclick="importGuests()">Importar Lista</button>
       </div>
     </div>
-
-    <!-- TAB: PADRINHOS -->
-    <div id="tab-padrinhos" style="display:none">
-      <div class="add-section">
-        <p class="add-title">Adicionar Padrinho / Madrinha</p>
-        <div class="form-row">
-          <div class="f-field">
-            <label class="f-lbl">Nome completo *</label>
-            <input class="f-in" id="pNome" type="text" placeholder="Ex: Ana Clara Silva">
-          </div>
-          <div class="f-field">
-            <label class="f-lbl">Cargo *</label>
-            <select class="f-in" id="pCargo">
-              <option value="Madrinha">Madrinha</option>
-              <option value="Padrinho">Padrinho</option>
-              <option value="Dama de Honra">Dama de Honra</option>
-              <option value="Pajem">Pajem</option>
-              <option value="Mestre de Cerimônias">Mestre de Cerimônias</option>
-              <option value="Outro">Outro</option>
-            </select>
-          </div>
-        </div>
-        <div class="f-field" style="margin-bottom:1rem">
-          <label class="f-lbl">Breve descrição</label>
-          <textarea class="f-in import-textarea" id="pDesc" placeholder="Ex: Amiga de infância, sempre presente em cada momento especial..." style="min-height:80px;resize:vertical"></textarea>
-        </div>
-        <div class="f-field" style="margin-bottom:1rem">
-          <label class="f-lbl">Foto (URL ou upload)</label>
-          <input class="f-in" id="pFotoUrl" type="text" placeholder="Cole o link da foto (https://...)">
-          <p style="font-size:.7rem;color:var(--muted);margin-top:.4rem">Dica: Envie a foto para o GitHub do site e cole o link aqui.</p>
-        </div>
-        <button class="btn-save" id="btnSavePad" onclick="savePadrinho()">Adicionar Padrinho</button>
-      </div>
-
-      <div id="padrinhosList"><div class="loading-row"><div class="spinner"></div></div></div>
-    </div>
   </main>
 </div>
 
@@ -338,45 +286,6 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeEdit()">Cancelar</button>
       <button class="btn-confirm-edit" onclick="updateGuest()">Salvar Alterações</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- MODAL EDITAR PADRINHO -->
-<div class="modal-bg" id="editPadModal" onclick="if(event.target===this)closeEditPad()">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeEditPad()">✕</button>
-    <p class="modal-title">Editar Padrinho</p>
-    <input type="hidden" id="editPadId">
-    <div class="form-row">
-      <div class="f-field">
-        <label class="f-lbl">Nome completo *</label>
-        <input class="f-in" id="editPadNome" type="text">
-      </div>
-      <div class="f-field">
-        <label class="f-lbl">Cargo</label>
-        <select class="f-in" id="editPadCargo">
-          <option value="Madrinha">Madrinha</option>
-          <option value="Padrinho">Padrinho</option>
-          <option value="Dama de Honra">Dama de Honra</option>
-          <option value="Pajem">Pajem</option>
-          <option value="Mestre de Cerimônias">Mestre de Cerimônias</option>
-          <option value="Outro">Outro</option>
-        </select>
-      </div>
-    </div>
-    <div class="f-field" style="margin-bottom:1rem">
-      <label class="f-lbl">Descrição</label>
-      <textarea class="f-in import-textarea" id="editPadDesc" style="min-height:80px;resize:vertical"></textarea>
-    </div>
-    <div class="f-field" style="margin-bottom:1rem">
-      <label class="f-lbl">URL da Foto</label>
-      <input class="f-in" id="editPadFoto" type="text" placeholder="https://...">
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeEditPad()">Cancelar</button>
-      <button class="btn-confirm-edit" onclick="updatePadrinho()">Salvar</button>
     </div>
   </div>
 </div>
@@ -493,13 +402,12 @@ function setFilter(f, el){
 
 /* ── TABS ── */
 function showTab(t){
-  ['lista','adicionar','importar','padrinhos'].forEach(tab=>{
+  ['lista','adicionar','importar'].forEach(tab=>{
     document.getElementById('tab-'+tab).style.display = tab===t ? 'block' : 'none';
   });
   document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    b.classList.toggle('active', ['lista','adicionar','importar','padrinhos'][i]===t);
+    b.classList.toggle('active', ['lista','adicionar','importar'][i]===t);
   });
-  if(t==='padrinhos') loadPadrinhos();
 }
 
 /* ── ADD ACOMPANHANTE ── */
@@ -625,100 +533,33 @@ function showToast(msg){
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2800);
 }
-
-/* ── PADRINHOS ── */
-let allPadrinhos = [];
-
-async function loadPadrinhos(){
-  try{
-    const res = await api('GET','padrinhos?order=ordem.asc,nome.asc');
-    allPadrinhos = res;
-    renderPadrinhos();
-  }catch(e){ showToast('Erro ao carregar padrinhos'); }
-}
-
-function renderPadrinhos(){
-  const el = document.getElementById('padrinhosList');
-  if(!allPadrinhos.length){
-    el.innerHTML = '<div class="empty"><span class="empty-ico">💍</span><p class="empty-txt">Nenhum padrinho cadastrado ainda</p></div>';
-    return;
-  }
-  el.innerHTML = '<div class="pad-grid">' + allPadrinhos.map(p=>`
-    <div class="pad-card">
-      <div class="pad-avatar">
-        ${p.foto_url ? `<img src="${p.foto_url}" alt="${p.nome}" onerror="this.style.display='none'">` : p.nome.charAt(0)}
-      </div>
-      <p class="pad-cargo">${p.cargo||''}</p>
-      <p class="pad-name">${p.nome}</p>
-      <p class="pad-desc">${p.descricao||''}</p>
-      <div class="pad-actions">
-        <button class="btn-edit" onclick="openEditPad('${p.id}')">Editar</button>
-        <button class="btn-del" onclick="deletePadrinho('${p.id}','${p.nome.replace(/'/g,"\\'")}')">Excluir</button>
-      </div>
-    </div>
-  `).join('') + '</div>';
-}
-
-async function savePadrinho(){
-  const nome = document.getElementById('pNome').value.trim();
-  if(!nome){ document.getElementById('pNome').style.borderColor='#c0392b'; return; }
-  document.getElementById('pNome').style.borderColor='';
-  const btn = document.getElementById('btnSavePad');
-  btn.disabled=true; btn.textContent='Salvando...';
-  try{
-    await api('POST','padrinhos',{
-      nome,
-      cargo: document.getElementById('pCargo').value,
-      descricao: document.getElementById('pDesc').value.trim()||null,
-      foto_url: document.getElementById('pFotoUrl').value.trim()||null
-    });
-    showToast('Padrinho adicionado! 💍');
-    document.getElementById('pNome').value='';
-    document.getElementById('pDesc').value='';
-    document.getElementById('pFotoUrl').value='';
-    await loadPadrinhos();
-  }catch(e){ showToast('Erro: '+e.message); }
-  btn.disabled=false; btn.textContent='Adicionar Padrinho';
-}
-
-function openEditPad(id){
-  const p = allPadrinhos.find(x=>x.id===id);
-  if(!p) return;
-  document.getElementById('editPadId').value = id;
-  document.getElementById('editPadNome').value = p.nome;
-  document.getElementById('editPadCargo').value = p.cargo||'Padrinho';
-  document.getElementById('editPadDesc').value = p.descricao||'';
-  document.getElementById('editPadFoto').value = p.foto_url||'';
-  document.getElementById('editPadModal').classList.add('open');
-}
-function closeEditPad(){ document.getElementById('editPadModal').classList.remove('open'); }
-
-async function updatePadrinho(){
-  const id = document.getElementById('editPadId').value;
-  const nome = document.getElementById('editPadNome').value.trim();
-  if(!nome) return;
-  try{
-    await api('PATCH','padrinhos?id=eq.'+id,{
-      nome,
-      cargo: document.getElementById('editPadCargo').value,
-      descricao: document.getElementById('editPadDesc').value.trim()||null,
-      foto_url: document.getElementById('editPadFoto').value.trim()||null
-    });
-    showToast('Padrinho atualizado! ✅');
-    closeEditPad();
-    await loadPadrinhos();
-  }catch(e){ showToast('Erro: '+e.message); }
-}
-
-async function deletePadrinho(id, nome){
-  if(!confirm('Remover "'+nome+'" dos padrinhos?')) return;
-  try{
-    await api('DELETE','padrinhos?id=eq.'+id);
-    showToast('Padrinho removido');
-    await loadPadrinhos();
-  }catch(e){ showToast('Erro ao remover'); }
-}
-
 </script>
+  <!-- MÚSICA DE FUNDO -->
+<iframe id="yt-audio" src="https://www.youtube.com/embed/fD2UExUhq-s?autoplay=1&loop=1&playlist=fD2UExUhq-s&controls=0&mute=0" allow="autoplay" style="display:none"></iframe>
+
+<button onclick="toggleMusic()" id="musicBtn" style="
+  position:fixed; bottom:2rem; left:2rem; z-index:999;
+  width:48px; height:48px; border-radius:50%;
+  background:rgba(26,20,16,0.85); border:1px solid rgba(184,150,90,0.4);
+  color:#d4b07a; font-size:1.2rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(8px); transition:all .3s;
+" title="Música">🎵</button>
+
+<script>
+let playing = true;
+function toggleMusic() {
+  const iframe = document.getElementById('yt-audio');
+  const btn = document.getElementById('musicBtn');
+  if (playing) {
+    iframe.src = iframe.src.replace('mute=0','mute=1');
+    btn.textContent = '🔇';
+  } else {
+    iframe.src = iframe.src.replace('mute=1','mute=0');
+    btn.textContent = '🎵';
+  }
+  playing = !playing;
+}
+      </script>
 </body>
 </html>
