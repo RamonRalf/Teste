@@ -708,7 +708,7 @@ async function buscarConvidado(){
   msg.style.display='none';
   try{
     const res=await fetch(
-      `${SB_URL}/rest/v1/convidados?nome=ilike.${encodeURIComponent(name.trim())}&select=*`,
+      `${SB_URL}/rest/v1/convidados?nome=ilike.*${encodeURIComponent(name.trim())}*&select=*&order=nome.asc`,
       {headers:sbHeaders}
     );
     const data=await res.json();
