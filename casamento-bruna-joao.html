@@ -915,18 +915,18 @@ async function loadPadrinhos(){
       grid.innerHTML = '<div class="pad-empty">Em breve...</div>';
       return;
     }
-    grid.innerHTML = data.map(p=>`
-      <div class="pad-card reveal">
-        <div class="pad-av">
-          ${p.foto_url
-            ? `<img src="${p.foto_url}" alt="${p.nome}" onerror="this.parentElement.innerHTML='${p.nome.charAt(0)}'">` 
-            : p.nome.charAt(0)}
-        </div>
+    grid.innerHTML = data.map(p=>{
+      const inicial = p.nome ? p.nome.charAt(0) : '?';
+      const foto = p.foto_url 
+        ? `<img src="${p.foto_url}" alt="${p.nome}" style="width:100%;height:100%;object-fit:cover;object-position:center" onerror="this.style.display='none'">`
+        : inicial;
+      return `<div class="pad-card reveal">
+        <div class="pad-av">${foto}</div>
         <p class="pad-cargo">${p.cargo||''}</p>
-        <p class="pad-name">${p.nome}</p>
+        <p class="pad-name">${p.nome||''}</p>
         <p class="pad-desc">${p.descricao||''}</p>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
     // re-observe new elements
     grid.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   }catch(e){ console.log('Padrinhos error:',e); }
