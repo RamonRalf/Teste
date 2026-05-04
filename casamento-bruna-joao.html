@@ -222,7 +222,7 @@ button{font-family:inherit;cursor:none}
 #padrinhos{padding:8rem 2rem;background:var(--ivory2);position:relative;overflow:hidden}
 #padrinhos::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 20% 50%,rgba(138,158,127,.06) 0%,transparent 50%)}
 .pad-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
-.pad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:3px;margin-top:3rem}
+.pad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:3px;margin-top:3rem}
 .pad-card{background:white;padding:0 0 1.8rem 0;text-align:center;position:relative;overflow:hidden;transition:transform .3s}
 .pad-card:hover{transform:translateY(-4px)}
 .pad-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--magenta),var(--orange));transform:scaleX(0);transition:transform .4s}
@@ -324,10 +324,10 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
   .f-row{grid-template-columns:1fr}
 }
 @media(max-width:700px){
-  .pad-grid{grid-template-columns:1fr 1fr !important}
-  .pad-av{height:180px}
-  .pad-name{font-size:1rem}
-  .pad-desc{font-size:.75rem}
+  .pad-grid{grid-template-columns:1fr !important}
+  .pad-av{height:260px}
+  .pad-name{font-size:1.1rem}
+  .pad-desc{font-size:.82rem}
 }
 @media(max-width:520px){
   .hero-l{padding:5rem 1.5rem 4rem}
