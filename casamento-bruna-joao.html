@@ -560,7 +560,7 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
     <p class="s-eye reveal">Família de Coração</p>
     <h2 class="s-h reveal d1">Nossos <em>Padrinhos</em></h2>
     <p class="s-p reveal d2">Escolhemos cada um com muito amor e gratidão. São pessoas que fazem parte da nossa história e que tornam este momento ainda mais especial.</p>
-    <div class="pad-grid reveal d2" id="padGrid">
+    <div class="pad-grid" id="padGrid">
       <div class="pad-empty">Carregando padrinhos...</div>
     </div>
   </div>
@@ -924,15 +924,13 @@ async function loadPadrinhos(){
       const foto = p.foto_url 
         ? `<img src="${p.foto_url}" alt="${p.nome}" style="width:100%;height:100%;object-fit:cover;object-position:center" onerror="this.style.display='none'">`
         : inicial;
-      return `<div class="pad-card reveal">
+      return `<div class="pad-card">
         <div class="pad-av">${foto}</div>
         <p class="pad-cargo">${p.cargo||''}</p>
         <p class="pad-name">${p.nome||''}</p>
         <p class="pad-desc">${p.descricao||''}</p>
       </div>`;
     }).join('');
-    // re-observe new elements
-    grid.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   }catch(e){ console.log('Padrinhos error:',e); }
 }
 loadPadrinhos();
