@@ -493,16 +493,16 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
       <h2 class="s-h reveal d1">A <em>Cerimônia</em></h2>
       <p class="s-p reveal d2" style="max-width:440px">Gostaríamos de contar com a sua presença no momento mais especial de nossas vidas. A cerimônia será íntima, pontual e cheia de emoção.</p>
       <div class="cer-grid reveal d2">
-        <div class="cer-block"><span class="cer-block-ico">📅</span><p class="cer-block-lbl">Data</p><p class="cer-block-val">14 de Junho</p><p class="cer-block-sub">2026 · Sábado</p></div>
-        <div class="cer-block"><span class="cer-block-ico">🕓</span><p class="cer-block-lbl">Horário</p><p class="cer-block-val">16h00</p><p class="cer-block-sub">Pontualmente</p></div>
-        <div class="cer-block"><span class="cer-block-ico">🌿</span><p class="cer-block-lbl">Local</p><p class="cer-block-val">Espaço Vila Verde</p><p class="cer-block-sub">Tiradentes, MG</p></div>
-        <div class="cer-block"><span class="cer-block-ico">🥂</span><p class="cer-block-lbl">Recepção</p><p class="cer-block-val">Logo após a cerimônia</p><p class="cer-block-sub">Jantar & Festa</p></div>
+        <div class="cer-block"><span class="cer-block-ico">📅</span><p class="cer-block-lbl">Data</p><p class="cer-block-val" id="cerData">14 de Junho</p><p class="cer-block-sub" id="cerAno">2026 · Sábado</p></div>
+        <div class="cer-block"><span class="cer-block-ico">🕓</span><p class="cer-block-lbl">Horário</p><p class="cer-block-val" id="cerHorario">16h00</p><p class="cer-block-sub">Pontualmente</p></div>
+        <div class="cer-block"><span class="cer-block-ico">🌿</span><p class="cer-block-lbl">Local</p><p class="cer-block-val" id="cerLocal">Espaço Vila Verde</p><p class="cer-block-sub" id="cerEndereco">Tiradentes, MG</p></div>
+        <div class="cer-block"><span class="cer-block-ico">🥂</span><p class="cer-block-lbl">Recepção</p><p class="cer-block-val" id="cerRecepcao">Logo após a cerimônia</p><p class="cer-block-sub" id="cerRecepcaoSub">Jantar & Festa</p></div>
       </div>
       <div class="map-box reveal d3">
         <div class="map-pin-wrap"><div class="map-pulse"></div><div class="map-dot"></div></div>
-        <div class="map-lbl">Espaço Vila Verde · Tiradentes, MG</div>
+        <div class="map-lbl" id="mapLbl">Espaço Vila Verde · Tiradentes, MG</div>
       </div>
-      <a href="https://maps.google.com/?q=Tiradentes,MG" target="_blank" class="btn-dir reveal d3">
+      <a href="https://maps.google.com/?q=Tiradentes,MG" target="_blank" class="btn-dir reveal d3" id="mapLink">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
         Ver rota no Google Maps
       </a>
@@ -865,23 +865,26 @@ async function loadSiteConfig(){
       if(i===0||i===5||i===10) el.textContent=dataLonga;
     });
 
-    // Update cerimonia blocks
-    const cerVals = document.querySelectorAll('.cer-block-val');
-    if(cerVals[0]) cerVals[0].innerHTML = d.getDate()+' de<br>'+meses[d.getMonth()];
-    if(cerVals[1]) cerVals[1].textContent = horarioFmt;
-    if(cerVals[2]) cerVals[2].innerHTML = (cfg.local||'Espaço Vila Verde')+'<br>';
-    if(cerVals[3]) cerVals[3].innerHTML = 'Logo após<br>a cerimônia';
+    // Update cerimonia blocks by ID
+    const elData = document.getElementById('cerData');
+    const elAno = document.getElementById('cerAno');
+    const elHorario = document.getElementById('cerHorario');
+    const elLocal = document.getElementById('cerLocal');
+    const elEndereco = document.getElementById('cerEndereco');
+    const elRecepcao = document.getElementById('cerRecepcao');
+    const elRecepcaoSub = document.getElementById('cerRecepcaoSub');
+    const elMapLbl = document.getElementById('mapLbl');
+    const elMapLink = document.getElementById('mapLink');
 
-    const cerSubs = document.querySelectorAll('.cer-block-sub');
-    if(cerSubs[0]) cerSubs[0].textContent = d.getFullYear()+' · '+diasSem[d.getDay()];
-
-    // Update map label
-    const mapLbl = document.querySelector('.map-lbl');
-    if(mapLbl) mapLbl.textContent = (cfg.local||'Espaço Vila Verde')+' · '+(cfg.endereco||'Tiradentes, MG');
-
-    // Update maps link
-    const mapLink = document.querySelector('.btn-dir');
-    if(mapLink && cfg.maps_url) mapLink.href = cfg.maps_url;
+    if(elData) elData.innerHTML = d.getDate()+' de<br>'+meses[d.getMonth()];
+    if(elAno) elAno.textContent = d.getFullYear()+' · '+diasSem[d.getDay()];
+    if(elHorario) elHorario.textContent = horarioFmt;
+    if(elLocal) elLocal.textContent = cfg.local||'Espaço Vila Verde';
+    if(elEndereco) elEndereco.textContent = cfg.endereco||'Tiradentes, MG';
+    if(elRecepcao) elRecepcao.textContent = cfg.local_recepcao||'Logo após a cerimônia';
+    if(elRecepcaoSub) elRecepcaoSub.textContent = cfg.recepcao_sub||'Jantar & Festa';
+    if(elMapLbl) elMapLbl.textContent = (cfg.local||'Espaço Vila Verde')+' · '+(cfg.endereco||'Tiradentes, MG');
+    if(elMapLink && cfg.maps_url) elMapLink.setAttribute('href', cfg.maps_url);
 
     // Update RSVP deadline
     const dlVal = document.querySelector('.dl-val');
