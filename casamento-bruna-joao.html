@@ -498,11 +498,18 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
         <div class="cer-block"><span class="cer-block-ico">🌿</span><p class="cer-block-lbl">Local</p><p class="cer-block-val" id="cerLocal">Espaço Vila Verde</p><p class="cer-block-sub" id="cerEndereco">Tiradentes, MG</p></div>
         <div class="cer-block"><span class="cer-block-ico">🥂</span><p class="cer-block-lbl">Recepção</p><p class="cer-block-val" id="cerRecepcao">Logo após a cerimônia</p><p class="cer-block-sub" id="cerRecepcaoSub">Jantar & Festa</p></div>
       </div>
-      <div class="map-box reveal d3">
-        <div class="map-pin-wrap"><div class="map-pulse"></div><div class="map-dot"></div></div>
-        <div class="map-lbl" id="mapLbl">Espaço Vila Verde · Tiradentes, MG</div>
+      <div class="map-box reveal d3" style="padding:0;background:none;border:1px solid var(--gold3);overflow:hidden;position:relative;height:260px;margin-top:1.5rem">
+        <iframe 
+          id="mapIframe"
+          src="https://maps.google.com/maps?q=Igreja+Nossa+Senhora+das+Merces+Tiradentes+MG&output=embed&z=15"
+          width="100%" height="100%" 
+          style="border:0;display:block" 
+          allowfullscreen="" 
+          loading="lazy">
+        </iframe>
+        <div class="map-lbl" id="mapLbl" style="z-index:2">Igreja Nossa Senhora das Mercês · Tiradentes, MG</div>
       </div>
-      <a href="https://maps.google.com/?q=Tiradentes,MG" target="_blank" class="btn-dir reveal d3" id="mapLink">
+      <a href="https://maps.google.com/?q=Igreja+Nossa+Senhora+das+Merces+Tiradentes+MG" target="_blank" rel="noopener noreferrer" class="btn-dir reveal d3" id="mapLink">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
         Ver rota no Google Maps
       </a>
@@ -883,8 +890,15 @@ async function loadSiteConfig(){
     if(elEndereco) elEndereco.textContent = cfg.endereco||'Tiradentes, MG';
     if(elRecepcao) elRecepcao.textContent = cfg.local_recepcao||'Logo após a cerimônia';
     if(elRecepcaoSub) elRecepcaoSub.textContent = cfg.recepcao_sub||'Jantar & Festa';
-    if(elMapLbl) elMapLbl.textContent = (cfg.local||'Espaço Vila Verde')+' · '+(cfg.endereco||'Tiradentes, MG');
+    if(elMapLbl) elMapLbl.textContent = (cfg.local||'Igreja Nossa Senhora das Mercês')+' · '+(cfg.endereco||'Tiradentes, MG');
     if(elMapLink && cfg.maps_url) elMapLink.setAttribute('href', cfg.maps_url);
+    // Update iframe src
+    const mapIframe = document.getElementById('mapIframe');
+    if(mapIframe && cfg.maps_url){
+      // Convert share link to embed link
+      const q = encodeURIComponent((cfg.local||'')+' '+(cfg.endereco||'Tiradentes MG'));
+      mapIframe.src = 'https://maps.google.com/maps?q='+q+'&output=embed&z=15';
+    }
 
     // Update RSVP deadline
     const dlVal = document.querySelector('.dl-val');
