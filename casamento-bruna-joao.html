@@ -235,6 +235,13 @@ button{font-family:inherit;cursor:none}
 .pad-desc{font-size:.8rem;color:var(--muted);line-height:1.7;padding:0 1.5rem}
 .pad-empty{text-align:center;padding:3rem;color:var(--muted);font-style:italic;font-family:'Playfair Display',serif;font-size:1.1rem}
 
+
+/* PRESENTES DINAMICOS */
+.pres-card-img{width:100%;height:160px;object-fit:cover;display:block;margin-bottom:1.2rem}
+.pres-card-img-placeholder{width:100%;height:120px;display:flex;align-items:center;justify-content:center;font-size:3rem;background:rgba(255,255,255,.03);margin-bottom:1.2rem}
+.pres-card.dado{opacity:.55;pointer-events:none;position:relative}
+.pres-card.dado::before{content:'✓ Presenteado';position:absolute;top:.8rem;right:.8rem;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;background:var(--green);color:white;padding:.3rem .7rem;z-index:2}
+
 /* RSVP */
 #rsvp{padding:8rem 2rem;position:relative;overflow:hidden}
 #rsvp::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 100% 0%,rgba(184,150,90,.05) 0%,transparent 50%),radial-gradient(ellipse 40% 40% at 0% 100%,rgba(122,144,112,.04) 0%,transparent 50%)}
@@ -551,15 +558,67 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
     <p class="s-eye reveal">Lista de Casamento</p>
     <h2 class="s-h reveal d1">Presentes <em>com amor</em></h2>
     <p class="s-p reveal d2">Sua presença já é o maior presente que poderíamos receber. Mas se o seu coração quiser nos mimar, escolha com carinho qualquer item abaixo.</p>
-    <div class="pres-grid">
-      <div class="pres-card reveal"><span class="pres-ico">✈️</span><p class="pres-name">Lua de Mel</p><p class="pres-desc">Contribuição para nossa primeira grande viagem como marido e mulher. Cada centavo vira uma memória inesquecível.</p><p class="pres-price">Contribuição livre · Sugerido R$ 500</p><button class="btn-pres" onclick="openGift('Lua de Mel','✈️','Contribuição livre — sugerido R$ 500,00')"><span>Presentear</span> →</button></div>
-      <div class="pres-card reveal d1"><span class="pres-ico">🏠</span><p class="pres-name">Nosso Novo Lar</p><p class="pres-desc">Ajude-nos a montar o ninho onde nossa história vai continuar. Cada contribuição vira um pedacinho da nossa casa.</p><p class="pres-price">Contribuição livre · Sugerido R$ 300</p><button class="btn-pres" onclick="openGift('Nosso Novo Lar','🏠','Contribuição livre — sugerido R$ 300,00')"><span>Presentear</span> →</button></div>
-      <div class="pres-card reveal"><span class="pres-ico">🎬</span><p class="pres-name">Noite de Cinema</p><p class="pres-desc">5 meses de streaming para o casal curtir filmes juntos nas noites frias de Minas Gerais.</p><p class="pres-price">R$ 199,77</p><button class="btn-pres" onclick="openGift('Noite de Cinema','🎬','R$ 199,77')"><span>Presentear</span> →</button></div>
-      <div class="pres-card reveal d1"><span class="pres-ico">🍷</span><p class="pres-name">Jantar Romântico</p><p class="pres-desc">Uma experiência gastronômica especial para o casal celebrar os primeiros meses de vida a dois.</p><p class="pres-price">R$ 320,00</p><button class="btn-pres" onclick="openGift('Jantar Romântico','🍷','R$ 320,00')"><span>Presentear</span> →</button></div>
-      <div class="pres-card pres-feat reveal"><div style="padding:2.2rem"><span class="pres-ico" style="font-size:2rem">📸</span><p class="pres-name">Álbum de Memórias</p><p class="pres-desc" style="max-width:360px">O presente mais especial: contribua para o álbum fotográfico profissional do nosso casamento. Cada foto será um tesouro passado às próximas gerações.</p><p class="pres-price">R$ 450,00</p><button class="btn-pres" style="margin-top:1.4rem" onclick="openGift('Álbum de Memórias','📸','R$ 450,00')"><span>Presentear este item especial</span> →</button></div><div class="pres-feat-right"><p style="font-family:'Playfair Display',serif;font-size:5rem;font-weight:300;font-style:italic;color:rgba(184,150,90,.1);line-height:1;text-align:right">Memó<br>rias</p></div></div>
+    <div class="pres-grid" id="presGrid">
+      <div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(250,247,242,.3);font-style:italic">Carregando presentes...</div>
     </div>
   </div>
 </section>
+
+<!-- MODAL PRESENTE SITE -->
+<div class="modal-bg" id="presMod" onclick="bgClose(event,'presMod')">
+  <div class="modal-box" style="max-width:500px">
+    <button class="m-close" onclick="closeMod('presMod')">✕</button>
+    <span class="m-ico" id="presModIco">🎁</span>
+    <h3 class="m-title" id="presModTit">Presente</h3>
+    <p class="m-body" id="presModDesc" style="margin-bottom:1.2rem"></p>
+    <p style="font-size:1.1rem;font-weight:400;color:var(--gold);margin-bottom:1.5rem" id="presModValor"></p>
+
+    <div style="display:flex;flex-direction:column;gap:1rem" id="presModForm">
+      <div class="f-field">
+        <label class="f-lbl">Seu nome *</label>
+        <input class="f-in" id="presNome" type="text" placeholder="Como quer ser lembrado(a)">
+      </div>
+      <div class="f-field">
+        <label class="f-lbl">Bilhete personalizado 💌</label>
+        <textarea class="f-in" id="presBilhete" placeholder="Escreva uma mensagem carinhosa para o casal..." style="min-height:90px;resize:vertical"></textarea>
+      </div>
+    </div>
+
+    <div class="pix-wrap" style="margin-top:1.2rem">
+      <p class="pix-lbl">Chave PIX para pagamento</p>
+      <p class="pix-key" id="presPixKey">brunaejoao2026@gmail.com</p>
+      <button class="pix-cp" onclick="copyPresPixKey()">Copiar chave PIX</button>
+    </div>
+
+    <button class="m-dismiss" style="margin-top:1rem;background:linear-gradient(135deg,var(--wine),var(--magenta))" onclick="confirmarPresente()" id="btnConfPresente">
+      ✓ Confirmar que já paguei via PIX
+    </button>
+    <p style="font-size:.7rem;color:var(--muted);text-align:center;margin-top:.6rem">Após o pagamento, clique para registrar seu presente 💛</p>
+  </div>
+</div>
+
+<!-- MODAL COMPROVANTE -->
+<div class="modal-bg" id="comprovanteMod" onclick="bgClose(event,'comprovanteMod')">
+  <div class="modal-box" style="max-width:480px;text-align:center" id="comprovanteBox">
+    <button class="m-close" onclick="closeMod('comprovanteMod')">✕</button>
+    <span class="m-ico">🎉</span>
+    <h3 class="m-title">Presente Confirmado!</h3>
+    <div id="comprovanteContent" style="margin:1.5rem 0;padding:1.5rem;border:1px solid var(--gold3);background:white;text-align:left">
+      <p style="font-size:.55rem;letter-spacing:.25em;text-transform:uppercase;color:var(--magenta);margin-bottom:1rem">Comprovante de Presente</p>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">De: <strong id="cpNome" style="color:var(--dark)"></strong></p>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">Presente: <strong id="cpPresente" style="color:var(--dark)"></strong></p>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">Valor: <strong id="cpValor" style="color:var(--wine)"></strong></p>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">Data: <strong id="cpData" style="color:var(--dark)"></strong></p>
+      <div id="cpBilheteWrap" style="margin-top:1rem;padding:1rem;background:rgba(155,45,142,.05);border-left:2px solid var(--magenta);display:none">
+        <p style="font-size:.72rem;color:var(--muted);font-style:italic" id="cpBilhete"></p>
+      </div>
+    </div>
+    <button class="m-dismiss" onclick="baixarComprovante()" style="background:linear-gradient(135deg,var(--wine),var(--magenta));margin-bottom:.6rem">
+      📥 Baixar Comprovante
+    </button>
+    <button class="m-dismiss" onclick="closeMod('comprovanteMod')" style="background:var(--dark)">Fechar</button>
+  </div>
+</div>
 
 <!-- PADRINHOS -->
 <section id="padrinhos">
@@ -951,6 +1010,168 @@ async function loadPadrinhos(){
   }catch(e){ console.log('Padrinhos error:',e); }
 }
 loadPadrinhos();
+
+/* ── PRESENTES DINÂMICOS ── */
+let presAtual = null;
+
+async function loadPresentes(){
+  try{
+    const res = await fetch(`${SB_URL}/rest/v1/presentes?order=created_at.asc&select=*`,{headers:sbHeaders});
+    const data = await res.json();
+    const grid = document.getElementById('presGrid');
+    if(!grid) return;
+    if(!Array.isArray(data)||data.length===0){
+      // Fallback: mostrar presentes padrão
+      grid.innerHTML = presDefaultHTML();
+      return;
+    }
+    grid.innerHTML = data.map(p=>{
+      const dado = p.presenteado;
+      const valor = p.valor ? 'R$ '+parseFloat(p.valor).toFixed(2).replace('.',',') : 'Contribuição livre';
+      const img = p.foto_url 
+        ? `<img src="${p.foto_url}" class="pres-card-img" alt="${p.nome}" onerror="this.style.display='none'">`
+        : `<div class="pres-card-img-placeholder">${p.icone||'🎁'}</div>`;
+      return `<div class="pres-card${dado?' dado':''}">
+        ${img}
+        <span class="pres-ico" style="display:${p.foto_url?'none':'block'}">${p.icone||'🎁'}</span>
+        <p class="pres-name">${p.nome}</p>
+        <p class="pres-desc">${p.descricao||''}</p>
+        <p class="pres-price">${valor}</p>
+        ${!dado ? `<button class="btn-pres" onclick="abrirPresente('${p.id}')"><span>Presentear</span> →</button>` : `<p style="font-size:.7rem;color:rgba(39,174,96,.7);margin-top:.8rem">✓ Já presenteado por ${p.presenteado_por||'alguém especial'}</p>`}
+      </div>`;
+    }).join('');
+  }catch(e){
+    console.log('Presentes error:',e);
+    const grid = document.getElementById('presGrid');
+    if(grid) grid.innerHTML = presDefaultHTML();
+  }
+}
+
+function presDefaultHTML(){
+  const items = [
+    {ico:'✈️',nome:'Lua de Mel',desc:'Contribuição para nossa primeira viagem como casal.',valor:'Sugerido R$ 500,00'},
+    {ico:'🏠',nome:'Nosso Novo Lar',desc:'Ajude a montar o ninho onde nossa história continua.',valor:'Sugerido R$ 300,00'},
+    {ico:'🎬',nome:'Noite de Cinema',desc:'5 meses de streaming para o casal.',valor:'R$ 199,77'},
+    {ico:'🍷',nome:'Jantar Romântico',desc:'Experiência gastronômica especial.',valor:'R$ 320,00'},
+    {ico:'📸',nome:'Álbum de Memórias',desc:'Álbum fotográfico profissional do casamento.',valor:'R$ 450,00'},
+  ];
+  return items.map(p=>`<div class="pres-card">
+    <span class="pres-ico">${p.ico}</span>
+    <p class="pres-name">${p.nome}</p>
+    <p class="pres-desc">${p.desc}</p>
+    <p class="pres-price">${p.valor}</p>
+    <button class="btn-pres" onclick="openGift('${p.nome}','${p.ico}','${p.valor}')"><span>Presentear</span> →</button>
+  </div>`).join('');
+}
+
+async function abrirPresente(id){
+  try{
+    const res = await fetch(`${SB_URL}/rest/v1/presentes?id=eq.${id}&select=*`,{headers:sbHeaders});
+    const data = await res.json();
+    if(!data||!data[0]) return;
+    presAtual = data[0];
+    const valor = presAtual.valor ? 'R$ '+parseFloat(presAtual.valor).toFixed(2).replace('.',',') : 'Contribuição livre';
+    document.getElementById('presModIco').textContent = presAtual.icone||'🎁';
+    document.getElementById('presModTit').textContent = presAtual.nome;
+    document.getElementById('presModDesc').textContent = presAtual.descricao||'';
+    document.getElementById('presModValor').textContent = valor;
+    document.getElementById('presNome').value = '';
+    document.getElementById('presBilhete').value = '';
+    // Update pix key
+    const pixEl = document.getElementById('presPixKey');
+    const mainPix = document.getElementById('pixKey');
+    if(pixEl && mainPix) pixEl.textContent = mainPix.textContent;
+    openMod('presMod');
+  }catch(e){ console.log(e); }
+}
+
+function copyPresPixKey(){
+  const k = document.getElementById('presPixKey').textContent;
+  navigator.clipboard.writeText(k).catch(()=>{});
+  const t = document.getElementById('toast');
+  t.textContent = 'Chave PIX copiada! 💛';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+async function confirmarPresente(){
+  const nome = document.getElementById('presNome').value.trim();
+  if(!nome){ document.getElementById('presNome').style.borderColor='#c0392b'; document.getElementById('presNome').focus(); return; }
+  if(!presAtual) return;
+  document.getElementById('presNome').style.borderColor='';
+  const btn = document.getElementById('btnConfPresente');
+  btn.textContent = 'Registrando...';
+  btn.disabled = true;
+  try{
+    const bilhete = document.getElementById('presBilhete').value.trim();
+    await fetch(`${SB_URL}/rest/v1/presentes?id=eq.${presAtual.id}`,{
+      method:'PATCH',
+      headers:{...sbHeaders,'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        presenteado: true,
+        presenteado_por: nome,
+        bilhete: bilhete||null,
+        data_presente: new Date().toISOString()
+      })
+    });
+    closeMod('presMod');
+    // Show comprovante
+    const valor = presAtual.valor ? 'R$ '+parseFloat(presAtual.valor).toFixed(2).replace('.',',') : 'Contribuição livre';
+    const now = new Date();
+    const dataFmt = now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('cpNome').textContent = nome;
+    document.getElementById('cpPresente').textContent = presAtual.nome;
+    document.getElementById('cpValor').textContent = valor;
+    document.getElementById('cpData').textContent = dataFmt;
+    const bilheteWrap = document.getElementById('cpBilheteWrap');
+    if(bilhete){
+      document.getElementById('cpBilhete').textContent = '"'+bilhete+'"';
+      bilheteWrap.style.display = 'block';
+    } else {
+      bilheteWrap.style.display = 'none';
+    }
+    openMod('comprovanteMod');
+    loadPresentes();
+  }catch(e){ alert('Erro ao registrar. Tente novamente.'); }
+  btn.textContent = '✓ Confirmar que já paguei via PIX';
+  btn.disabled = false;
+}
+
+async function baixarComprovante(){
+  const box = document.getElementById('comprovanteContent');
+  const nome = document.getElementById('cpNome').textContent;
+  const presente = document.getElementById('cpPresente').textContent;
+  const valor = document.getElementById('cpValor').textContent;
+  const data = document.getElementById('cpData').textContent;
+  const bilhete = document.getElementById('cpBilhete').textContent;
+  
+  const text = [
+    '═══════════════════════════════════',
+    '    COMPROVANTE DE PRESENTE',
+    '    Bruna & João · 14/06/2026',
+    '═══════════════════════════════════',
+    '',
+    'De: ' + nome,
+    'Presente: ' + presente,
+    'Valor: ' + valor,
+    'Data: ' + data,
+    bilhete ? ('\nMensagem: ' + bilhete) : '',
+    '',
+    '═══════════════════════════════════',
+    'Obrigados pelo carinho! 💛',
+  ].join('\n');
+  
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'comprovante-presente-' + nome.replace(/\s/g,'-').toLowerCase() + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+loadPresentes();
+
 
 /* ── Gift ── */
 function openGift(name,ico,price){document.getElementById('gIco').textContent=ico;document.getElementById('gTit').textContent=name;document.getElementById('gBody').innerHTML=`Valor sugerido: <strong>${price}</strong><br><br>Presenteie-nos via PIX usando a chave abaixo. Seu gesto de carinho significa o mundo para nós. 💛`;openMod('gMod')}
