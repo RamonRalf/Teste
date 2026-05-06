@@ -558,79 +558,146 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
     <p class="s-eye reveal">Lista de Casamento</p>
     <h2 class="s-h reveal d1">Presentes <em>com amor</em></h2>
     <p class="s-p reveal d2">Sua presença já é o maior presente que poderíamos receber. Mas se o seu coração quiser nos mimar, escolha com carinho qualquer item abaixo.</p>
+
+    <!-- CARRINHO BUTTON -->
+    <div style="display:flex;justify-content:center;margin-bottom:2rem">
+      <button onclick="abrirCarrinho()" id="btnCarrinho" style="
+        display:flex;align-items:center;gap:.8rem;
+        padding:.9rem 2rem;
+        border:1px solid rgba(184,150,90,.3);
+        background:rgba(255,255,255,.04);
+        font-family:'Raleway',sans-serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;
+        color:rgba(250,247,242,.5);cursor:pointer;transition:all .3s;
+      " onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'"
+         onmouseout="this.style.borderColor='rgba(184,150,90,.3)';this.style.color='rgba(250,247,242,.5)'">
+        🛒 <span id="carrinhoLabel">Carrinho vazio</span>
+      </button>
+    </div>
+
     <div class="pres-grid" id="presGrid">
       <div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(250,247,242,.3);font-style:italic">Carregando presentes...</div>
     </div>
   </div>
 </section>
 
-<!-- MODAL PRESENTE SITE -->
-<div class="modal-bg" id="presMod" onclick="bgClose(event,'presMod')">
-  <div class="modal-box" style="max-width:500px">
-    <button class="m-close" onclick="closeMod('presMod')">✕</button>
-    <span class="m-ico" id="presModIco">🎁</span>
-    <h3 class="m-title" id="presModTit">Presente</h3>
-    <p class="m-body" id="presModDesc" style="margin-bottom:1.2rem"></p>
-    <p style="font-size:1.1rem;font-weight:400;color:var(--gold);margin-bottom:1.5rem" id="presModValor"></p>
+<!-- MODAL CARRINHO -->
+<div class="modal-bg" id="carrinhoMod" onclick="bgClose(event,'carrinhoMod')">
+  <div class="modal-box" style="max-width:520px;max-height:85vh;overflow-y:auto;padding:0">
+    <!-- Header -->
+    <div style="padding:1.8rem 2rem;border-bottom:1px solid var(--gold3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--ivory);z-index:2">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:300;color:var(--dark)">🛒 Meu Carrinho</h3>
+      <button class="m-close" style="position:static" onclick="closeMod('carrinhoMod')">✕</button>
+    </div>
 
-    <div style="display:flex;flex-direction:column;gap:1rem" id="presModForm">
-      <div class="f-field">
-        <label class="f-lbl">Seu nome *</label>
-        <input class="f-in" id="presNome" type="text" placeholder="Como quer ser lembrado(a)">
-      </div>
-      <div class="f-field">
-        <label class="f-lbl">Bilhete personalizado 💌</label>
-        <textarea class="f-in" id="presBilhete" placeholder="Escreva uma mensagem carinhosa para o casal..." style="min-height:90px;resize:vertical"></textarea>
+    <!-- Items -->
+    <div id="carrinhoItems" style="padding:1.5rem 2rem"></div>
+
+    <!-- Total -->
+    <div style="padding:1.2rem 2rem;border-top:1px solid var(--gold3);background:white">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:.9rem;color:var(--muted)">Total</span>
+        <span style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:300;color:var(--dark)" id="carrinhoTotal">R$ 0,00</span>
       </div>
     </div>
 
-    <div class="pix-wrap" style="margin-top:1.2rem">
-      <p class="pix-lbl">Chave PIX para pagamento</p>
-      <p class="pix-key" id="presPixKey">brunaejoao2026@gmail.com</p>
-      <button class="pix-cp" onclick="copyPresPixKey()">Copiar chave PIX</button>
+    <!-- Buttons -->
+    <div style="padding:1.2rem 2rem;display:flex;flex-direction:column;gap:.8rem">
+      <button onclick="closeMod('carrinhoMod')" style="padding:.9rem;border:1px solid var(--gold3);background:white;font-family:'Raleway',sans-serif;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);cursor:pointer">
+        Adicionar mais itens
+      </button>
+      <button onclick="irParaFinalizacao()" style="padding:.9rem;border:none;background:linear-gradient(135deg,var(--wine),var(--magenta));font-family:'Raleway',sans-serif;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:white;cursor:pointer">
+        Finalizar compra →
+      </button>
     </div>
-
-    <button class="m-dismiss" style="margin-top:1rem;background:linear-gradient(135deg,var(--wine),var(--magenta))" onclick="confirmarPresente()" id="btnConfPresente">
-      ✓ Confirmar que já paguei via PIX
-    </button>
-    <p style="font-size:.7rem;color:var(--muted);text-align:center;margin-top:.6rem">Após o pagamento, clique para registrar seu presente 💛</p>
   </div>
 </div>
 
-<!-- MODAL COMPROVANTE -->
-<div class="modal-bg" id="comprovanteMod" onclick="bgClose(event,'comprovanteMod')">
-  <div class="modal-box" style="max-width:480px;text-align:center" id="comprovanteBox">
-    <button class="m-close" onclick="closeMod('comprovanteMod')">✕</button>
+<!-- MODAL FINALIZAÇÃO -->
+<div class="modal-bg" id="finalizacaoMod" onclick="bgClose(event,'finalizacaoMod')">
+  <div class="modal-box" style="max-width:520px;max-height:90vh;overflow-y:auto;padding:0">
+    <!-- Header -->
+    <div style="padding:1.8rem 2rem;border-bottom:1px solid var(--gold3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--ivory);z-index:2">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:300;color:var(--dark)">Resumo da compra</h3>
+      <button class="m-close" style="position:static" onclick="closeMod('finalizacaoMod')">✕</button>
+    </div>
+
+    <div style="padding:1.5rem 2rem">
+      <!-- Resumo itens -->
+      <div id="resumoItens" style="margin-bottom:1.5rem"></div>
+
+      <!-- Total -->
+      <div style="padding:1rem;background:white;border:1px solid var(--gold3);margin-bottom:1.5rem">
+        <div style="display:flex;justify-content:space-between;margin-bottom:.5rem">
+          <span style="font-size:.85rem;color:var(--muted)">Valor Total dos Presentes</span>
+          <span style="font-size:.85rem;color:var(--dark)" id="resumoValor">R$ 0,00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-top:1px solid var(--gold3);padding-top:.5rem;margin-top:.5rem">
+          <span style="font-size:.9rem;font-weight:500;color:var(--dark)">Total</span>
+          <span style="font-size:1rem;font-weight:500;color:var(--wine)" id="resumoTotal">R$ 0,00</span>
+        </div>
+      </div>
+
+      <!-- Nome -->
+      <div class="f-field" style="margin-bottom:1.2rem">
+        <label class="f-lbl">Insira seu nome *</label>
+        <p style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem">(Este será o nome no comprovante)</p>
+        <input class="f-in" id="finalNome" type="text" placeholder="Seu nome completo">
+      </div>
+
+      <!-- Bilhete -->
+      <div class="f-field" style="margin-bottom:1rem">
+        <label class="f-lbl">Personalize sua mensagem 💌</label>
+        <textarea class="f-in" id="finalBilhete" placeholder="Esta mensagem será enviada ao casal junto com seu presente..." style="min-height:100px;resize:vertical" maxlength="400" oninput="document.getElementById('charCount').textContent=this.value.length"></textarea>
+        <p style="font-size:.68rem;color:var(--muted);text-align:right;margin-top:.3rem">Caracteres: <span id="charCount">0</span>/400</p>
+      </div>
+
+      <!-- Botão IA -->
+      <button onclick="gerarMensagemIA()" id="btnIA" style="
+        width:100%;padding:.9rem;margin-bottom:1.5rem;
+        border:none;background:linear-gradient(135deg,#9b59b6,#e91e8c);
+        font-family:'Raleway',sans-serif;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;
+        color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem
+      ">
+        ✨ Gerar mensagem com IA
+      </button>
+
+      <!-- PIX -->
+      <div class="pix-wrap" style="margin-bottom:1.2rem">
+        <p class="pix-lbl">Chave PIX para pagamento</p>
+        <p class="pix-key" id="finalPixKey">brunaejoao2026@gmail.com</p>
+        <button class="pix-cp" onclick="copyFinalPix()">Copiar chave PIX</button>
+      </div>
+
+      <button onclick="confirmarCompra()" style="
+        width:100%;padding:1.1rem;border:none;
+        background:linear-gradient(135deg,var(--wine),var(--magenta));
+        font-family:'Raleway',sans-serif;font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;
+        color:white;cursor:pointer;
+      " id="btnConfCompra">
+        ✓ Confirmar pagamento via PIX
+      </button>
+      <p style="font-size:.68rem;color:var(--muted);text-align:center;margin-top:.5rem">Após realizar o pagamento, clique para confirmar 💛</p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COMPROVANTE FINAL -->
+<div class="modal-bg" id="comprovanteFinalMod" onclick="bgClose(event,'comprovanteFinalMod')">
+  <div class="modal-box" style="max-width:480px;text-align:center">
+    <button class="m-close" onclick="closeMod('comprovanteFinalMod')">✕</button>
     <span class="m-ico">🎉</span>
     <h3 class="m-title">Presente Confirmado!</h3>
-    <div id="comprovanteContent" style="margin:1.5rem 0;padding:1.5rem;border:1px solid var(--gold3);background:white;text-align:left">
+    <p class="m-body" style="margin-bottom:1.5rem">Obrigados pelo carinho! O casal foi notificado do seu presente. 💛</p>
+    <div id="comprovanteConteudo" style="text-align:left;padding:1.5rem;border:1px solid var(--gold3);background:white;margin-bottom:1.2rem">
       <p style="font-size:.55rem;letter-spacing:.25em;text-transform:uppercase;color:var(--magenta);margin-bottom:1rem">Comprovante de Presente</p>
-      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">De: <strong id="cpNome" style="color:var(--dark)"></strong></p>
-      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">Presente: <strong id="cpPresente" style="color:var(--dark)"></strong></p>
-      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">Valor: <strong id="cpValor" style="color:var(--wine)"></strong></p>
-      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">Data: <strong id="cpData" style="color:var(--dark)"></strong></p>
-      <div id="cpBilheteWrap" style="margin-top:1rem;padding:1rem;background:rgba(155,45,142,.05);border-left:2px solid var(--magenta);display:none">
-        <p style="font-size:.72rem;color:var(--muted);font-style:italic" id="cpBilhete"></p>
-      </div>
+      <div id="comprovanteDetalhes"></div>
     </div>
-    <button class="m-dismiss" onclick="baixarComprovante()" style="background:linear-gradient(135deg,var(--wine),var(--magenta));margin-bottom:.6rem">
+    <button onclick="baixarComprovanteCarrinho()" class="m-dismiss" style="background:linear-gradient(135deg,var(--wine),var(--magenta));margin-bottom:.6rem">
       📥 Baixar Comprovante
     </button>
-    <button class="m-dismiss" onclick="closeMod('comprovanteMod')" style="background:var(--dark)">Fechar</button>
+    <button onclick="closeMod('comprovanteFinalMod');limparCarrinho()" class="m-dismiss" style="background:var(--dark)">Fechar</button>
   </div>
 </div>
-
-<!-- PADRINHOS -->
-<section id="padrinhos">
-  <div class="pad-inner">
-    <p class="s-eye reveal">Família de Coração</p>
-    <h2 class="s-h reveal d1">Nossos <em>Padrinhos</em></h2>
-    <p class="s-p reveal d2">Escolhemos cada um com muito amor e gratidão. São pessoas que fazem parte da nossa história e que tornam este momento ainda mais especial.</p>
-    <div class="pad-grid" id="padGrid">
-      <div class="pad-empty">Carregando padrinhos...</div>
-    </div>
-  </div>
-</section>
 
 <!-- RSVP -->
 <section id="rsvp">
@@ -1011,127 +1078,267 @@ async function loadPadrinhos(){
 }
 loadPadrinhos();
 
-/* ── PRESENTES DINÂMICOS ── */
+/* ── SISTEMA DE CARRINHO ── */
+let carrinho = [];
 let presAtual = null;
+let allPresDB = [];
 
 async function loadPresentes(){
   try{
     const res = await fetch(`${SB_URL}/rest/v1/presentes?order=created_at.asc&select=*`,{headers:sbHeaders});
     const data = await res.json();
-    const grid = document.getElementById('presGrid');
-    if(!grid) return;
-    if(!Array.isArray(data)||data.length===0){
-      // Fallback: mostrar presentes padrão
-      grid.innerHTML = presDefaultHTML();
-      return;
-    }
-    grid.innerHTML = data.map(p=>{
-      const dado = p.presenteado;
-      const valor = p.valor ? 'R$ '+parseFloat(p.valor).toFixed(2).replace('.',',') : 'Contribuição livre';
-      const img = p.foto_url 
-        ? `<img src="${p.foto_url}" class="pres-card-img" alt="${p.nome}" onerror="this.style.display='none'">`
-        : `<div class="pres-card-img-placeholder">${p.icone||'🎁'}</div>`;
-      return `<div class="pres-card${dado?' dado':''}">
-        ${img}
-        <span class="pres-ico" style="display:${p.foto_url?'none':'block'}">${p.icone||'🎁'}</span>
-        <p class="pres-name">${p.nome}</p>
-        <p class="pres-desc">${p.descricao||''}</p>
-        <p class="pres-price">${valor}</p>
-        ${!dado ? `<button class="btn-pres" onclick="abrirPresente('${p.id}')"><span>Presentear</span> →</button>` : `<p style="font-size:.7rem;color:rgba(39,174,96,.7);margin-top:.8rem">✓ Já presenteado por ${p.presenteado_por||'alguém especial'}</p>`}
-      </div>`;
-    }).join('');
+    allPresDB = Array.isArray(data) ? data : [];
+    renderPresGrid();
   }catch(e){
     console.log('Presentes error:',e);
-    const grid = document.getElementById('presGrid');
-    if(grid) grid.innerHTML = presDefaultHTML();
+    renderPresGrid();
   }
 }
 
-function presDefaultHTML(){
-  const items = [
-    {ico:'✈️',nome:'Lua de Mel',desc:'Contribuição para nossa primeira viagem como casal.',valor:'Sugerido R$ 500,00'},
-    {ico:'🏠',nome:'Nosso Novo Lar',desc:'Ajude a montar o ninho onde nossa história continua.',valor:'Sugerido R$ 300,00'},
-    {ico:'🎬',nome:'Noite de Cinema',desc:'5 meses de streaming para o casal.',valor:'R$ 199,77'},
-    {ico:'🍷',nome:'Jantar Romântico',desc:'Experiência gastronômica especial.',valor:'R$ 320,00'},
-    {ico:'📸',nome:'Álbum de Memórias',desc:'Álbum fotográfico profissional do casamento.',valor:'R$ 450,00'},
+function renderPresGrid(){
+  const grid = document.getElementById('presGrid');
+  if(!grid) return;
+  const items = allPresDB.length > 0 ? allPresDB : getDefaultPresentes();
+  grid.innerHTML = items.map(p=>{
+    const dado = p.presenteado;
+    const valor = p.valor ? 'R$ '+parseFloat(p.valor).toFixed(2).replace('.',',') : 'Contribuição livre';
+    const noCarrinho = carrinho.some(c=>c.id===p.id);
+    const img = p.foto_url
+      ? `<img src="${p.foto_url}" style="width:100%;height:160px;object-fit:cover;display:block;margin-bottom:1rem" onerror="this.style.display='none'">`
+      : `<div style="font-size:3rem;text-align:center;padding:1.5rem 0">${p.icone||'🎁'}</div>`;
+    return `<div class="pres-card${dado?' dado':''}">
+      ${img}
+      <p class="pres-name">${p.nome}</p>
+      <p class="pres-desc">${p.descricao||''}</p>
+      <p class="pres-price" style="font-size:1.1rem;font-weight:500;color:var(--ivory);margin:1rem 0">${valor}</p>
+      ${dado
+        ? `<p style="font-size:.72rem;color:rgba(39,174,96,.7);margin-top:.5rem">✓ Já presenteado</p>`
+        : noCarrinho
+          ? `<button class="btn-pres" style="background:rgba(39,174,96,.15);border-color:rgba(39,174,96,.3);color:#27ae60" onclick="removerDoCarrinho('${p.id}')">✓ No carrinho</button>`
+          : `<button class="btn-pres" onclick="adicionarCarrinho(${JSON.stringify(p).replace(/"/g,'&quot;')})"><span>Presentear</span> →</button>`
+      }
+    </div>`;
+  }).join('');
+}
+
+function getDefaultPresentes(){
+  return [
+    {id:'d1',nome:'Lua de Mel',descricao:'Contribuição para nossa primeira viagem como casal.',valor:500,icone:'✈️'},
+    {id:'d2',nome:'Nosso Novo Lar',descricao:'Ajude a montar o ninho onde nossa história continua.',valor:300,icone:'🏠'},
+    {id:'d3',nome:'Noite de Cinema',descricao:'5 meses de streaming para o casal.',valor:199.77,icone:'🎬'},
+    {id:'d4',nome:'Jantar Romântico',descricao:'Experiência gastronômica especial.',valor:320,icone:'🍷'},
+    {id:'d5',nome:'Álbum de Memórias',descricao:'Álbum fotográfico profissional do casamento.',valor:450,icone:'📸'},
   ];
-  return items.map(p=>`<div class="pres-card">
-    <span class="pres-ico">${p.ico}</span>
-    <p class="pres-name">${p.nome}</p>
-    <p class="pres-desc">${p.desc}</p>
-    <p class="pres-price">${p.valor}</p>
-    <button class="btn-pres" onclick="openGift('${p.nome}','${p.ico}','${p.valor}')"><span>Presentear</span> →</button>
-  </div>`).join('');
 }
 
-async function abrirPresente(id){
-  try{
-    const res = await fetch(`${SB_URL}/rest/v1/presentes?id=eq.${id}&select=*`,{headers:sbHeaders});
-    const data = await res.json();
-    if(!data||!data[0]) return;
-    presAtual = data[0];
-    const valor = presAtual.valor ? 'R$ '+parseFloat(presAtual.valor).toFixed(2).replace('.',',') : 'Contribuição livre';
-    document.getElementById('presModIco').textContent = presAtual.icone||'🎁';
-    document.getElementById('presModTit').textContent = presAtual.nome;
-    document.getElementById('presModDesc').textContent = presAtual.descricao||'';
-    document.getElementById('presModValor').textContent = valor;
-    document.getElementById('presNome').value = '';
-    document.getElementById('presBilhete').value = '';
-    // Update pix key
-    const pixEl = document.getElementById('presPixKey');
-    const mainPix = document.getElementById('pixKey');
-    if(pixEl && mainPix) pixEl.textContent = mainPix.textContent;
-    openMod('presMod');
-  }catch(e){ console.log(e); }
+function adicionarCarrinho(p){
+  if(!carrinho.some(c=>c.id===p.id)){
+    carrinho.push(p);
+    atualizarBtnCarrinho();
+    renderPresGrid();
+    // Mini feedback
+    const t = document.getElementById('toast');
+    t.textContent = p.nome+' adicionado ao carrinho! 🛒';
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2200);
+  }
 }
 
-function copyPresPixKey(){
-  const k = document.getElementById('presPixKey').textContent;
+function removerDoCarrinho(id){
+  carrinho = carrinho.filter(c=>c.id!==id);
+  atualizarBtnCarrinho();
+  renderPresGrid();
+  renderCarrinho();
+}
+
+function atualizarBtnCarrinho(){
+  const label = document.getElementById('carrinhoLabel');
+  const btn = document.getElementById('btnCarrinho');
+  if(!label) return;
+  if(carrinho.length===0){
+    label.textContent = 'Carrinho vazio';
+    btn.style.color='rgba(250,247,242,.5)';
+    btn.style.borderColor='rgba(184,150,90,.3)';
+  } else {
+    const total = carrinho.reduce((s,p)=>s+(parseFloat(p.valor)||0),0);
+    label.textContent = carrinho.length+' item(s) · R$ '+total.toFixed(2).replace('.',',');
+    btn.style.color='var(--gold)';
+    btn.style.borderColor='var(--gold)';
+  }
+}
+
+function abrirCarrinho(){
+  if(carrinho.length===0){
+    const t = document.getElementById('toast');
+    t.textContent = 'Adicione presentes antes de abrir o carrinho!';
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2200);
+    return;
+  }
+  renderCarrinho();
+  openMod('carrinhoMod');
+}
+
+function renderCarrinho(){
+  const el = document.getElementById('carrinhoItems');
+  if(!el) return;
+  el.innerHTML = carrinho.map(p=>{
+    const valor = p.valor ? 'R$ '+parseFloat(p.valor).toFixed(2).replace('.',',') : 'Livre';
+    const img = p.foto_url
+      ? `<img src="${p.foto_url}" style="width:70px;height:55px;object-fit:cover;border:1px solid var(--gold3)">`
+      : `<div style="width:70px;height:55px;background:var(--gold3);display:flex;align-items:center;justify-content:center;font-size:1.8rem">${p.icone||'🎁'}</div>`;
+    return `<div style="display:flex;align-items:center;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--gold3)">
+      ${img}
+      <div style="flex:1">
+        <p style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:300;color:var(--dark)">${p.nome}</p>
+        <p style="font-size:.8rem;color:var(--wine);margin-top:.2rem">${valor}</p>
+        <button onclick="removerDoCarrinho('${p.id}')" style="font-size:.7rem;color:var(--red);background:none;border:none;cursor:pointer;padding:0;margin-top:.2rem">Remover</button>
+      </div>
+    </div>`;
+  }).join('');
+  const total = carrinho.reduce((s,p)=>s+(parseFloat(p.valor)||0),0);
+  document.getElementById('carrinhoTotal').textContent = 'R$ '+total.toFixed(2).replace('.',',');
+}
+
+function irParaFinalizacao(){
+  closeMod('carrinhoMod');
+  // Build resumo
+  const resumo = document.getElementById('resumoItens');
+  const total = carrinho.reduce((s,p)=>s+(parseFloat(p.valor)||0),0);
+  resumo.innerHTML = `
+    <p style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem">Descrição do presente &nbsp;&nbsp; Valor</p>
+    ${carrinho.map(p=>`
+      <div style="display:flex;align-items:center;gap:.8rem;padding:.8rem 0;border-bottom:1px solid var(--gold3)">
+        ${p.foto_url?`<img src="${p.foto_url}" style="width:50px;height:40px;object-fit:cover">`:`<span style="font-size:1.5rem">${p.icone||'🎁'}</span>`}
+        <div style="flex:1">
+          <p style="font-size:.85rem;font-weight:400;color:var(--dark)">${p.nome}</p>
+        </div>
+        <p style="font-size:.85rem;color:var(--dark)">${p.valor?'R$ '+parseFloat(p.valor).toFixed(2).replace('.',','):'Livre'}</p>
+      </div>`).join('')}
+  `;
+  document.getElementById('resumoValor').textContent = 'R$ '+total.toFixed(2).replace('.',',');
+  document.getElementById('resumoTotal').textContent = 'R$ '+total.toFixed(2).replace('.',',');
+  // Sync pix
+  const mainPix = document.getElementById('pixKey');
+  const finalPix = document.getElementById('finalPixKey');
+  if(mainPix&&finalPix) finalPix.textContent = mainPix.textContent;
+  document.getElementById('finalNome').value='';
+  document.getElementById('finalBilhete').value='';
+  document.getElementById('charCount').textContent='0';
+  openMod('finalizacaoMod');
+}
+
+function copyFinalPix(){
+  const k = document.getElementById('finalPixKey').textContent;
   navigator.clipboard.writeText(k).catch(()=>{});
   const t = document.getElementById('toast');
   t.textContent = 'Chave PIX copiada! 💛';
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2600);
+  setTimeout(()=>t.classList.remove('show'),2400);
 }
 
-async function confirmarPresente(){
-  const nome = document.getElementById('presNome').value.trim();
-  if(!nome){ document.getElementById('presNome').style.borderColor='#c0392b'; document.getElementById('presNome').focus(); return; }
-  if(!presAtual) return;
-  document.getElementById('presNome').style.borderColor='';
-  const btn = document.getElementById('btnConfPresente');
-  btn.textContent = 'Registrando...';
-  btn.disabled = true;
+async function gerarMensagemIA(){
+  const btn = document.getElementById('btnIA');
+  btn.textContent='✨ Gerando...';
+  btn.disabled=true;
+  const nomes = carrinho.map(p=>p.nome).join(', ');
   try{
-    const bilhete = document.getElementById('presBilhete').value.trim();
-    await fetch(`${SB_URL}/rest/v1/presentes?id=eq.${presAtual.id}`,{
-      method:'PATCH',
-      headers:{...sbHeaders,'Prefer':'return=minimal'},
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        presenteado: true,
-        presenteado_por: nome,
-        bilhete: bilhete||null,
-        data_presente: new Date().toISOString()
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        messages:[{role:'user',content:`Escreva uma mensagem de presente de casamento curta, carinhosa e pessoal (máximo 3 frases) para o casal Bruna e João. O presente escolhido foi: ${nomes}. Escreva em português, com muito carinho e leveza, sem mencionar o presente explicitamente.`}]
       })
     });
-    closeMod('presMod');
-    // Show comprovante
-    const valor = presAtual.valor ? 'R$ '+parseFloat(presAtual.valor).toFixed(2).replace('.',',') : 'Contribuição livre';
+    const data = await resp.json();
+    const msg = data.content?.[0]?.text||'';
+    if(msg){
+      document.getElementById('finalBilhete').value = msg;
+      document.getElementById('charCount').textContent = msg.length;
+    }
+  }catch(e){ console.log(e); }
+  btn.innerHTML='✨ Gerar mensagem com IA';
+  btn.disabled=false;
+}
+
+async function confirmarCompra(){
+  const nome = document.getElementById('finalNome').value.trim();
+  if(!nome){ document.getElementById('finalNome').style.borderColor='#c0392b'; document.getElementById('finalNome').focus(); return; }
+  document.getElementById('finalNome').style.borderColor='';
+  const btn = document.getElementById('btnConfCompra');
+  btn.textContent='Registrando...'; btn.disabled=true;
+  const bilhete = document.getElementById('finalBilhete').value.trim();
+  const total = carrinho.reduce((s,p)=>s+(parseFloat(p.valor)||0),0);
+  try{
+    // Mark each present as given
+    for(const p of carrinho){
+      if(p.id && !p.id.startsWith('d')){
+        await fetch(`${SB_URL}/rest/v1/presentes?id=eq.${p.id}`,{
+          method:'PATCH',
+          headers:{...sbHeaders,'Prefer':'return=minimal'},
+          body:JSON.stringify({presenteado:true,presenteado_por:nome,bilhete:bilhete||null,data_presente:new Date().toISOString()})
+        });
+      }
+    }
+    // Build comprovante
     const now = new Date();
     const dataFmt = now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('cpNome').textContent = nome;
-    document.getElementById('cpPresente').textContent = presAtual.nome;
-    document.getElementById('cpValor').textContent = valor;
-    document.getElementById('cpData').textContent = dataFmt;
-    const bilheteWrap = document.getElementById('cpBilheteWrap');
-    if(bilhete){
-      document.getElementById('cpBilhete').textContent = '"'+bilhete+'"';
-      bilheteWrap.style.display = 'block';
-    } else {
-      bilheteWrap.style.display = 'none';
-    }
-    openMod('comprovanteMod');
+    const itensHTML = carrinho.map(p=>`<p style="font-size:.8rem;color:var(--muted);margin-bottom:.2rem">· ${p.nome} ${p.valor?'(R$ '+parseFloat(p.valor).toFixed(2).replace('.',',')+')':''}</p>`).join('');
+    document.getElementById('comprovanteDetalhes').innerHTML = `
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.3rem">De: <strong style="color:var(--dark)">${nome}</strong></p>
+      <div style="margin:.5rem 0">${itensHTML}</div>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.3rem">Total: <strong style="color:var(--wine)">R$ ${total.toFixed(2).replace('.',',')}</strong></p>
+      <p style="font-size:.8rem;color:var(--muted)">Data: <strong style="color:var(--dark)">${dataFmt}</strong></p>
+      ${bilhete?`<div style="margin-top:.8rem;padding:.8rem;background:rgba(155,45,142,.05);border-left:2px solid var(--magenta)"><p style="font-size:.78rem;color:var(--muted);font-style:italic">"${bilhete}"</p></div>`:''}
+    `;
+    closeMod('finalizacaoMod');
+    openMod('comprovanteFinalMod');
     loadPresentes();
+  }catch(e){ alert('Erro ao registrar. Tente novamente.'); }
+  btn.textContent='✓ Confirmar pagamento via PIX'; btn.disabled=false;
+}
+
+function baixarComprovanteCarrinho(){
+  const nome = document.getElementById('finalNome')?.value||'convidado';
+  const total = carrinho.reduce((s,p)=>s+(parseFloat(p.valor)||0),0);
+  const bilhete = document.getElementById('finalBilhete')?.value||'';
+  const now = new Date();
+  const linhas = [
+    '═══════════════════════════════════',
+    '    COMPROVANTE DE PRESENTE',
+    '    Bruna & João · 14/06/2026',
+    '═══════════════════════════════════',
+    '',
+    'De: '+nome,
+    'Data: '+now.toLocaleDateString('pt-BR'),
+    '',
+    'Presentes:',
+    ...carrinho.map(p=>'  · '+p.nome+(p.valor?' - R$ '+parseFloat(p.valor).toFixed(2).replace('.',','):'')),
+    '',
+    'Total: R$ '+total.toFixed(2).replace('.',','),
+    bilhete?('
+Mensagem: '+bilhete):'',
+    '',
+    '═══════════════════════════════════',
+    'Obrigados pelo carinho! 💛',
+  ];
+  const blob = new Blob([linhas.join('
+')],{type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='comprovante-'+nome.replace(/\s/g,'-').toLowerCase()+'.txt';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function limparCarrinho(){
+  carrinho=[];
+  atualizarBtnCarrinho();
+  renderPresGrid();
+}
+
+loadPresentes();
   }catch(e){ alert('Erro ao registrar. Tente novamente.'); }
   btn.textContent = '✓ Confirmar que já paguei via PIX';
   btn.disabled = false;
