@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -509,16 +510,16 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
       <h2 class="s-h reveal d1">A <em>Cerimônia</em></h2>
       <p class="s-p reveal d2" style="max-width:440px">Gostaríamos de contar com a sua presença no momento mais especial de nossas vidas. A cerimônia será íntima, pontual e cheia de emoção.</p>
       <div class="cer-grid reveal d2">
-        <div class="cer-block"><span class="cer-block-ico">📅</span><p class="cer-block-lbl">Data</p><p class="cer-block-val">14 de Junho</p><p class="cer-block-sub">2026 · Sábado</p></div>
-        <div class="cer-block"><span class="cer-block-ico">🕓</span><p class="cer-block-lbl">Horário</p><p class="cer-block-val">16h00</p><p class="cer-block-sub">Pontualmente</p></div>
-        <div class="cer-block"><span class="cer-block-ico">🌿</span><p class="cer-block-lbl">Local</p><p class="cer-block-val">Espaço Vila Verde</p><p class="cer-block-sub">Tiradentes, MG</p></div>
-        <div class="cer-block"><span class="cer-block-ico">🥂</span><p class="cer-block-lbl">Recepção</p><p class="cer-block-val">Logo após a cerimônia</p><p class="cer-block-sub">Jantar & Festa</p></div>
+        <div class="cer-block"><span class="cer-block-ico">📅</span><p class="cer-block-lbl">Data</p><p class="cer-block-val" id="cerData">14 de Junho</p><p class="cer-block-sub" id="cerAno">2026 · Sábado</p></div>
+        <div class="cer-block"><span class="cer-block-ico">🕓</span><p class="cer-block-lbl">Horário</p><p class="cer-block-val" id="cerHorario">16h00</p><p class="cer-block-sub">Pontualmente</p></div>
+        <div class="cer-block"><span class="cer-block-ico">🌿</span><p class="cer-block-lbl">Local</p><p class="cer-block-val" id="cerLocal">Espaço Vila Verde</p><p class="cer-block-sub" id="cerEndereco">Tiradentes, MG</p></div>
+        <div class="cer-block"><span class="cer-block-ico">🥂</span><p class="cer-block-lbl">Recepção</p><p class="cer-block-val" id="cerRecepcao">Logo após a cerimônia</p><p class="cer-block-sub" id="cerRecepcaoSub">Jantar & Festa</p></div>
       </div>
-      <div class="map-box reveal d3">
-        <div class="map-pin-wrap"><div class="map-pulse"></div><div class="map-dot"></div></div>
-        <div class="map-lbl">Espaço Vila Verde · Tiradentes, MG</div>
+      <div class="map-box reveal d3" style="padding:0;overflow:hidden;height:260px">
+        <iframe id="mapIframe" src="https://maps.google.com/maps?q=Espaco+Vila+Verde+Tiradentes+MG&output=embed&z=15" width="100%" height="100%" style="border:0;display:block" allowfullscreen loading="lazy"></iframe>
+        <div class="map-lbl" id="mapLbl" style="position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);background:white;padding:.5rem 1.2rem;font-size:.68rem;white-space:nowrap;z-index:2">Espaço Vila Verde · Tiradentes, MG</div>
       </div>
-      <a href="https://maps.google.com/?q=Tiradentes,MG" target="_blank" class="btn-dir reveal d3">
+      <a href="https://maps.google.com/?q=Tiradentes,MG" target="_blank" class="btn-dir reveal d3" id="mapLink">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
         Ver rota no Google Maps
       </a>
@@ -923,35 +924,6 @@ async function doRSVP(){
 
 
 /* ── PADRINHOS (público) ── */
-async function loadPadrinhos(){
-  try{
-    const res = await fetch(
-      `${SB_URL}/rest/v1/padrinhos?order=ordem.asc,nome.asc&select=*`,
-      {headers:sbHeaders}
-    );
-    const data = await res.json();
-    const grid = document.getElementById('padGrid');
-    if(!Array.isArray(data)||data.length===0){
-      grid.innerHTML = '<div class="pad-empty">Em breve...</div>';
-      return;
-    }
-    grid.innerHTML = data.map(p=>`
-      <div class="pad-card reveal">
-        <div class="pad-av">
-          ${p.foto_url
-            ? `<img src="${p.foto_url}" alt="${p.nome}" onerror="this.parentElement.innerHTML='${p.nome.charAt(0)}'">` 
-            : p.nome.charAt(0)}
-        </div>
-        <p class="pad-cargo">${p.cargo||''}</p>
-        <p class="pad-name">${p.nome}</p>
-        <p class="pad-desc">${p.descricao||''}</p>
-      </div>
-    `).join('');
-    // re-observe new elements
-    grid.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-  }catch(e){ console.log('Padrinhos error:',e); }
-}
-loadPadrinhos();
 
 /* ── Gift ── */
 function openGift(name,ico,price){document.getElementById('gIco').textContent=ico;document.getElementById('gTit').textContent=name;document.getElementById('gBody').innerHTML=`Valor sugerido: <strong>${price}</strong><br><br>Presenteie-nos via PIX usando a chave abaixo. Seu gesto de carinho significa o mundo para nós. 💛`;openMod('gMod')}
