@@ -236,7 +236,20 @@ button{font-family:inherit;cursor:none}
 .pad-empty{text-align:center;padding:3rem;color:var(--muted);font-style:italic;font-family:'Playfair Display',serif;font-size:1.1rem}
 
 
-/* PRESENTES */
+/* PADRINHOS */
+#padrinhos{padding:8rem 2rem;background:var(--ivory2);position:relative}
+.pad-inner{max-width:1100px;margin:0 auto}
+.pad-grid{display:grid;grid-template-columns:1fr;gap:3px;margin-top:3rem}
+@media(min-width:961px){.pad-grid{grid-template-columns:repeat(3,1fr)}}
+.pad-card{background:white;padding:0 0 1.8rem 0;text-align:center;position:relative;overflow:hidden;transition:transform .3s}
+.pad-card:hover{transform:translateY(-4px)}
+.pad-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--magenta),var(--orange));transform:scaleX(0);transition:transform .4s}
+.pad-card:hover::after{transform:scaleX(1)}
+.pad-av{width:100%;height:280px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:3rem;font-style:italic;color:var(--magenta);background:rgba(155,45,142,.06);border-bottom:1px solid var(--gold3)}
+.pad-av img{width:100%;height:100%;object-fit:cover;object-position:center}
+.pad-cargo{font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--magenta);padding:1.5rem 1.5rem .3rem}
+.pad-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:300;color:var(--dark);padding:0 1.5rem;margin-bottom:.5rem}
+.pad-desc{font-size:.8rem;color:var(--muted);line-height:1.7;padding:0 1.5rem}
 .pres-card.dado{opacity:.55;pointer-events:none;position:relative}
 .pres-card.dado::before{content:'Presenteado';position:absolute;top:.8rem;right:.8rem;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;background:var(--green);color:white;padding:.3rem .7rem;z-index:2}
 
@@ -541,22 +554,96 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
   <div class="g-cell"><div class="g-bg"></div><div class="g-ov"></div><p class="g-txt" style="font-size:1.2rem">Minas<br>Gerais</p></div>
 </div>
 
+<!-- PADRINHOS -->
+<section id="padrinhos">
+  <div class="pad-inner">
+    <p class="s-eye reveal">Família de Coração</p>
+    <h2 class="s-h reveal d1">Nossos <em>Padrinhos</em></h2>
+    <p class="s-p reveal d2">Escolhemos cada um com muito amor e gratidão.</p>
+    <div class="pad-grid" id="padGrid"><div style="text-align:center;padding:3rem;color:var(--muted);font-style:italic">Carregando...</div></div>
+  </div>
+</section>
+
 <!-- PRESENTES -->
 <section id="presentes">
   <div class="pres-inner">
     <p class="s-eye reveal">Lista de Casamento</p>
     <h2 class="s-h reveal d1">Presentes <em>com amor</em></h2>
-    <p class="s-p reveal d2">Sua presença já é o maior presente que poderíamos receber. Mas se o seu coração quiser nos mimar, escolha com carinho qualquer item abaixo.</p>
+    <p class="s-p reveal d2">Sua presença já é o maior presente. Mas se quiser nos mimar, escolha um item abaixo.</p>
     <div style="display:flex;justify-content:center;margin-bottom:2rem">
-      <button onclick="abrirCarrinho()" id="btnCarrinho" style="display:flex;align-items:center;gap:.8rem;padding:.9rem 2rem;border:1px solid rgba(184,150,90,.3);background:rgba(255,255,255,.04);font-family:'Raleway',sans-serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(250,247,242,.5);cursor:pointer;transition:all .3s">
+      <button onclick="abrirCarrinho()" id="btnCarrinho" style="display:flex;align-items:center;gap:.8rem;padding:.9rem 2rem;border:1px solid rgba(184,150,90,.3);background:rgba(255,255,255,.04);font-family:'Raleway',sans-serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(250,247,242,.5);cursor:pointer">
         🛒 <span id="carrinhoLabel">Carrinho vazio</span>
       </button>
     </div>
-    <div class="pres-grid" id="presGrid">
-      <div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(250,247,242,.3);font-style:italic">Carregando presentes...</div>
-    </div>
+    <div class="pres-grid" id="presGrid"><div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(250,247,242,.3)">Carregando...</div></div>
   </div>
 </section>
+
+<!-- MODALS CARRINHO -->
+<div class="modal-bg" id="carrinhoMod" onclick="bgClose(event,'carrinhoMod')">
+  <div class="modal-box" style="max-width:520px;max-height:85vh;overflow-y:auto;padding:0">
+    <div style="padding:1.5rem 2rem;border-bottom:1px solid var(--gold3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--ivory);z-index:2">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:300">🛒 Meu Carrinho</h3>
+      <button class="m-close" style="position:static" onclick="closeMod('carrinhoMod')">✕</button>
+    </div>
+    <div id="carrinhoItems" style="padding:1.5rem 2rem"></div>
+    <div style="padding:1rem 2rem;border-top:1px solid var(--gold3)">
+      <div style="display:flex;justify-content:space-between">
+        <span style="font-size:.9rem;color:var(--muted)">Total</span>
+        <span style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:300;color:var(--dark)" id="carrinhoTotal">R$ 0,00</span>
+      </div>
+    </div>
+    <div style="padding:1.2rem 2rem;display:flex;flex-direction:column;gap:.7rem">
+      <button onclick="closeMod('carrinhoMod')" style="padding:.85rem;border:1px solid var(--gold3);background:white;font-family:'Raleway',sans-serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);cursor:pointer">Adicionar mais itens</button>
+      <button onclick="irParaFinalizacao()" style="padding:.85rem;border:none;background:linear-gradient(135deg,#7b1c2e,#9b2d8e);font-family:'Raleway',sans-serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:white;cursor:pointer">Finalizar compra →</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="finalizacaoMod" onclick="bgClose(event,'finalizacaoMod')">
+  <div class="modal-box" style="max-width:520px;max-height:90vh;overflow-y:auto;padding:0">
+    <div style="padding:1.5rem 2rem;border-bottom:1px solid var(--gold3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--ivory);z-index:2">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:300">Resumo da compra</h3>
+      <button class="m-close" style="position:static" onclick="closeMod('finalizacaoMod')">✕</button>
+    </div>
+    <div style="padding:1.5rem 2rem">
+      <div id="resumoItens" style="margin-bottom:1.2rem"></div>
+      <div style="padding:1rem;background:white;border:1px solid var(--gold3);margin-bottom:1.2rem">
+        <div style="display:flex;justify-content:space-between;margin-bottom:.4rem"><span style="font-size:.83rem;color:var(--muted)">Valor Total</span><span style="font-size:.83rem;color:var(--dark)" id="resumoValor">R$ 0,00</span></div>
+        <div style="display:flex;justify-content:space-between;border-top:1px solid var(--gold3);padding-top:.5rem"><span style="font-size:.9rem;font-weight:500;color:var(--dark)">Total</span><span style="font-size:1rem;font-weight:500;color:#7b1c2e" id="resumoTotal">R$ 0,00</span></div>
+      </div>
+      <div class="f-field" style="margin-bottom:1rem"><label class="f-lbl">Seu nome *</label><input class="f-in" id="finalNome" type="text" placeholder="Seu nome completo"></div>
+      <div class="f-field" style="margin-bottom:1rem">
+        <label class="f-lbl">Mensagem 💌</label>
+        <textarea class="f-in" id="finalBilhete" placeholder="Escreva uma mensagem para o casal..." style="min-height:90px;resize:vertical" maxlength="400" oninput="document.getElementById('charCount').textContent=this.value.length"></textarea>
+        <p style="font-size:.68rem;color:var(--muted);text-align:right">Caracteres: <span id="charCount">0</span>/400</p>
+      </div>
+      <button onclick="gerarMensagemIA()" id="btnIA" style="width:100%;padding:.85rem;margin-bottom:1.2rem;border:none;background:linear-gradient(135deg,#9b59b6,#e91e8c);font-family:'Raleway',sans-serif;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:white;cursor:pointer">✨ Gerar mensagem com IA</button>
+      <div class="pix-wrap" style="margin-bottom:1rem">
+        <p class="pix-lbl">Chave PIX</p>
+        <p class="pix-key" id="finalPixKey">brunaejoao2026@gmail.com</p>
+        <button class="pix-cp" onclick="copyFinalPix()">Copiar chave PIX</button>
+      </div>
+      <button onclick="confirmarCompra()" id="btnConfCompra" style="width:100%;padding:1rem;border:none;background:linear-gradient(135deg,#7b1c2e,#9b2d8e);font-family:'Raleway',sans-serif;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:white;cursor:pointer">Confirmar pagamento via PIX</button>
+      <p style="font-size:.68rem;color:var(--muted);text-align:center;margin-top:.5rem">Após pagar, clique para confirmar 💛</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="comprovanteFinalMod" onclick="bgClose(event,'comprovanteFinalMod')">
+  <div class="modal-box" style="max-width:460px;text-align:center">
+    <button class="m-close" onclick="closeMod('comprovanteFinalMod')">✕</button>
+    <span class="m-ico">🎉</span>
+    <h3 class="m-title">Presente Confirmado!</h3>
+    <p class="m-body" style="margin-bottom:1.2rem">Obrigados pelo carinho! 💛</p>
+    <div id="comprovanteConteudo" style="text-align:left;padding:1.2rem;border:1px solid var(--gold3);background:white;margin-bottom:1rem">
+      <p style="font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--magenta);margin-bottom:.8rem">Comprovante de Presente</p>
+      <div id="comprovanteDetalhes"></div>
+    </div>
+    <button onclick="baixarComprovanteCarrinho()" class="m-dismiss" style="background:linear-gradient(135deg,#7b1c2e,#9b2d8e);margin-bottom:.5rem">Baixar Comprovante</button>
+    <button onclick="closeMod('comprovanteFinalMod');limparCarrinho()" class="m-dismiss" style="background:var(--dark)">Fechar</button>
+  </div>
+</div>
 
 <!-- PADRINHOS -->
 <section id="padrinhos">
@@ -866,321 +953,6 @@ async function loadPadrinhos(){
 }
 loadPadrinhos();
 
-
-/* ── CONFIGURAÇÕES DINÂMICAS ── */
-async function loadSiteConfig(){
-  try{
-    var res=await fetch(SB_URL+'/rest/v1/configuracoes?id=eq.1&select=*',{headers:sbHeaders});
-    var data=await res.json();
-    if(!data||!data[0]) return;
-    var cfg=data[0];
-    var d=new Date((cfg.data_casamento||'2026-06-14')+'T12:00:00');
-    var meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-    var diasSem=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-    var hr=(cfg.horario||'16:00').split(':')[0];
-    var mn=(cfg.horario||'16:00').split(':')[1];
-    var horarioFmt=hr+'h'+(mn!=='00'?mn:'');
-    var rsvpD=new Date((cfg.rsvp_limite||'2026-05-31')+'T12:00:00');
-    var rsvpFmt=rsvpD.getDate()+' de '+meses[rsvpD.getMonth()]+' · '+rsvpD.getFullYear();
-    window.weddingDate=new Date(cfg.data_casamento+'T'+cfg.horario+':00');
-    var elData=document.getElementById('cerData');
-    var elAno=document.getElementById('cerAno');
-    var elHorario=document.getElementById('cerHorario');
-    var elLocal=document.getElementById('cerLocal');
-    var elEndereco=document.getElementById('cerEndereco');
-    var elRecepcao=document.getElementById('cerRecepcao');
-    var elMapLbl=document.getElementById('mapLbl');
-    var elMapLink=document.getElementById('mapLink');
-    var mapIframe=document.getElementById('mapIframe');
-    if(elData) elData.innerHTML=d.getDate()+' de<br>'+meses[d.getMonth()];
-    if(elAno) elAno.textContent=d.getFullYear()+' · '+diasSem[d.getDay()];
-    if(elHorario) elHorario.textContent=horarioFmt;
-    if(elLocal) elLocal.textContent=cfg.local||'Igreja Nossa Senhora das Merces';
-    if(elEndereco) elEndereco.textContent=cfg.endereco||'Tiradentes, MG';
-    if(elRecepcao) elRecepcao.textContent=cfg.local_recepcao||'Logo após a cerimônia';
-    if(elMapLbl) elMapLbl.textContent=(cfg.local||'Igreja')+'  ·  '+(cfg.endereco||'Tiradentes, MG');
-    if(elMapLink&&cfg.maps_url) elMapLink.setAttribute('href',cfg.maps_url);
-    if(mapIframe&&cfg.local){
-      var q=encodeURIComponent((cfg.local||'')+' '+(cfg.endereco||'Tiradentes MG'));
-      mapIframe.src='https://maps.google.com/maps?q='+q+'&output=embed&z=15';
-    }
-    var dlVal=document.querySelector('.dl-val');
-    if(dlVal) dlVal.textContent=rsvpFmt;
-    var contactEl=document.querySelector('.contact');
-    if(contactEl) contactEl.innerHTML='<strong>Bruna:</strong> '+(cfg.tel_noiva||'(31) 99999-0001')+'<br><strong>João:</strong> '+(cfg.tel_noivo||'(31) 99999-0002')+'<br><strong>E-mail:</strong> brunaejoao2026@gmail.com';
-    var pixEl=document.getElementById('pixKey');
-    if(pixEl&&cfg.pix) pixEl.textContent=cfg.pix;
-  }catch(e){console.log('Config error:',e);}
-}
-
-/* ── PADRINHOS ── */
-async function loadPadrinhos(){
-  try{
-    var res=await fetch(SB_URL+'/rest/v1/padrinhos?order=ordem.asc,nome.asc&select=*',{headers:sbHeaders});
-    var data=await res.json();
-    var grid=document.getElementById('padGrid');
-    if(!grid) return;
-    if(!Array.isArray(data)||data.length===0){grid.innerHTML='<div style="text-align:center;padding:3rem;color:var(--muted);font-style:italic">Em breve...</div>';return;}
-    var html='';
-    for(var i=0;i<data.length;i++){
-      var p=data[i];
-      var av='';
-      if(p.foto_url){av='<img src="'+p.foto_url+'" style="width:100%;height:100%;object-fit:cover;object-position:center">';}
-      else{av=p.nome?p.nome.charAt(0):'?';}
-      html+='<div class="pad-card">';
-      html+='<div class="pad-av">'+av+'</div>';
-      html+='<p class="pad-cargo">'+(p.cargo||'')+'</p>';
-      html+='<p class="pad-name">'+(p.nome||'')+'</p>';
-      html+='<p class="pad-desc">'+(p.descricao||'')+'</p>';
-      html+='</div>';
-    }
-    grid.innerHTML=html;
-  }catch(e){console.log('Padrinhos error:',e);}
-}
-
-/* ── CARRINHO DE PRESENTES ── */
-var carrinho=[];
-var allPresDB=[];
-
-async function loadPresentes(){
-  try{
-    var res=await fetch(SB_URL+'/rest/v1/presentes?order=created_at.asc&select=*',{headers:sbHeaders});
-    var data=await res.json();
-    allPresDB=Array.isArray(data)?data:[];
-  }catch(e){allPresDB=[];}
-  renderPresGrid();
-}
-
-function getDefaultPresentes(){
-  return [
-    {id:'d1',nome:'Lua de Mel',descricao:'Contribuição para nossa primeira viagem como casal.',valor:500,icone:'✈️'},
-    {id:'d2',nome:'Nosso Novo Lar',descricao:'Ajude a montar o ninho onde nossa história continua.',valor:300,icone:'🏠'},
-    {id:'d3',nome:'Noite de Cinema',descricao:'5 meses de streaming para o casal.',valor:199.77,icone:'🎬'},
-    {id:'d4',nome:'Jantar Romântico',descricao:'Experiência gastronômica especial.',valor:320,icone:'🍷'},
-    {id:'d5',nome:'Álbum de Memórias',descricao:'Álbum fotográfico profissional do casamento.',valor:450,icone:'📸'}
-  ];
-}
-
-function renderPresGrid(){
-  var grid=document.getElementById('presGrid');
-  if(!grid) return;
-  var items=allPresDB.length>0?allPresDB:getDefaultPresentes();
-  var html='';
-  for(var i=0;i<items.length;i++){
-    var p=items[i];
-    var dado=p.presenteado;
-    var valor=p.valor?'R$ '+parseFloat(p.valor).toFixed(2).replace('.',','):'Contribuição livre';
-    var noCarrinho=carrinho.some(function(c){return c.id===p.id;});
-    var img='';
-    if(p.foto_url){img='<img src="'+p.foto_url+'" style="width:100%;height:160px;object-fit:cover;display:block;margin-bottom:1rem">';}
-    else{img='<div style="font-size:3rem;text-align:center;padding:1.5rem 0">'+(p.icone||'🎁')+'</div>';}
-    var btn='';
-    if(dado){btn='<p style="font-size:.72rem;color:rgba(39,174,96,.7);margin-top:.5rem">Já presenteado</p>';}
-    else if(noCarrinho){btn='<button class="btn-pres" style="background:rgba(39,174,96,.12);border-color:rgba(39,174,96,.3);color:#27ae60" onclick="removerDoCarrinho(''+p.id+'')">✓ No carrinho</button>';}
-    else{btn='<button class="btn-pres" onclick="adicionarCarrinhoPorId(''+p.id+'')"><span>Presentear</span> →</button>';}
-    html+='<div class="pres-card'+(dado?' dado':'')+'">';
-    html+=img;
-    html+='<p class="pres-name">'+(p.nome||'')+'</p>';
-    html+='<p class="pres-desc">'+(p.descricao||'')+'</p>';
-    html+='<p class="pres-price" style="font-size:1.05rem;font-weight:500;color:var(--ivory);margin:1rem 0">'+valor+'</p>';
-    html+=btn;
-    html+='</div>';
-  }
-  grid.innerHTML=html;
-}
-
-function adicionarCarrinhoPorId(id){
-  var lista=allPresDB.length>0?allPresDB:getDefaultPresentes();
-  var p=lista.find(function(x){return x.id===id;});
-  if(p) adicionarCarrinho(p);
-}
-
-function adicionarCarrinho(p){
-  if(!carrinho.some(function(c){return c.id===p.id;})){
-    carrinho.push(p);
-    atualizarBtnCarrinho();
-    renderPresGrid();
-    var t=document.getElementById('toast');
-    t.textContent=p.nome+' adicionado ao carrinho! 🛒';
-    t.classList.add('show');
-    setTimeout(function(){t.classList.remove('show');},2200);
-  }
-}
-
-function removerDoCarrinho(id){
-  carrinho=carrinho.filter(function(c){return c.id!==id;});
-  atualizarBtnCarrinho();
-  renderPresGrid();
-  renderCarrinho();
-}
-
-function atualizarBtnCarrinho(){
-  var label=document.getElementById('carrinhoLabel');
-  var btn=document.getElementById('btnCarrinho');
-  if(!label) return;
-  if(carrinho.length===0){
-    label.textContent='Carrinho vazio';
-    if(btn){btn.style.color='rgba(250,247,242,.5)';btn.style.borderColor='rgba(184,150,90,.3)';}
-  }else{
-    var total=carrinho.reduce(function(s,p){return s+(parseFloat(p.valor)||0);},0);
-    label.textContent=carrinho.length+' item(s) · R$ '+total.toFixed(2).replace('.',',');
-    if(btn){btn.style.color='var(--gold2)';btn.style.borderColor='var(--gold2)';}
-  }
-}
-
-function abrirCarrinho(){
-  if(carrinho.length===0){
-    var t=document.getElementById('toast');
-    t.textContent='Adicione presentes antes de abrir o carrinho!';
-    t.classList.add('show');
-    setTimeout(function(){t.classList.remove('show');},2200);
-    return;
-  }
-  renderCarrinho();
-  openMod('carrinhoMod');
-}
-
-function renderCarrinho(){
-  var el=document.getElementById('carrinhoItems');
-  if(!el) return;
-  var html='';
-  for(var i=0;i<carrinho.length;i++){
-    var p=carrinho[i];
-    var valor=p.valor?'R$ '+parseFloat(p.valor).toFixed(2).replace('.',','):'Livre';
-    var img='';
-    if(p.foto_url){img='<img src="'+p.foto_url+'" style="width:70px;height:55px;object-fit:cover;border:1px solid var(--gold3)">';}
-    else{img='<div style="width:70px;height:55px;background:var(--gold3);display:flex;align-items:center;justify-content:center;font-size:1.6rem">'+(p.icone||'🎁')+'</div>';}
-    html+='<div style="display:flex;align-items:center;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--gold3)">';
-    html+=img;
-    html+='<div style="flex:1">';
-    html+='<p style="font-size:1rem;font-weight:300;color:var(--dark)">'+p.nome+'</p>';
-    html+='<p style="font-size:.8rem;color:#7b1c2e;margin-top:.2rem">'+valor+'</p>';
-    html+='<button onclick="removerDoCarrinho(''+p.id+'')" style="font-size:.7rem;color:#c0392b;background:none;border:none;cursor:pointer;padding:0;margin-top:.2rem">Remover</button>';
-    html+='</div></div>';
-  }
-  el.innerHTML=html;
-  var total=carrinho.reduce(function(s,p){return s+(parseFloat(p.valor)||0);},0);
-  document.getElementById('carrinhoTotal').textContent='R$ '+total.toFixed(2).replace('.',',');
-}
-
-function irParaFinalizacao(){
-  closeMod('carrinhoMod');
-  var resumo=document.getElementById('resumoItens');
-  var total=carrinho.reduce(function(s,p){return s+(parseFloat(p.valor)||0);},0);
-  var html='<p style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem">Itens selecionados</p>';
-  for(var i=0;i<carrinho.length;i++){
-    var p=carrinho[i];
-    var v=p.valor?'R$ '+parseFloat(p.valor).toFixed(2).replace('.',','):'Livre';
-    html+='<div style="display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--gold3)">';
-    html+='<span style="font-size:1.4rem">'+(p.icone||'🎁')+'</span>';
-    html+='<div style="flex:1"><p style="font-size:.85rem;font-weight:400;color:var(--dark)">'+p.nome+'</p></div>';
-    html+='<p style="font-size:.85rem;color:var(--dark)">'+v+'</p>';
-    html+='</div>';
-  }
-  if(resumo) resumo.innerHTML=html;
-  document.getElementById('resumoValor').textContent='R$ '+total.toFixed(2).replace('.',',');
-  document.getElementById('resumoTotal').textContent='R$ '+total.toFixed(2).replace('.',',');
-  var mainPix=document.getElementById('pixKey');
-  var finalPix=document.getElementById('finalPixKey');
-  if(mainPix&&finalPix) finalPix.textContent=mainPix.textContent;
-  document.getElementById('finalNome').value='';
-  document.getElementById('finalBilhete').value='';
-  document.getElementById('charCount').textContent='0';
-  openMod('finalizacaoMod');
-}
-
-function copyFinalPix(){
-  var k=document.getElementById('finalPixKey').textContent;
-  navigator.clipboard.writeText(k).catch(function(){});
-  var t=document.getElementById('toast');
-  t.textContent='Chave PIX copiada! 💛';
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},2400);
-}
-
-async function gerarMensagemIA(){
-  var btn=document.getElementById('btnIA');
-  btn.textContent='✨ Gerando...';btn.disabled=true;
-  var nomes=carrinho.map(function(p){return p.nome;}).join(', ');
-  try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:200,
-        messages:[{role:'user',content:'Escreva uma mensagem curta e carinhosa (máximo 3 frases) para o casal Bruna e João no casamento deles. Escreva em português, com muito carinho. Presente escolhido: '+nomes}]
-      })
-    });
-    var data=await resp.json();
-    var msg=data.content&&data.content[0]?data.content[0].text:'';
-    if(msg){document.getElementById('finalBilhete').value=msg;document.getElementById('charCount').textContent=msg.length;}
-  }catch(e){console.log(e);}
-  btn.innerHTML='✨ Gerar mensagem com IA';btn.disabled=false;
-}
-
-async function confirmarCompra(){
-  var nome=document.getElementById('finalNome').value.trim();
-  if(!nome){document.getElementById('finalNome').style.borderColor='#c0392b';document.getElementById('finalNome').focus();return;}
-  document.getElementById('finalNome').style.borderColor='';
-  var btn=document.getElementById('btnConfCompra');
-  btn.textContent='Registrando...';btn.disabled=true;
-  var bilhete=document.getElementById('finalBilhete').value.trim();
-  var total=carrinho.reduce(function(s,p){return s+(parseFloat(p.valor)||0);},0);
-  try{
-    for(var i=0;i<carrinho.length;i++){
-      var p=carrinho[i];
-      if(p.id&&!p.id.startsWith('d')){
-        await fetch(SB_URL+'/rest/v1/presentes?id=eq.'+p.id,{
-          method:'PATCH',
-          headers:Object.assign({},sbHeaders,{'Prefer':'return=minimal'}),
-          body:JSON.stringify({presenteado:true,presenteado_por:nome,bilhete:bilhete||null,data_presente:new Date().toISOString()})
-        });
-      }
-    }
-    var now=new Date();
-    var dataFmt=now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    var detHTML='<p style="font-size:.8rem;color:var(--muted);margin-bottom:.3rem">De: <strong style="color:var(--dark)">'+nome+'</strong></p>';
-    for(var j=0;j<carrinho.length;j++){
-      var cp=carrinho[j];
-      detHTML+='<p style="font-size:.78rem;color:var(--muted);margin-bottom:.2rem">· '+cp.nome+(cp.valor?' (R$ '+parseFloat(cp.valor).toFixed(2).replace('.',',')+')':'')+'</p>';
-    }
-    detHTML+='<p style="font-size:.8rem;color:var(--muted);margin-top:.3rem">Total: <strong style="color:#7b1c2e">R$ '+total.toFixed(2).replace('.',',')+'</strong></p>';
-    detHTML+='<p style="font-size:.78rem;color:var(--muted)">Data: '+dataFmt+'</p>';
-    if(bilhete) detHTML+='<div style="margin-top:.8rem;padding:.8rem;background:rgba(155,45,142,.05);border-left:2px solid #9b2d8e"><p style="font-size:.78rem;color:var(--muted);font-style:italic">"'+bilhete+'"</p></div>';
-    document.getElementById('comprovanteDetalhes').innerHTML=detHTML;
-    closeMod('finalizacaoMod');
-    openMod('comprovanteFinalMod');
-    loadPresentes();
-  }catch(e){alert('Erro ao registrar. Tente novamente.');}
-  btn.textContent='✓ Confirmar pagamento via PIX';btn.disabled=false;
-}
-
-function baixarComprovanteCarrinho(){
-  var nome=document.getElementById('finalNome')?document.getElementById('finalNome').value:'convidado';
-  var total=carrinho.reduce(function(s,p){return s+(parseFloat(p.valor)||0);},0);
-  var bilhete=document.getElementById('finalBilhete')?document.getElementById('finalBilhete').value:'';
-  var now=new Date();
-  var linhas=['===================================','    COMPROVANTE DE PRESENTE','    Bruna & Joao · 14/06/2026','===================================','','De: '+nome,'Data: '+now.toLocaleDateString('pt-BR'),'','Presentes:'];
-  for(var i=0;i<carrinho.length;i++){var p=carrinho[i];linhas.push('  · '+p.nome+(p.valor?' - R$ '+parseFloat(p.valor).toFixed(2).replace('.',','): ''));}
-  linhas.push('','Total: R$ '+total.toFixed(2).replace('.',','));
-  if(bilhete) linhas.push('','Mensagem: '+bilhete);
-  linhas.push('','===================================','Obrigados pelo carinho!');
-  var blob=new Blob([linhas.join('
-')],{type:'text/plain;charset=utf-8'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;a.download='comprovante.txt';a.click();URL.revokeObjectURL(url);
-}
-
-function limparCarrinho(){
-  carrinho=[];atualizarBtnCarrinho();renderPresGrid();
-}
-
-// Init
-loadSiteConfig();
-loadPadrinhos();
-loadPresentes();
-
 /* ── Gift ── */
 function openGift(name,ico,price){document.getElementById('gIco').textContent=ico;document.getElementById('gTit').textContent=name;document.getElementById('gBody').innerHTML=`Valor sugerido: <strong>${price}</strong><br><br>Presenteie-nos via PIX usando a chave abaixo. Seu gesto de carinho significa o mundo para nós. 💛`;openMod('gMod')}
 function copyPix(){const k=document.getElementById('pixKey').textContent;navigator.clipboard.writeText(k).catch(()=>{});const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
@@ -1217,99 +989,244 @@ function toggleMusic() {
   }
   playing = !playing;
 }
-</script>
 
 
-<!-- MODAL CARRINHO -->
-<div class="modal-bg" id="carrinhoMod" onclick="bgClose(event,'carrinhoMod')">
-  <div class="modal-box" style="max-width:520px;max-height:85vh;overflow-y:auto;padding:0">
-    <div style="padding:1.5rem 2rem;border-bottom:1px solid var(--gold3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--ivory);z-index:2">
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:300">🛒 Meu Carrinho</h3>
-      <button class="m-close" style="position:static" onclick="closeMod('carrinhoMod')">✕</button>
-    </div>
-    <div id="carrinhoItems" style="padding:1.5rem 2rem"></div>
-    <div style="padding:1rem 2rem;border-top:1px solid var(--gold3)">
-      <div style="display:flex;justify-content:space-between">
-        <span style="font-size:.9rem;color:var(--muted)">Total</span>
-        <span style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:300;color:var(--dark)" id="carrinhoTotal">R$ 0,00</span>
-      </div>
-    </div>
-    <div style="padding:1.2rem 2rem;display:flex;flex-direction:column;gap:.7rem">
-      <button onclick="closeMod('carrinhoMod')" style="padding:.85rem;border:1px solid var(--gold3);background:white;font-family:'Raleway',sans-serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);cursor:pointer">Adicionar mais itens</button>
-      <button onclick="irParaFinalizacao()" style="padding:.85rem;border:none;background:linear-gradient(135deg,#7b1c2e,#9b2d8e);font-family:'Raleway',sans-serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:white;cursor:pointer">Finalizar compra →</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL FINALIZAÇÃO -->
-<div class="modal-bg" id="finalizacaoMod" onclick="bgClose(event,'finalizacaoMod')">
-  <div class="modal-box" style="max-width:520px;max-height:90vh;overflow-y:auto;padding:0">
-    <div style="padding:1.5rem 2rem;border-bottom:1px solid var(--gold3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--ivory);z-index:2">
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:300">Resumo da compra</h3>
-      <button class="m-close" style="position:static" onclick="closeMod('finalizacaoMod')">✕</button>
-    </div>
-    <div style="padding:1.5rem 2rem">
-      <div id="resumoItens" style="margin-bottom:1.2rem"></div>
-      <div style="padding:1rem;background:white;border:1px solid var(--gold3);margin-bottom:1.2rem">
-        <div style="display:flex;justify-content:space-between;margin-bottom:.4rem">
-          <span style="font-size:.83rem;color:var(--muted)">Valor Total</span>
-          <span style="font-size:.83rem;color:var(--dark)" id="resumoValor">R$ 0,00</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;border-top:1px solid var(--gold3);padding-top:.5rem">
-          <span style="font-size:.9rem;font-weight:500;color:var(--dark)">Total</span>
-          <span style="font-size:1rem;font-weight:500;color:#7b1c2e" id="resumoTotal">R$ 0,00</span>
-        </div>
-      </div>
-      <div class="f-field" style="margin-bottom:1rem">
-        <label class="f-lbl">Seu nome *</label>
-        <input class="f-in" id="finalNome" type="text" placeholder="Seu nome completo">
-      </div>
-      <div class="f-field" style="margin-bottom:1rem">
-        <label class="f-lbl">Mensagem personalizada 💌</label>
-        <textarea class="f-in" id="finalBilhete" placeholder="Escreva uma mensagem carinhosa para o casal..." style="min-height:90px;resize:vertical" maxlength="400" oninput="document.getElementById('charCount').textContent=this.value.length"></textarea>
-        <p style="font-size:.68rem;color:var(--muted);text-align:right">Caracteres: <span id="charCount">0</span>/400</p>
-      </div>
-      <button onclick="gerarMensagemIA()" id="btnIA" style="width:100%;padding:.85rem;margin-bottom:1.2rem;border:none;background:linear-gradient(135deg,#9b59b6,#e91e8c);font-family:'Raleway',sans-serif;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:white;cursor:pointer">✨ Gerar mensagem com IA</button>
-      <div class="pix-wrap" style="margin-bottom:1rem">
-        <p class="pix-lbl">Chave PIX</p>
-        <p class="pix-key" id="finalPixKey">brunaejoao2026@gmail.com</p>
-        <button class="pix-cp" onclick="copyFinalPix()">Copiar chave PIX</button>
-      </div>
-      <button onclick="confirmarCompra()" id="btnConfCompra" style="width:100%;padding:1rem;border:none;background:linear-gradient(135deg,#7b1c2e,#9b2d8e);font-family:'Raleway',sans-serif;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:white;cursor:pointer">✓ Confirmar pagamento via PIX</button>
-      <p style="font-size:.68rem;color:var(--muted);text-align:center;margin-top:.5rem">Após realizar o pagamento, clique para confirmar 💛</p>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL COMPROVANTE -->
-<div class="modal-bg" id="comprovanteFinalMod" onclick="bgClose(event,'comprovanteFinalMod')">
-  <div class="modal-box" style="max-width:460px;text-align:center">
-    <button class="m-close" onclick="closeMod('comprovanteFinalMod')">✕</button>
-    <span class="m-ico">🎉</span>
-    <h3 class="m-title">Presente Confirmado!</h3>
-    <p class="m-body" style="margin-bottom:1.2rem">Obrigados pelo carinho! 💛</p>
-    <div id="comprovanteConteudo" style="text-align:left;padding:1.2rem;border:1px solid var(--gold3);background:white;margin-bottom:1rem">
-      <p style="font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--magenta);margin-bottom:.8rem">Comprovante de Presente</p>
-      <div id="comprovanteDetalhes"></div>
-    </div>
-    <button onclick="baixarComprovanteCarrinho()" class="m-dismiss" style="background:linear-gradient(135deg,#7b1c2e,#9b2d8e);margin-bottom:.5rem">📥 Baixar Comprovante</button>
-    <button onclick="closeMod('comprovanteFinalMod');limparCarrinho()" class="m-dismiss" style="background:var(--dark)">Fechar</button>
-  </div>
-</div>
-
-
-<!-- MÚSICA -->
-<iframe id="yt-audio" src="https://www.youtube.com/embed/fD2UExUhq-s?autoplay=1&loop=1&playlist=fD2UExUhq-s&controls=0&mute=0" allow="autoplay" style="display:none"></iframe>
-<button onclick="toggleMusic()" id="musicBtn" style="position:fixed;bottom:2rem;left:2rem;z-index:999;width:48px;height:48px;border-radius:50%;background:rgba(45,15,30,0.9);border:1px solid rgba(155,45,142,0.5);color:#e8a87c;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)">🎵</button>
-<script>
-var playing=true;
-function toggleMusic(){
-  var iframe=document.getElementById('yt-audio');
-  var btn=document.getElementById('musicBtn');
-  if(playing){iframe.src=iframe.src.replace('mute=0','mute=1');btn.textContent='🔇';}
-  else{iframe.src=iframe.src.replace('mute=1','mute=0');btn.textContent='🎵';}
-  playing=!playing;
+/* ── CONFIG DINAMICA ── */
+async function loadSiteConfig(){
+  try{
+    var res=await fetch(SB_URL+'/rest/v1/configuracoes?id=eq.1&select=*',{headers:sbHeaders});
+    var data=await res.json();
+    if(!data||!data[0]) return;
+    var cfg=data[0];
+    var d=new Date((cfg.data_casamento||'2026-06-14')+'T12:00:00');
+    var meses=['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    var diasSem=['Domingo','Segunda','Terca','Quarta','Quinta','Sexta','Sabado'];
+    var parts=(cfg.horario||'16:00').split(':');
+    var horarioFmt=parts[0]+'h'+(parts[1]!=='00'?parts[1]:'');
+    var rsvpD=new Date((cfg.rsvp_limite||'2026-05-31')+'T12:00:00');
+    window.weddingDate=new Date(cfg.data_casamento+'T'+cfg.horario+':00');
+    var el;
+    el=document.getElementById('cerData'); if(el) el.innerHTML=d.getDate()+' de<br>'+meses[d.getMonth()];
+    el=document.getElementById('cerAno'); if(el) el.textContent=d.getFullYear()+' - '+diasSem[d.getDay()];
+    el=document.getElementById('cerHorario'); if(el) el.textContent=horarioFmt;
+    el=document.getElementById('cerLocal'); if(el) el.textContent=cfg.local||'Igreja';
+    el=document.getElementById('cerEndereco'); if(el) el.textContent=cfg.endereco||'Tiradentes, MG';
+    el=document.getElementById('cerRecepcao'); if(el) el.textContent=cfg.local_recepcao||'Logo apos a cerimonia';
+    el=document.getElementById('mapLbl'); if(el) el.textContent=(cfg.local||'')+'  -  '+(cfg.endereco||'');
+    el=document.getElementById('mapLink'); if(el&&cfg.maps_url) el.setAttribute('href',cfg.maps_url);
+    el=document.getElementById('mapIframe'); if(el&&cfg.local){var q=encodeURIComponent((cfg.local||'')+' '+(cfg.endereco||''));el.src='https://maps.google.com/maps?q='+q+'&output=embed&z=15';}
+    el=document.querySelector('.dl-val'); if(el) el.textContent=rsvpD.getDate()+' de '+meses[rsvpD.getMonth()]+' - '+rsvpD.getFullYear();
+    el=document.querySelector('.contact'); if(el) el.innerHTML='<strong>Bruna:</strong> '+(cfg.tel_noiva||'(31) 99999-0001')+'<br><strong>Joao:</strong> '+(cfg.tel_noivo||'(31) 99999-0002');
+    el=document.getElementById('pixKey'); if(el&&cfg.pix) el.textContent=cfg.pix;
+  }catch(e){console.log('cfg err',e);}
 }
+
+/* ── PADRINHOS ── */
+async function loadPadrinhos(){
+  try{
+    var res=await fetch(SB_URL+'/rest/v1/padrinhos?order=ordem.asc,nome.asc&select=*',{headers:sbHeaders});
+    var data=await res.json();
+    var grid=document.getElementById('padGrid');
+    if(!grid) return;
+    if(!Array.isArray(data)||data.length===0){grid.innerHTML='<div style="text-align:center;padding:3rem;color:var(--muted);font-style:italic">Em breve...</div>';return;}
+    var html='';
+    for(var i=0;i<data.length;i++){
+      var p=data[i];
+      var avContent=p.foto_url?('<img src="'+p.foto_url+'" style="width:100%;height:100%;object-fit:cover">'):( p.nome?p.nome.charAt(0):'?');
+      html+='<div class="pad-card"><div class="pad-av">'+avContent+'</div>';
+      html+='<p class="pad-cargo">'+(p.cargo||'')+'</p>';
+      html+='<p class="pad-name">'+(p.nome||'')+'</p>';
+      html+='<p class="pad-desc">'+(p.descricao||'')+'</p></div>';
+    }
+    grid.innerHTML=html;
+  }catch(e){console.log('pad err',e);}
+}
+
+/* ── CARRINHO ── */
+var carrinho=[];
+var allPresDB=[];
+
+async function loadPresentes(){
+  try{
+    var res=await fetch(SB_URL+'/rest/v1/presentes?order=created_at.asc&select=*',{headers:sbHeaders});
+    var data=await res.json();
+    allPresDB=Array.isArray(data)?data:[];
+  }catch(e){allPresDB=[];}
+  renderPresGrid();
+}
+
+function getDefaultPresentes(){
+  return [
+    {id:'d1',nome:'Lua de Mel',descricao:'Contribuicao para nossa primeira viagem.',valor:500,icone:'✈️'},
+    {id:'d2',nome:'Nosso Novo Lar',descricao:'Ajude a montar nosso ninho.',valor:300,icone:'🏠'},
+    {id:'d3',nome:'Noite de Cinema',descricao:'5 meses de streaming para o casal.',valor:199.77,icone:'🎬'},
+    {id:'d4',nome:'Jantar Romantico',descricao:'Experiencia gastronomica especial.',valor:320,icone:'🍷'},
+    {id:'d5',nome:'Album de Memorias',descricao:'Album fotografico profissional.',valor:450,icone:'📸'}
+  ];
+}
+
+function renderPresGrid(){
+  var grid=document.getElementById('presGrid');
+  if(!grid) return;
+  var items=allPresDB.length>0?allPresDB:getDefaultPresentes();
+  var html='';
+  for(var i=0;i<items.length;i++){
+    var p=items[i];
+    var dado=p.presenteado;
+    var valor=p.valor?'R$ '+parseFloat(p.valor).toFixed(2).replace('.',','):'Contribuicao livre';
+    var noCarrinho=false;
+    for(var k=0;k<carrinho.length;k++){if(carrinho[k].id===p.id){noCarrinho=true;break;}}
+    var img=p.foto_url?('<img src="'+p.foto_url+'" style="width:100%;height:160px;object-fit:cover;display:block;margin-bottom:1rem">'):('<div style="font-size:3rem;text-align:center;padding:1.5rem 0">'+(p.icone||'🎁')+'</div>');
+    var btn='';
+    if(dado) btn='<p style="font-size:.72rem;color:rgba(39,174,96,.7);margin-top:.5rem">Ja presenteado</p>';
+    else if(noCarrinho) btn='<button class="btn-pres" style="background:rgba(39,174,96,.12);border-color:rgba(39,174,96,.3);color:#27ae60" onclick="removerDoCarrinho(''+p.id+'')">No carrinho</button>';
+    else btn='<button class="btn-pres" onclick="adicionarCarrinhoPorId(''+p.id+'')"><span>Presentear</span></button>';
+    html+='<div class="pres-card'+(dado?' dado':'')+'">'+img+'<p class="pres-name">'+(p.nome||'')+'</p><p class="pres-desc">'+(p.descricao||'')+'</p><p class="pres-price" style="font-size:1.05rem;font-weight:500;color:var(--ivory);margin:1rem 0">'+valor+'</p>'+btn+'</div>';
+  }
+  grid.innerHTML=html;
+}
+
+function adicionarCarrinhoPorId(id){
+  var lista=allPresDB.length>0?allPresDB:getDefaultPresentes();
+  for(var i=0;i<lista.length;i++){if(lista[i].id===id){adicionarCarrinho(lista[i]);return;}}
+}
+
+function adicionarCarrinho(p){
+  for(var i=0;i<carrinho.length;i++){if(carrinho[i].id===p.id) return;}
+  carrinho.push(p);
+  atualizarBtnCarrinho();
+  renderPresGrid();
+  var t=document.getElementById('toast');
+  t.textContent=p.nome+' adicionado ao carrinho!';
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+
+function removerDoCarrinho(id){
+  var novo=[];
+  for(var i=0;i<carrinho.length;i++){if(carrinho[i].id!==id) novo.push(carrinho[i]);}
+  carrinho=novo;
+  atualizarBtnCarrinho();
+  renderPresGrid();
+  renderCarrinho();
+}
+
+function atualizarBtnCarrinho(){
+  var label=document.getElementById('carrinhoLabel');
+  if(!label) return;
+  if(carrinho.length===0){label.textContent='Carrinho vazio';}
+  else{
+    var total=0;for(var i=0;i<carrinho.length;i++) total+=parseFloat(carrinho[i].valor)||0;
+    label.textContent=carrinho.length+' item(s) - R$ '+total.toFixed(2).replace('.',',');
+  }
+}
+
+function abrirCarrinho(){
+  if(carrinho.length===0){
+    var t=document.getElementById('toast');t.textContent='Adicione presentes primeiro!';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);return;
+  }
+  renderCarrinho();openMod('carrinhoMod');
+}
+
+function renderCarrinho(){
+  var el=document.getElementById('carrinhoItems');if(!el) return;
+  var html='';
+  for(var i=0;i<carrinho.length;i++){
+    var p=carrinho[i];
+    var valor=p.valor?'R$ '+parseFloat(p.valor).toFixed(2).replace('.',','):'Livre';
+    var img=p.foto_url?('<img src="'+p.foto_url+'" style="width:70px;height:55px;object-fit:cover">'):('<div style="width:70px;height:55px;background:var(--gold3);display:flex;align-items:center;justify-content:center;font-size:1.6rem">'+(p.icone||'🎁')+'</div>');
+    html+='<div style="display:flex;align-items:center;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--gold3)">'+img+'<div style="flex:1"><p style="font-size:1rem;color:var(--dark)">'+p.nome+'</p><p style="font-size:.8rem;color:#7b1c2e;margin-top:.2rem">'+valor+'</p><button onclick="removerDoCarrinho(''+p.id+'')" style="font-size:.7rem;color:#c0392b;background:none;border:none;cursor:pointer;padding:0">Remover</button></div></div>';
+  }
+  el.innerHTML=html;
+  var total=0;for(var j=0;j<carrinho.length;j++) total+=parseFloat(carrinho[j].valor)||0;
+  document.getElementById('carrinhoTotal').textContent='R$ '+total.toFixed(2).replace('.',',');
+}
+
+function irParaFinalizacao(){
+  closeMod('carrinhoMod');
+  var total=0;for(var i=0;i<carrinho.length;i++) total+=parseFloat(carrinho[i].valor)||0;
+  var html='';
+  for(var i=0;i<carrinho.length;i++){
+    var p=carrinho[i];var v=p.valor?'R$ '+parseFloat(p.valor).toFixed(2).replace('.',','):'Livre';
+    html+='<div style="display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--gold3)"><span style="font-size:1.4rem">'+(p.icone||'🎁')+'</span><div style="flex:1"><p style="font-size:.85rem;color:var(--dark)">'+p.nome+'</p></div><p style="font-size:.85rem;color:var(--dark)">'+v+'</p></div>';
+  }
+  var resumo=document.getElementById('resumoItens');if(resumo) resumo.innerHTML=html;
+  document.getElementById('resumoValor').textContent='R$ '+total.toFixed(2).replace('.',',');
+  document.getElementById('resumoTotal').textContent='R$ '+total.toFixed(2).replace('.',',');
+  var mainPix=document.getElementById('pixKey');var finalPix=document.getElementById('finalPixKey');
+  if(mainPix&&finalPix) finalPix.textContent=mainPix.textContent;
+  document.getElementById('finalNome').value='';
+  document.getElementById('finalBilhete').value='';
+  document.getElementById('charCount').textContent='0';
+  openMod('finalizacaoMod');
+}
+
+function copyFinalPix(){
+  navigator.clipboard.writeText(document.getElementById('finalPixKey').textContent).catch(function(){});
+  var t=document.getElementById('toast');t.textContent='PIX copiado!';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2400);
+}
+
+async function gerarMensagemIA(){
+  var btn=document.getElementById('btnIA');btn.textContent='Gerando...';btn.disabled=true;
+  var nomes=[];for(var i=0;i<carrinho.length;i++) nomes.push(carrinho[i].nome);
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:'Escreva uma mensagem curta e carinhosa (maximo 3 frases) para o casal Bruna e Joao no casamento deles. Em portugues. Presente: '+nomes.join(', ')}]})
+    });
+    var data=await resp.json();
+    var msg=data.content&&data.content[0]?data.content[0].text:'';
+    if(msg){document.getElementById('finalBilhete').value=msg;document.getElementById('charCount').textContent=String(msg.length);}
+  }catch(e){console.log(e);}
+  btn.innerHTML='Gerar mensagem com IA';btn.disabled=false;
+}
+
+async function confirmarCompra(){
+  var nome=document.getElementById('finalNome').value.trim();
+  if(!nome){document.getElementById('finalNome').style.borderColor='#c0392b';document.getElementById('finalNome').focus();return;}
+  document.getElementById('finalNome').style.borderColor='';
+  var btn=document.getElementById('btnConfCompra');btn.textContent='Registrando...';btn.disabled=true;
+  var bilhete=document.getElementById('finalBilhete').value.trim();
+  var total=0;for(var i=0;i<carrinho.length;i++) total+=parseFloat(carrinho[i].valor)||0;
+  try{
+    for(var i=0;i<carrinho.length;i++){
+      var p=carrinho[i];
+      if(p.id&&p.id.charAt(0)!=='d'){
+        await fetch(SB_URL+'/rest/v1/presentes?id=eq.'+p.id,{method:'PATCH',headers:Object.assign({},sbHeaders,{'Prefer':'return=minimal'}),body:JSON.stringify({presenteado:true,presenteado_por:nome,bilhete:bilhete||null,data_presente:new Date().toISOString()})});
+      }
+    }
+    var now=new Date();
+    var det='<p style="font-size:.8rem;color:var(--muted);margin-bottom:.3rem">De: <strong style="color:var(--dark)">'+nome+'</strong></p>';
+    for(var j=0;j<carrinho.length;j++){var cp=carrinho[j];det+='<p style="font-size:.78rem;color:var(--muted)">- '+cp.nome+(cp.valor?' (R$ '+parseFloat(cp.valor).toFixed(2).replace('.',',')+')':'')+'</p>';}
+    det+='<p style="font-size:.8rem;color:var(--muted);margin-top:.3rem">Total: <strong style="color:#7b1c2e">R$ '+total.toFixed(2).replace('.',',')+'</strong></p>';
+    det+='<p style="font-size:.78rem;color:var(--muted)">Data: '+now.toLocaleDateString('pt-BR')+'</p>';
+    if(bilhete) det+='<div style="margin-top:.8rem;padding:.8rem;background:rgba(155,45,142,.05);border-left:2px solid #9b2d8e"><p style="font-size:.78rem;font-style:italic;color:var(--muted)">"'+bilhete+'"</p></div>';
+    document.getElementById('comprovanteDetalhes').innerHTML=det;
+    closeMod('finalizacaoMod');openMod('comprovanteFinalMod');loadPresentes();
+  }catch(e){alert('Erro. Tente novamente.');}
+  btn.textContent='Confirmar pagamento via PIX';btn.disabled=false;
+}
+
+function baixarComprovanteCarrinho(){
+  var nome=document.getElementById('finalNome')?document.getElementById('finalNome').value:'convidado';
+  var bilhete=document.getElementById('finalBilhete')?document.getElementById('finalBilhete').value:'';
+  var total=0;for(var i=0;i<carrinho.length;i++) total+=parseFloat(carrinho[i].valor)||0;
+  var linhas=['===================================','COMPROVANTE - Bruna & Joao','===================================','','De: '+nome,'Data: '+new Date().toLocaleDateString('pt-BR'),'','Presentes:'];
+  for(var i=0;i<carrinho.length;i++){var p=carrinho[i];linhas.push('- '+p.nome+(p.valor?' R$ '+parseFloat(p.valor).toFixed(2).replace('.',','):''));}
+  linhas.push('','Total: R$ '+total.toFixed(2).replace('.',','));
+  if(bilhete) linhas.push('','Mensagem: '+bilhete);
+  linhas.push('','Obrigados!');
+  var blob=new Blob([linhas.join('
+')],{type:'text/plain;charset=utf-8'});
+  var url=URL.createObjectURL(blob);var a=document.createElement('a');
+  a.href=url;a.download='comprovante.txt';a.click();URL.revokeObjectURL(url);
+}
+
+function limparCarrinho(){carrinho=[];atualizarBtnCarrinho();renderPresGrid();}
+
+loadSiteConfig();
+loadPadrinhos();
+loadPresentes();
 </script>
 
 </body>
