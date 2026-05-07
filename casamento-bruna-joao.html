@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bruna & João • 14 de Junho de 2026</title>
+<title>Bruna & João • Casamento</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Tenor+Sans&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -376,7 +376,6 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
   <a href="#hero" class="nav-mono">B & J</a>
   <div class="nav-links nav-desk">
     <a href="#padrinhos">Padrinhos</a>
-    <a href="#padrinhos">Padrinhos</a>
     <a href="#presentes">Presentes</a>
     <button class="nav-rsvp-btn" onclick="location.href='#rsvp'"><span>Confirmar Presença</span></button>
   </div>
@@ -387,7 +386,6 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
 <div class="nav-mob" id="navMob">
   <a href="#historia" onclick="toggleNav()">Nossa História</a>
   <a href="#cerimonia" onclick="toggleNav()">Cerimônia</a>
-  <a href="#padrinhos" onclick="toggleNav()">Padrinhos</a>
   <a href="#padrinhos" onclick="toggleNav()">Padrinhos</a>
   <a href="#presentes" onclick="toggleNav()">Presentes</a>
   <a href="#rsvp" onclick="toggleNav()">Confirmar Presença</a>
@@ -412,7 +410,7 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
       <p class="h-eyebrow">— Com imenso amor, convidamos você</p>
       <h1 class="h-title">Bruna<br><em>& João</em></h1>
       <div class="h-rule"></div>
-      <p class="h-sub">14 · VI · 2026  ·  Minas Gerais</p>
+      <p class="h-sub" id="heroDate">14 · VI · 2026  ·  Minas Gerais</p>
     </div>
   </div>
   <div class="hero-r">
@@ -503,7 +501,7 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
         <div class="cer-block"><span class="cer-block-ico">🌿</span><p class="cer-block-lbl">Local</p><p class="cer-block-val" id="cerLocal">Espaço Vila Verde</p><p class="cer-block-sub" id="cerEndereco">Tiradentes, MG</p></div>
         <div class="cer-block"><span class="cer-block-ico">🥂</span><p class="cer-block-lbl">Recepção</p><p class="cer-block-val" id="cerRecepcao">Logo após a cerimônia</p><p class="cer-block-sub">Jantar & Festa</p></div>
       </div>
-      <div class="map-box reveal d3" style="padding:0;overflow:hidden;height:260px;position:relative"><iframe id="mapIframe" src="https://maps.google.com/maps?q=Tiradentes,%20MG&output=embed&z=15" width="100%" height="260" style="border:0;display:block" allowfullscreen loading="lazy"></iframe><div id="mapLbl" style="position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);background:white;padding:.5rem 1.2rem;font-size:.68rem;white-space:nowrap;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.1)">Igreja Nossa Senhora das Mercês · Tiradentes, MG</div></div>
+      <div class="map-box reveal d3" style="padding:0;overflow:hidden;height:260px;position:relative"><iframe id="mapIframe" src="" width="100%" height="260" style="border:0;display:block" allowfullscreen loading="lazy"></iframe><div id="mapLbl" style="position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);background:white;padding:.5rem 1.2rem;font-size:.68rem;white-space:nowrap;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.1)">Igreja Nossa Senhora das Mercês · Tiradentes, MG</div></div>
       <a href="https://maps.google.com/maps?q=Tiradentes,%20MG" target="_blank" class="btn-dir reveal d3" id="mapLink">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
         Ver rota no Google Maps
@@ -694,7 +692,7 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
 <footer>
   <p class="ft-big">B&J</p>
   <p class="ft-names">Bruna & João</p>
-  <p class="ft-date">14 · VI · 2026  ·  Minas Gerais</p>
+  <p class="ft-date" id="footerDate">14 · VI · 2026  ·  Minas Gerais</p>
   <div class="ft-div"></div>
   <p class="ft-love">Feito com muito amor ✦</p>
 </footer>
@@ -744,8 +742,6 @@ function toggleNav(){document.getElementById('navMob').classList.toggle('open')}
 
 /* ── Countdown ── */
 function tick(){
-  // Puxa a data do banco (window.weddingDate) definida pela loadSiteConfig. 
-  // Se ela ainda não tiver carregado, usa uma data padrão para não quebrar.
   const t = window.weddingDate ? window.weddingDate : new Date('2026-06-14T16:00:00');
   const n = new Date();
   
@@ -762,7 +758,6 @@ function tick(){
 }
 setInterval(tick,1000);
 tick();
-
 
 /* ── Scroll reveal ── */
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12});
@@ -886,7 +881,7 @@ async function doRSVP(){
       document.getElementById('rTit').textContent='Presença Confirmada!';
       var rMsg='Que alegria, <strong>'+foundGuest.nome+'</strong>! Sua presença foi registrada com sucesso.';
       if(acompSelecionados.length) rMsg+=' Confirmado com: <strong>'+acompSelecionados.join(', ')+'</strong>.';
-      rMsg+='<br><br>Mal podemos esperar para celebrar ao seu lado. Até 14 de junho de 2026! 💛';
+      rMsg+='<br><br>Mal podemos esperar para celebrar ao seu lado. Até ' + (window.dataCasamentoFmt || '14 de junho de 2026') + '! 💛';
       document.getElementById('rBody').innerHTML=rMsg;
     } else {
       document.getElementById('rIco').textContent='💌';
@@ -930,7 +925,6 @@ async function loadPadrinhos(){
     grid.innerHTML = padHtml;
   }catch(e){ console.log('Padrinhos error:',e); }
 }
-loadPadrinhos();
 
 /* ── Gift ── */
 function openGift(name,ico,price){document.getElementById('gIco').textContent=ico;document.getElementById('gTit').textContent=name;document.getElementById('gBody').innerHTML='Valor sugerido: <strong>'+price+'</strong><br><br>Presenteie-nos via PIX usando a chave abaixo. Seu gesto de carinho significa o mundo para nós. 💛';openMod('gMod')}
@@ -948,36 +942,68 @@ async function loadSiteConfig() {
     var data = await res.json();
     if (!data || !data[0]) return;
     var cfg = data[0];
+    
     var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    var mesesRomano = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
     var diasSem = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+    
     var dt = new Date((cfg.data_casamento||'2026-06-14')+'T12:00:00');
     var pts = (cfg.horario||'16:00').split(':');
     var horFmt = pts[0]+'h'+(pts[1]!=='00'?pts[1]:'');
     var rsvpDt = new Date((cfg.rsvp_limite||'2026-05-31')+'T12:00:00');
+    
+    // Guarda a data global para o contador
     window.weddingDate = new Date(cfg.data_casamento+'T'+cfg.horario+':00');
+    // Guarda a data formatada para usar na mensagem do RSVP
+    window.dataCasamentoFmt = dt.getDate() + ' de ' + meses[dt.getMonth()] + ' de ' + dt.getFullYear();
+
     function setEl(id, val) { var el=document.getElementById(id); if(el) el.textContent=val; }
     function setHtml(id, val) { var el=document.getElementById(id); if(el) el.innerHTML=val; }
+
+    // Datas formatadas
+    var dataRomana = dt.getDate() + ' · ' + mesesRomano[dt.getMonth()] + ' · ' + dt.getFullYear();
+    var dataExtenso = dt.getDate() + ' de ' + meses[dt.getMonth()] + ' de ' + dt.getFullYear();
+
+    // Atualiza Hero e Footer
+    setEl('heroDate', dataRomana + ' · ' + (cfg.endereco || 'Minas Gerais'));
+    setEl('footerDate', dataRomana + ' · ' + (cfg.endereco || 'Minas Gerais'));
+
+    // Atualiza os blocos da Cerimônia
     setHtml('cerData', dt.getDate()+' de<br>'+meses[dt.getMonth()]);
     setEl('cerAno', dt.getFullYear()+' · '+diasSem[dt.getDay()]);
     setEl('cerHorario', horFmt);
-    setEl('cerLocal', cfg.local||'Igreja Nossa Senhora das Mercês');
-    setEl('cerEndereco', cfg.endereco||'Tiradentes, MG');
-    setEl('cerRecepcao', cfg.local_recepcao||'Logo após a cerimônia');
+    setEl('cerLocal', cfg.local || 'Espaço Vila Verde');
+    setEl('cerEndereco', cfg.endereco || 'Tiradentes, MG');
+    setEl('cerRecepcao', cfg.local_recepcao || 'Logo após a cerimônia');
     setEl('mapLbl', (cfg.local||'Igreja')+' · '+(cfg.endereco||'Tiradentes, MG'));
+
     var mapLink = document.getElementById('mapLink');
     if (mapLink && cfg.maps_url) mapLink.setAttribute('href', cfg.maps_url);
     var mapFrame = document.getElementById('mapIframe');
     if (mapFrame && cfg.endereco) {
       mapFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(cfg.endereco) + '&output=embed&z=15';
     }
+
+    // Atualiza o letreiro (Band/Marquee)
+    const bandSpans = document.querySelectorAll('#bandTrack span');
+    bandSpans.forEach(span => {
+      if (span.textContent.includes('14 de Junho') || span.textContent.includes('2026')) {
+        span.textContent = dataExtenso;
+      }
+    });
+
+    // Restante das configurações (Mapa, RSVP, etc)
     var dlVal = document.querySelector('.dl-val');
     if (dlVal) dlVal.textContent = rsvpDt.getDate()+' de '+meses[rsvpDt.getMonth()]+' · '+rsvpDt.getFullYear();
+    
     var cont = document.querySelector('.contact');
     if (cont) cont.innerHTML = '<strong>Bruna:</strong> '+(cfg.tel_noiva||'(31) 99999-0001')+'<br><strong>João:</strong> '+(cfg.tel_noivo||'(31) 99999-0002')+'<br><strong>E-mail:</strong> brunaejoao2026@gmail.com';
+    
     var pixEl = document.getElementById('pixKey');
     if (pixEl && cfg.pix) pixEl.textContent = cfg.pix;
     var finPix = document.getElementById('finalPixKey');
     if (finPix && cfg.pix) finPix.textContent = cfg.pix;
+
   } catch(e) { console.log('Config err:', e); }
 }
 
