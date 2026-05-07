@@ -965,8 +965,8 @@ async function loadSiteConfig() {
     var dataExtenso = dt.getDate() + ' de ' + meses[dt.getMonth()] + ' de ' + dt.getFullYear();
 
     // Atualiza Hero e Footer
-    setEl('heroDate', dataRomana + ' · ' + (cfg.endereco || 'Minas Gerais'));
-    setEl('footerDate', dataRomana + ' · ' + (cfg.endereco || 'Minas Gerais'));
+    setEl('heroDate', dataRomana + '  ·  Minas Gerais');
+    setEl('footerDate', dataRomana + '  ·  Minas Gerais');
 
     // Atualiza os blocos da Cerimônia
     setHtml('cerData', dt.getDate()+' de<br>'+meses[dt.getMonth()]);
