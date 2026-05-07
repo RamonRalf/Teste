@@ -47,49 +47,13 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
 .stat-num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:300;line-height:1;color:var(--dark)}
 .stat-lbl{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:.4rem}
 
-/* TABS (NOVO DESIGN) */
-.tabs-wrapper {
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--gold3);
-  width: 100%;
-}
-.tabs {
-  display: flex;
-  gap: 0.2rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* Firefox */
-  margin-bottom: -1px; /* Sobrepõe a borda inferior */
-}
-.tabs::-webkit-scrollbar {
-  display: none; /* Esconde scrollbar no Chrome/Safari */
-}
-.tab-btn {
-  flex-shrink: 0; /* Impede o botão de espremer no celular */
-  padding: 1rem 1.5rem;
-  background: none;
-  border: none;
-  font-family: 'Raleway', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.3s;
-  white-space: nowrap; /* Não quebra linha no texto */
-  border-radius: 8px 8px 0 0;
-}
-.tab-btn:hover {
-  color: var(--gold);
-  background: rgba(184, 150, 90, 0.05);
-}
-.tab-btn.active {
-  color: var(--dark);
-  border-bottom-color: var(--gold);
-  font-weight: 600;
-  background: rgba(184, 150, 90, 0.12); /* Destaque na aba ativa */
-}
+/* TABS (MENU ROLÁVEL) */
+.tabs-wrapper { margin-bottom: 2rem; border-bottom: 1px solid var(--gold3); width: 100%; }
+.tabs { display: flex; gap: 0.2rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: -1px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab-btn { flex-shrink: 0; padding: 1rem 1.5rem; background: none; border: none; font-family: 'Raleway', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s; white-space: nowrap; border-radius: 8px 8px 0 0; }
+.tab-btn:hover { color: var(--gold); background: rgba(184, 150, 90, 0.05); }
+.tab-btn.active { color: var(--dark); border-bottom-color: var(--gold); font-weight: 600; background: rgba(184, 150, 90, 0.12); }
 
 /* ADD FORM */
 .add-section{background:white;border:1px solid var(--gold3);padding:2rem;margin-bottom:2rem;border-radius:8px;}
@@ -110,6 +74,14 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
 .btn-save{padding:.9rem 2.5rem;background:var(--gold);border:none;font-family:'Raleway',sans-serif;font-size:.63rem;letter-spacing:.25em;text-transform:uppercase;color:var(--white);cursor:pointer;transition:opacity .3s, transform .2s;margin-top:1.2rem;border-radius:4px;font-weight:500;}
 .btn-save:hover{opacity:.85;transform:translateY(-2px)}
 .btn-save:disabled{opacity:.5;cursor:not-allowed}
+
+/* UPLOAD CUSTOMIZADO */
+.file-upload-wrapper { display: flex; align-items: center; gap: 1rem; width: 100%; flex-wrap: wrap; }
+.custom-file-upload { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.5rem; background: var(--ivory2); border: 1px dashed var(--gold); border-radius: 4px; color: var(--gold); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+.custom-file-upload:hover { background: rgba(184,150,90,0.1); border-color: var(--dark); color: var(--dark); }
+.file-name-display { font-size: 0.75rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+.img-preview { width: 70px; height: 70px; border-radius: 8px; border: 1px dashed var(--gold3); object-fit: cover; display: none; margin-top: 0.5rem; }
+.form-row-img { display: flex; gap: 1.5rem; align-items: flex-end; }
 
 /* SEARCH & FILTER */
 .search-wrap{margin-bottom:1.2rem;position:relative}
@@ -156,8 +128,6 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
 .card-actions { border-top: 1px solid var(--gold3); display: flex; }
 .btn-card-del { flex: 1; background: none; color: var(--red); border: none; padding: 0.85rem; font-family: 'Raleway', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer; transition: all 0.3s; }
 .btn-card-del:hover { background: var(--red); color: white; }
-.img-preview { width: 70px; height: 70px; border-radius: 8px; border: 1px dashed var(--gold3); object-fit: cover; display: none; margin-top: 0.5rem; }
-.form-row-img { display: flex; gap: 1.5rem; align-items: flex-end; }
 
 /* AVATAR PADRINHOS (CIRCULAR) */
 .pad-card .card-img-wrap { height: 140px; border-bottom: none; background: transparent; margin-top: 1.5rem; }
@@ -311,8 +281,12 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
         
         <div class="form-row-img" style="margin-bottom: 1.2rem;">
           <div class="f-field" style="flex:1;">
-            <label class="f-lbl">URL da Foto (Opcional)</label>
-            <input class="f-in" id="newGiftImgUrl" type="text" placeholder="https://link-da-imagem.com/foto.jpg" oninput="previewImg(this.value, 'previewGift')">
+            <label class="f-lbl">Foto do Presente (Opcional)</label>
+            <div class="file-upload-wrapper">
+              <label for="newGiftImgFile" class="custom-file-upload">📸 Escolher Foto</label>
+              <input type="file" id="newGiftImgFile" accept="image/*" style="display:none" onchange="previewUpload(this, 'previewGift', 'giftFileName')">
+              <span id="giftFileName" class="file-name-display">Nenhuma foto selecionada</span>
+            </div>
           </div>
           <img id="previewGift" class="img-preview" src="" alt="Preview">
         </div>
@@ -336,8 +310,12 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
         
         <div class="form-row-img" style="margin-bottom: 1.2rem;">
           <div class="f-field" style="flex:1;">
-            <label class="f-lbl">URL da Foto (Opcional)</label>
-            <input class="f-in" id="newPadImgUrl" type="text" placeholder="https://link-da-foto.com/perfil.jpg" oninput="previewImg(this.value, 'previewPad')">
+            <label class="f-lbl">Foto do Padrinho (Opcional)</label>
+            <div class="file-upload-wrapper">
+              <label for="newPadImgFile" class="custom-file-upload">📸 Escolher Foto</label>
+              <input type="file" id="newPadImgFile" accept="image/*" style="display:none" onchange="previewUpload(this, 'previewPad', 'padFileName')">
+              <span id="padFileName" class="file-name-display">Nenhuma foto selecionada</span>
+            </div>
           </div>
           <img id="previewPad" class="img-preview" src="" alt="Preview" style="border-radius: 50%;">
         </div>
@@ -459,15 +437,23 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'), 2800);
 }
 
-// Preview visual da imagem ao colar o link
-function previewImg(url, imgId) {
+// Preview visual da imagem selecionada
+function previewUpload(input, imgId, nameId) {
   const imgEl = document.getElementById(imgId);
-  if(url && url.trim().startsWith('http')) {
-    imgEl.src = url.trim();
-    imgEl.style.display = 'block';
+  const nameEl = document.getElementById(nameId);
+  
+  if (input.files && input.files[0]) {
+    nameEl.textContent = input.files[0].name;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      imgEl.src = e.target.result;
+      imgEl.style.display = 'block';
+    }
+    reader.readAsDataURL(input.files[0]);
   } else {
     imgEl.src = '';
     imgEl.style.display = 'none';
+    nameEl.textContent = 'Nenhuma foto selecionada';
   }
 }
 
@@ -478,6 +464,30 @@ async function api(method, path, body){
   });
   if(!res.ok){ const e = await res.text(); throw new Error(e); }
   return method === 'DELETE' ? null : res.json();
+}
+
+// Upload para a pasta FOTOS do Supabase
+async function uploadToSupabase(file, prefix) {
+  const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+  const fileName = prefix + '_' + Date.now() + '_' + safeName;
+  const path = 'fotos/' + fileName;
+  
+  const res = await fetch(SUPABASE_URL + '/storage/v1/object/' + path, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'apikey': SUPABASE_KEY,
+      'Content-Type': file.type
+    },
+    body: file
+  });
+  
+  if(!res.ok) {
+    const err = await res.text();
+    throw new Error('Erro no upload: ' + err);
+  }
+  
+  return SUPABASE_URL + '/storage/v1/object/public/' + path;
 }
 
 /* ── AUTH ── */
@@ -743,7 +753,12 @@ async function saveGift(){
   btn.textContent = 'Enviando...';
   
   try {
-    const fotoUrl = document.getElementById('newGiftImgUrl').value.trim() || null;
+    let fotoUrl = null;
+    const fileInput = document.getElementById('newGiftImgFile');
+    
+    if(fileInput.files.length > 0) {
+      fotoUrl = await uploadToSupabase(fileInput.files[0], 'presente');
+    }
 
     await api('POST','presentes', {
       nome: nome,
@@ -758,7 +773,8 @@ async function saveGift(){
     document.getElementById('newGiftValue').value = '';
     document.getElementById('newGiftDesc').value = '';
     document.getElementById('newGiftIcon').value = '';
-    document.getElementById('newGiftImgUrl').value = '';
+    document.getElementById('newGiftImgFile').value = '';
+    document.getElementById('giftFileName').textContent = 'Nenhuma foto selecionada';
     document.getElementById('previewGift').style.display = 'none';
     loadGifts();
   } catch(e){ 
@@ -828,7 +844,12 @@ async function savePad(){
   btn.textContent = 'Enviando...';
   
   try {
-    const fotoUrl = document.getElementById('newPadImgUrl').value.trim() || null;
+    let fotoUrl = null;
+    const fileInput = document.getElementById('newPadImgFile');
+    
+    if(fileInput.files.length > 0) {
+      fotoUrl = await uploadToSupabase(fileInput.files[0], 'padrinho');
+    }
 
     await api('POST','padrinhos', {
       nome: nome,
@@ -841,7 +862,8 @@ async function savePad(){
     document.getElementById('newPadName').value = '';
     document.getElementById('newPadRole').value = '';
     document.getElementById('newPadDesc').value = '';
-    document.getElementById('newPadImgUrl').value = '';
+    document.getElementById('newPadImgFile').value = '';
+    document.getElementById('padFileName').textContent = 'Nenhuma foto selecionada';
     document.getElementById('previewPad').style.display = 'none';
     loadPads();
   } catch(e){ 
