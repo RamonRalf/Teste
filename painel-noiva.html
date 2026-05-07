@@ -449,11 +449,11 @@ async function api(method, path, body){
 }
 
 // Upload de Arquivos para o Supabase Storage
-async function uploadToSupabase(file) {
-  // Limpa espaços e caracteres esquisitos do nome para não dar erro na URL
-  const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-  const fileName = Date.now() + '_' + safeName;
-  const path = 'imagens/' + fileName;
+async function uploadToSupabase(file, prefix) {
+  const ext = file.name.split('.').pop();
+  const fileName = prefix + '_' + Date.now() + '.' + ext;
+  // MANDA PARA A PASTA FOTOS, EXATAMENTE COMO NO SEU BANCO DE DADOS
+  const path = 'fotos/' + fileName; 
   
   const res = await fetch(SUPABASE_URL + '/storage/v1/object/' + path, {
     method: 'POST',
@@ -740,9 +740,9 @@ async function saveGift(){
     let fotoUrl = null;
     const fileInput = document.getElementById('newGiftImgFile');
     
-    // Faz o upload se houver um arquivo selecionado
+    // Faz o upload se houver um arquivo selecionado, usando o prefixo 'presente'
     if(fileInput.files.length > 0) {
-      fotoUrl = await uploadToSupabase(fileInput.files[0]);
+      fotoUrl = await uploadToSupabase(fileInput.files[0], 'presente');
     }
 
     await api('POST','presentes', {
@@ -831,8 +831,9 @@ async function savePad(){
     let fotoUrl = null;
     const fileInput = document.getElementById('newPadImgFile');
     
+    // Faz o upload se houver um arquivo selecionado, usando o prefixo 'padrinho'
     if(fileInput.files.length > 0) {
-      fotoUrl = await uploadToSupabase(fileInput.files[0]);
+      fotoUrl = await uploadToSupabase(fileInput.files[0], 'padrinho');
     }
 
     await api('POST','padrinhos', {
