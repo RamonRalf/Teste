@@ -72,10 +72,11 @@ main{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
 .btn-save:hover{opacity:.85;transform:translateY(-2px)}
 .btn-save:disabled{opacity:.5;cursor:not-allowed}
 
-/* FILE UPLOAD STYLING */
-input[type="file"].f-in { padding: 0.6rem 1rem; cursor: pointer; background: white; }
-input[type="file"]::file-selector-button { background: var(--dark); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; font-family: 'Raleway', sans-serif; font-size: 0.7rem; text-transform: uppercase; cursor: pointer; margin-right: 1rem; transition: background 0.3s; }
-input[type="file"]::file-selector-button:hover { background: var(--gold); color: var(--dark); }
+/* === NOVO ESTILO PARA O BOTÃO DE UPLOAD === */
+.file-upload-wrapper { display: flex; align-items: center; gap: 1rem; width: 100%; flex-wrap: wrap; }
+.custom-file-upload { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.5rem; background: var(--ivory2); border: 1px dashed var(--gold); border-radius: 4px; color: var(--gold); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+.custom-file-upload:hover { background: rgba(184,150,90,0.1); border-color: var(--dark); color: var(--dark); }
+.file-name-display { font-size: 0.75rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
 
 /* SEARCH & FILTER */
 .search-wrap{margin-bottom:1.2rem;position:relative}
@@ -276,7 +277,11 @@ input[type="file"]::file-selector-button:hover { background: var(--gold); color:
         <div class="form-row-img" style="margin-bottom: 1.2rem;">
           <div class="f-field" style="flex:1;">
             <label class="f-lbl">Foto do Presente (Opcional)</label>
-            <input class="f-in" id="newGiftImgFile" type="file" accept="image/*" onchange="previewUpload(this, 'previewGift')">
+            <div class="file-upload-wrapper">
+              <label for="newGiftImgFile" class="custom-file-upload">📸 Escolher Foto</label>
+              <input type="file" id="newGiftImgFile" accept="image/*" style="display:none" onchange="previewUpload(this, 'previewGift', 'giftFileName')">
+              <span id="giftFileName" class="file-name-display">Nenhuma foto selecionada</span>
+            </div>
           </div>
           <img id="previewGift" class="img-preview" src="" alt="Preview">
         </div>
@@ -301,7 +306,11 @@ input[type="file"]::file-selector-button:hover { background: var(--gold); color:
         <div class="form-row-img" style="margin-bottom: 1.2rem;">
           <div class="f-field" style="flex:1;">
             <label class="f-lbl">Foto do Padrinho (Opcional)</label>
-            <input class="f-in" id="newPadImgFile" type="file" accept="image/*" onchange="previewUpload(this, 'previewPad')">
+            <div class="file-upload-wrapper">
+              <label for="newPadImgFile" class="custom-file-upload">📸 Escolher Foto</label>
+              <input type="file" id="newPadImgFile" accept="image/*" style="display:none" onchange="previewUpload(this, 'previewPad', 'padFileName')">
+              <span id="padFileName" class="file-name-display">Nenhuma foto selecionada</span>
+            </div>
           </div>
           <img id="previewPad" class="img-preview" src="" alt="Preview" style="border-radius: 50%;">
         </div>
@@ -423,10 +432,13 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'), 2800);
 }
 
-// Preview da imagem ao selecionar no input file
-function previewUpload(input, imgId) {
+// Preview visual da imagem ao selecionar no botão bonito
+function previewUpload(input, imgId, nameId) {
   const imgEl = document.getElementById(imgId);
+  const nameEl = document.getElementById(nameId);
+  
   if (input.files && input.files[0]) {
+    nameEl.textContent = input.files[0].name; // Mostra o nome do arquivo selecionado
     const reader = new FileReader();
     reader.onload = function(e) {
       imgEl.src = e.target.result;
@@ -436,6 +448,7 @@ function previewUpload(input, imgId) {
   } else {
     imgEl.src = '';
     imgEl.style.display = 'none';
+    nameEl.textContent = 'Nenhuma foto selecionada';
   }
 }
 
@@ -448,12 +461,12 @@ async function api(method, path, body){
   return method === 'DELETE' ? null : res.json();
 }
 
-// Upload de Arquivos para o Supabase Storage
+// Upload de Arquivos reais para a tabela 'fotos' no Supabase
 async function uploadToSupabase(file, prefix) {
-  const ext = file.name.split('.').pop();
-  const fileName = prefix + '_' + Date.now() + '.' + ext;
-  // MANDA PARA A PASTA FOTOS, EXATAMENTE COMO NO SEU BANCO DE DADOS
-  const path = 'fotos/' + fileName; 
+  // Limpa espaços e caracteres do nome para URL segura
+  const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+  const fileName = prefix + '_' + Date.now() + '_' + safeName;
+  const path = 'fotos/' + fileName; // Enviando certinho para a pasta 'fotos'
   
   const res = await fetch(SUPABASE_URL + '/storage/v1/object/' + path, {
     method: 'POST',
@@ -470,7 +483,7 @@ async function uploadToSupabase(file, prefix) {
     throw new Error('Erro no upload: ' + err);
   }
   
-  // Retorna a URL pública gerada pelo Supabase
+  // Retorna a URL pública gerada
   return SUPABASE_URL + '/storage/v1/object/public/' + path;
 }
 
@@ -734,13 +747,12 @@ async function saveGift(){
   const btn = document.getElementById('btnSaveGift');
   
   btn.disabled = true; 
-  btn.textContent = 'Enviando...';
+  btn.textContent = 'Enviando foto...';
   
   try {
     let fotoUrl = null;
     const fileInput = document.getElementById('newGiftImgFile');
     
-    // Faz o upload se houver um arquivo selecionado, usando o prefixo 'presente'
     if(fileInput.files.length > 0) {
       fotoUrl = await uploadToSupabase(fileInput.files[0], 'presente');
     }
@@ -759,6 +771,7 @@ async function saveGift(){
     document.getElementById('newGiftDesc').value = '';
     document.getElementById('newGiftIcon').value = '';
     document.getElementById('newGiftImgFile').value = '';
+    document.getElementById('giftFileName').textContent = 'Nenhuma foto selecionada';
     document.getElementById('previewGift').style.display = 'none';
     loadGifts();
   } catch(e){ 
@@ -825,13 +838,12 @@ async function savePad(){
   const btn = document.getElementById('btnSavePad');
   
   btn.disabled = true; 
-  btn.textContent = 'Enviando...';
+  btn.textContent = 'Enviando foto...';
   
   try {
     let fotoUrl = null;
     const fileInput = document.getElementById('newPadImgFile');
     
-    // Faz o upload se houver um arquivo selecionado, usando o prefixo 'padrinho'
     if(fileInput.files.length > 0) {
       fotoUrl = await uploadToSupabase(fileInput.files[0], 'padrinho');
     }
@@ -848,6 +860,7 @@ async function savePad(){
     document.getElementById('newPadRole').value = '';
     document.getElementById('newPadDesc').value = '';
     document.getElementById('newPadImgFile').value = '';
+    document.getElementById('padFileName').textContent = 'Nenhuma foto selecionada';
     document.getElementById('previewPad').style.display = 'none';
     loadPads();
   } catch(e){ 
